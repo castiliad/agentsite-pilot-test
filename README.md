@@ -56,7 +56,21 @@ npm install
 npm run qa
 ```
 
-The generator does not create a GitHub repo unless `--publish` is explicitly passed. See `.agent/runbooks/generator.md` for publish-mode requirements and caveats.
+Or generate from a richer JSON brief/config file:
+```bash
+npm run create:agentsite -- \
+  --config .agent/templates/sample.agentsite.config.json \
+  --out /tmp/harbor-notes-agentsite \
+  --force
+
+cd /tmp/harbor-notes-agentsite
+npm install
+npm run qa
+```
+
+Config JSON supports `name`, `repo`, `owner`, `description`, `brief`, CTA fields, `audience`, `visualDirection`, `sections`, `proofArtifacts`, `allowedClaims`, `forbiddenClaims`, and `approvalRequired`. CLI flags override config values. The generator validates invalid JSON, missing merged `name`/`repo`/`brief`, invalid section ids, and publish attempts without an owner.
+
+The generator does not create a GitHub repo unless `--publish` is explicitly passed. See `.agent/runbooks/generator.md` for config usage, publish-mode requirements, and caveats.
 
 Run the standard gates in this pilot repo:
 ```bash

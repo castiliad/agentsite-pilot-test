@@ -24,6 +24,31 @@ Expected live URL printed by the generator:
 https://castiliad.github.io/example-agentsite/
 ```
 
+## Config-driven scaffold
+Use `--config <path>` to provide richer JSON input without adding dependencies. CLI flags override config values, so a shared config can be reused with `--repo`, `--name`, or `--out` overrides.
+
+```bash
+npm run create:agentsite -- \
+  --config .agent/templates/sample.agentsite.config.json \
+  --out /tmp/harbor-notes-agentsite \
+  --force
+
+cd /tmp/harbor-notes-agentsite
+npm install
+npm run qa
+```
+
+Supported JSON fields:
+- `name`, `repo`, `owner`, `description`, `brief`
+- `primaryCtaLabel`, `primaryCtaHref`
+- `audience`: string array
+- `visualDirection`: string
+- `sections`: array of `{ "id", "title", "body" }`; ids must start with a lowercase letter and use lowercase letters, numbers, and dashes
+- `proofArtifacts`: array of `{ "label", "body" }`
+- `allowedClaims`, `forbiddenClaims`, `approvalRequired`: string arrays
+
+Validation fails with a clear message for invalid JSON, missing merged `name`/`repo`/`brief`, invalid or duplicate section ids, and `--publish` without `--owner` after config/CLI merge.
+
 ## Overwrite a disposable local directory
 ```bash
 npm run create:agentsite -- \

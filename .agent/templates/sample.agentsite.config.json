@@ -1,0 +1,69 @@
+{
+  "name": "Harbor Notes AgentSite",
+  "repo": "harbor-notes-agentsite",
+  "owner": "castiliad",
+  "description": "A calm launch page for Harbor Notes, a tiny field-journal workflow for solo operators who need decisions, receipts, and next actions in one durable place.",
+  "brief": "Create a restrained, premium static landing page for Harbor Notes: a disposable but polished proof-of-concept for independent consultants and fractional operators who capture messy meeting notes, extract decisions, and hand off a clear next-action log. The site should feel specific, trustworthy, and operational rather than hype-driven.",
+  "primaryCtaLabel": "Review the Harbor Notes brief",
+  "primaryCtaHref": "#brief-shape",
+  "audience": [
+    "Independent consultants who leave meetings with scattered action items",
+    "Fractional operators maintaining client-facing decision logs",
+    "Solo founders testing whether a lightweight notes-to-next-actions workflow deserves a real product"
+  ],
+  "visualDirection": "quiet harbor-at-night palette, editorial spacing, compact proof cards, restrained premium SaaS without fake logos or metrics",
+  "sections": [
+    {
+      "id": "brief-shape",
+      "title": "From meeting residue to a reliable action log",
+      "body": "Harbor Notes is framed around the moment after a client call: rough notes, uncertain owners, and decisions that need to become a durable handoff without turning into a full project-management rollout."
+    },
+    {
+      "id": "operator-fit",
+      "title": "Made for operators who sell clarity",
+      "body": "The page speaks to consultants and fractional leaders who need a credible way to show that decisions were captured, next steps were named, and the source material remains available for review."
+    },
+    {
+      "id": "workflow-proof",
+      "title": "Proof is the workflow, not inflated outcomes",
+      "body": "The site should point to observable artifacts: a brief, a contract, QA commands, and a deployable static repository. It should not invent customers, revenue impact, adoption counts, or guaranteed productivity gains."
+    }
+  ],
+  "proofArtifacts": [
+    {
+      "label": "Decision log artifact",
+      "body": "A structured page section names what changed, who owns it, and what needs review next."
+    },
+    {
+      "label": "Repo-local guardrails",
+      "body": "Generated contracts define allowed claims, forbidden claims, approval boundaries, and no-payment mode."
+    },
+    {
+      "label": "QA before handoff",
+      "body": "The generated project includes npm run qa for contracts, claims, links, SEO basics, and Astro build verification."
+    }
+  ],
+  "allowedClaims": [
+    "Static GitHub Pages delivery",
+    "Repo-local QA scripts are included",
+    "Contract-backed maintenance boundaries are included",
+    "Payment remains disabled in no-payment mode",
+    "The page is a disposable proof-of-concept, not a production service promise"
+  ],
+  "forbiddenClaims": [
+    "fake customer testimonials",
+    "fake logos",
+    "fake metrics",
+    "guaranteed productivity gains",
+    "live payment links",
+    "analytics or tracking"
+  ],
+  "approvalRequired": [
+    "Adding analytics, cookies, tracking pixels, or third-party forms",
+    "Adding payment links or enabling payment mode",
+    "Claiming customer adoption, revenue impact, or quantified productivity gains",
+    "Configuring custom domains or DNS",
+    "Changing deployment target away from GitHub Pages",
+    "Introducing server-side runtime or a database"
+  ]
+}
