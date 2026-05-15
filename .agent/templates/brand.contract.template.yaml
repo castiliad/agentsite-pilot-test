@@ -1,0 +1,28 @@
+name: "[PROJECT_NAME] brand contract"
+version: 0.1.0
+voice:
+  tone:
+    - "[tone adjective]"
+    - trustworthy
+    - direct
+  avoid:
+    - generic SaaS slop
+    - exaggerated AI magic
+    - fake urgency
+    - fake social proof
+visual_system:
+  direction: "[short visual direction]"
+  references:
+    - "[reference style, without imitation]"
+  colors:
+    background: "[#000000]"
+    text: "[#ffffff]"
+    accent: "[#00ffee]"
+    accent_secondary: "[#9fb7ff]"
+  typography:
+    sans: "[font family]"
+    mono: "[optional mono font]"
+accessibility:
+  responsive: true
+  semantic_sections: true
+  minimum_contrast: high

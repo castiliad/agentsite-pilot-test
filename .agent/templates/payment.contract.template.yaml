@@ -1,0 +1,18 @@
+name: "[PROJECT_NAME] payment contract"
+version: 0.1.0
+mode: disabled
+status: no-payment
+rules:
+  - Do not add live payment links.
+  - Do not collect card details or billing information.
+  - Do not imply paid availability unless explicitly approved in a revised contract.
+  - Any payment integration requires explicit human approval and a new contract review.
+allowed_copy:
+  - payment disabled
+  - no-payment mode
+  - experimental pilot
+blocked_domains:
+  - stripe.com
+  - paypal.com
+  - paddle.com
+  - lemonsqueezy.com

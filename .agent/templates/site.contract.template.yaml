@@ -1,0 +1,29 @@
+name: "[PROJECT_NAME] site contract"
+version: 0.1.0
+owner_role: "[MAINTENANCE_OWNER_ROLE]"
+site:
+  type: static_landing_page
+  framework: "[FRAMEWORK]"
+  deploy_target: GitHub Pages
+  repository_visibility: "[public_allowed|private_required]"
+mission: >
+  [Truthful mission statement for the site.]
+required_sections:
+  - hero
+  - "[section_slug]"
+content_rules:
+  must_include:
+    - "[required concept or phrase]"
+  must_not_include:
+    - fake customer testimonials
+    - fake metrics
+    - unsupported guarantees
+    - analytics or tracking
+    - live payment links
+qa:
+  commands:
+    - npm run qa
+    - npm run build
+verification:
+  live_url: "[https://OWNER.github.io/REPO/]"
+  expected_text: "[stable visible text to verify after deploy]"
