@@ -83,6 +83,13 @@ h3 { font-size: 1.08rem; }
 .step-number { display: block; margin-bottom: 38px; color: var(--accent-2); font: 700 0.78rem JetBrains Mono, monospace; }
 .control-panel, .maintenance-panel, .cta-card { padding: 32px; }
 .control-panel { display: grid; grid-template-columns: 0.82fr 1fr; gap: 34px; align-items: start; }
+.artifact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-top: 16px; }
+.artifact-card {
+  min-height: 188px; padding: 18px; border: 1px solid var(--line); border-radius: 20px;
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.82), rgba(7, 11, 22, 0.58));
+}
+.artifact-card span { display: block; margin-bottom: 28px; color: var(--accent); font: 800 0.82rem JetBrains Mono, monospace; }
+.artifact-card p { margin: 10px 0 0; font-size: 0.9rem; line-height: 1.6; }
 .status-list { display: grid; gap: 10px; }
 .status-row { display: grid; grid-template-columns: auto 1fr auto; gap: 14px; align-items: center; padding: 16px; border: 1px solid var(--line); border-radius: 18px; background: rgba(7, 11, 22, 0.45); }
 .status-row p { margin: 2px 0 0; font-size: 0.92rem; }
@@ -103,7 +110,7 @@ h3 { font-size: 1.08rem; }
 
 @media (max-width: 980px) {
   .hero-grid, .section-heading.split, .control-panel, .maintenance-panel { grid-template-columns: 1fr; }
-  .timeline, .gate-grid { grid-template-columns: repeat(2, 1fr); }
+  .timeline, .gate-grid, .artifact-grid { grid-template-columns: repeat(2, 1fr); }
   .nav { padding-bottom: 46px; }
 }
 @media (max-width: 680px) {
@@ -111,8 +118,8 @@ h3 { font-size: 1.08rem; }
   .nav { align-items: flex-start; }
   .nav-links { display: none; }
   .hero { padding-bottom: 48px; }
-  .timeline, .gate-grid { grid-template-columns: 1fr; }
-  .step-card, .gate-card { min-height: auto; }
+  .timeline, .gate-grid, .artifact-grid { grid-template-columns: 1fr; }
+  .step-card, .gate-card, .artifact-card { min-height: auto; }
   .control-panel, .maintenance-panel, .cta-card { padding: 22px; border-radius: 22px; }
   .status-row { grid-template-columns: auto 1fr; }
   .status-row code { grid-column: 2; }

@@ -1,19 +1,29 @@
 ---
+const artifacts = [
+  ['GitHub repo', 'Source, commit history, and deploy workflow stay visible for review.'],
+  ['Pages URL', 'The static site is delivered as a public GitHub Pages link.'],
+  ['AGENTS.md', 'Maintainer rules define safe edits, QA gates, and approval boundaries.'],
+  ['.agent contracts', 'Site, brand, payment, and runbook contracts constrain future work.'],
+  ['QA report', 'Handoff records contract, claims, SEO, links, and build checks.'],
+  ['Deploy run', 'GitHub Actions provides the deployment result and artifact trail.'],
+  ['Next-change plan', 'A scoped plan captures assumptions, acceptance criteria, and commands.']
+];
+
 const rows = [
-  ['Intake brief', 'ready', 'Natural-language request normalized into scope.'],
-  ['Repo contracts', 'ready', 'Site, brand, payment, and runbook contracts committed.'],
-  ['Static build', 'active', 'Astro output generated from auditable components.'],
-  ['Pages deploy', 'queued', 'GitHub Pages publishes the verified artifact.']
+  ['Scope', 'ready', 'Natural-language request translated into acceptance criteria.'],
+  ['Guardrails', 'ready', 'AGENTS.md and .agent contracts keep edits inside approved bounds.'],
+  ['Verification', 'active', 'QA and audit commands produce handoff evidence before deploy.'],
+  ['Delivery', 'queued', 'Pages deploy publishes the verified static artifact.']
 ];
 ---
 <section class="section control" id="control-plane">
   <div class="panel control-panel">
     <div>
-      <div class="section-kicker">Control plane</div>
-      <h2>Readable status without theater.</h2>
-      <p>No fake counters, fabricated customers, or vague “AI magic.” The interface shows the operational state a maintainer can verify.</p>
+      <div class="section-kicker">Proof / control plane</div>
+      <h2>The handoff is the product surface.</h2>
+      <p>Instead of fake social proof, each iteration returns concrete artifacts a maintainer can inspect: source, contracts, QA, deploy evidence, and the next scoped change.</p>
     </div>
-    <div class="status-list" aria-label="AgentSite Pilot status checks">
+    <div class="status-list" aria-label="AgentSite Pilot workflow status">
       {rows.map(([name, state, note]) => (
         <div class={`status-row is-${state}`}>
           <span class="status-light" aria-hidden="true"></span>
@@ -25,5 +35,14 @@ const rows = [
         </div>
       ))}
     </div>
+  </div>
+  <div class="artifact-grid" aria-label="Concrete AgentSite Pilot handoff artifacts">
+    {artifacts.map(([name, note]) => (
+      <article class="artifact-card">
+        <span aria-hidden="true">/</span>
+        <h3>{name}</h3>
+        <p>{note}</p>
+      </article>
+    ))}
   </div>
 </section>
