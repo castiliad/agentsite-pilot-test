@@ -12,7 +12,8 @@
     "check:claims": "node scripts/check-claims.mjs",
     "check:seo": "node scripts/check-seo.mjs",
     "check:links": "node scripts/check-links.mjs",
-    "verify:deploy": "node scripts/verify-deploy.mjs"
+    "verify:deploy": "node scripts/verify-deploy.mjs",
+    "create:agentsite": "node scripts/create-agentsite.mjs"
   },
   "dependencies": {
     "astro": "^6.3.3",

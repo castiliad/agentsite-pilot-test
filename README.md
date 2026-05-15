@@ -37,10 +37,28 @@ npm run check:links
 This repo now codifies the AgentSite pilot loop as reusable, repo-local artifacts:
 - `.agent/runbooks/new-site-workflow.md` — natural-language brief to contract-backed GitHub Pages site.
 - `.agent/runbooks/change-request-workflow.md` — scoped change request to plan, QA, deploy, and verify.
+- `.agent/runbooks/generator.md` — first-pass scaffold/generator usage and safety notes.
 - `.agent/templates/` — starter templates for `AGENTS.md`, contracts, and initial/change plans.
+- `scripts/create-agentsite.mjs` — dependency-light AgentSite scaffold generator; local-only by default.
 - `scripts/verify-deploy.mjs` — dependency-light live content verification plus optional latest GitHub Actions deploy check via `gh`.
 
-Start from the runbooks, copy templates into place, then run the standard gates:
+Start from the runbooks, copy templates into place, or generate a starter locally:
+```bash
+npm run create:agentsite -- \
+  --name "Example AgentSite" \
+  --repo example-agentsite \
+  --owner castiliad \
+  --brief "A concise static landing page for an example project." \
+  --out /tmp/example-agentsite
+
+cd /tmp/example-agentsite
+npm install
+npm run qa
+```
+
+The generator does not create a GitHub repo unless `--publish` is explicitly passed. See `.agent/runbooks/generator.md` for publish-mode requirements and caveats.
+
+Run the standard gates in this pilot repo:
 ```bash
 npm run qa
 npm audit --audit-level=moderate
