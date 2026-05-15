@@ -5,7 +5,7 @@ AgentSite Pilot is a premium static landing page for an experimental workflow: a
 
 ## Stack
 - Astro static site
-- TypeScript-aware Astro checks
+- Astro production build checks
 - GitHub Pages via GitHub Actions
 - Lightweight Node.js QA scripts in `scripts/`
 

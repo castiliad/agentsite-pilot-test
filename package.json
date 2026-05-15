@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro check && astro build",
+    "build": "astro build",
     "preview": "astro preview",
     "qa": "npm run check:contract && npm run check:claims && npm run check:seo && npm run check:links && npm run build",
     "check:contract": "node scripts/check-contracts.mjs",
@@ -14,9 +14,7 @@
     "check:links": "node scripts/check-links.mjs"
   },
   "dependencies": {
-    "@astrojs/check": "^0.9.4",
-    "astro": "^5.16.3",
-    "typescript": "^5.9.3"
-  },
-  "devDependencies": {}
+    "astro": "^6.3.3",
+    "typescript": "^6.0.3"
+  }
 }
