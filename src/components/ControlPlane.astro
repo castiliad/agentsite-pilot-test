@@ -1,0 +1,29 @@
+---
+const rows = [
+  ['Intake brief', 'ready', 'Natural-language request normalized into scope.'],
+  ['Repo contracts', 'ready', 'Site, brand, payment, and runbook contracts committed.'],
+  ['Static build', 'active', 'Astro output generated from auditable components.'],
+  ['Pages deploy', 'queued', 'GitHub Pages publishes the verified artifact.']
+];
+---
+<section class="section control" id="control-plane">
+  <div class="panel control-panel">
+    <div>
+      <div class="section-kicker">Control plane</div>
+      <h2>Readable status without theater.</h2>
+      <p>No fake counters, fabricated customers, or vague “AI magic.” The interface shows the operational state a maintainer can verify.</p>
+    </div>
+    <div class="status-list" aria-label="AgentSite Pilot status checks">
+      {rows.map(([name, state, note]) => (
+        <div class={`status-row is-${state}`}>
+          <span class="status-light" aria-hidden="true"></span>
+          <div>
+            <strong>{name}</strong>
+            <p>{note}</p>
+          </div>
+          <code>{state}</code>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

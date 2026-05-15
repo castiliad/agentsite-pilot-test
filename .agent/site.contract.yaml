@@ -1,0 +1,35 @@
+name: AgentSite Pilot site contract
+version: 0.1.0
+owner_role: Chief of Staff website health agent
+site:
+  type: static_landing_page
+  framework: Astro
+  deploy_target: GitHub Pages
+  repository_visibility: public_allowed
+mission: >
+  Explain an experimental service that converts natural-language website requests into
+  contract-backed, agent-maintained GitHub Pages sites.
+required_sections:
+  - hero
+  - workflow
+  - control_plane_status
+  - qa_gates
+  - agent_maintenance_model
+  - next_request_cta
+content_rules:
+  must_include:
+    - natural-language intake
+    - contract-backed repo setup
+    - agent task decomposition
+    - verifiable QA
+    - GitHub Pages delivery
+  must_not_include:
+    - fake customer testimonials
+    - fake metrics
+    - unsupported guarantees
+    - analytics or tracking
+    - live payment links
+qa:
+  commands:
+    - npm run qa
+    - npm run build

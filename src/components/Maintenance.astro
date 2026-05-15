@@ -1,0 +1,20 @@
+---
+const responsibilities = [
+  'Watch site health: build status, links, content freshness, and contract drift.',
+  'Turn new requests into scoped issues with acceptance criteria before editing.',
+  'Keep payment disabled unless a human explicitly approves a compliant integration.',
+  'Preserve the deployment path: static Astro build to GitHub Pages.'
+];
+---
+<section class="section maintenance" id="maintenance">
+  <div class="panel maintenance-panel">
+    <div>
+      <div class="section-kicker">Agent maintenance model</div>
+      <h2>Chief of Staff for a small public surface.</h2>
+      <p>Future agents should behave like maintainers, not copy generators. The repository documents what can change safely and what needs approval.</p>
+    </div>
+    <ul class="responsibility-list">
+      {responsibilities.map((item) => <li>{item}</li>)}
+    </ul>
+  </div>
+</section>

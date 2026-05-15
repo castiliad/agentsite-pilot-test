@@ -1,0 +1,64 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Workflow from '../components/Workflow.astro';
+import ControlPlane from '../components/ControlPlane.astro';
+import QAGates from '../components/QAGates.astro';
+import Maintenance from '../components/Maintenance.astro';
+import '../styles/global.css';
+---
+<BaseLayout title="AgentSite Pilot — Natural-language websites delivered to GitHub Pages">
+  <main>
+    <section class="hero" id="top">
+      <nav class="nav" aria-label="Primary navigation">
+        <a class="brand" href="#top" aria-label="AgentSite Pilot home">
+          <span class="brand-mark">A</span>
+          <span>AgentSite Pilot</span>
+        </a>
+        <div class="nav-links">
+          <a href="#workflow">Workflow</a>
+          <a href="#control-plane">Control plane</a>
+          <a href="#qa">QA</a>
+          <a href="#maintenance">Maintenance</a>
+        </div>
+      </nav>
+
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow">Experimental service · static delivery · agent maintained</p>
+          <h1>Ask for a website in natural language. Get back a maintained GitHub Pages link.</h1>
+          <p class="hero-lede">AgentSite Pilot turns a plain-language request into a contract-backed static repository, decomposes the work for agents, runs verifiable QA, and publishes the result without pretending to be a black box.</p>
+          <div class="hero-actions">
+            <a class="button primary" href="#cta">Request the next site</a>
+            <a class="button secondary" href="#workflow">Inspect the flow</a>
+          </div>
+        </div>
+        <aside class="terminal-card" aria-label="Pilot deployment summary">
+          <div class="terminal-top"><span></span><span></span><span></span><strong>agentsite/control</strong></div>
+          <div class="terminal-body">
+            <p><span>request</span> natural-language landing page</p>
+            <p><span>contracts</span> site + brand + no-payment mode</p>
+            <p><span>agents</span> design → build → qa → deploy</p>
+            <p><span>qa</span> claims, seo, links, build</p>
+            <p><span>delivery</span> GitHub Pages static URL</p>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <Workflow />
+    <ControlPlane />
+    <QAGates />
+    <Maintenance />
+
+    <section class="section cta" id="cta">
+      <div class="cta-card">
+        <div>
+          <div class="section-kicker">Next request</div>
+          <h2>Bring a brief. Leave with a repo, checks, and a URL.</h2>
+          <p>Best suited for static landing pages, docs-style product surfaces, prototypes, and small public control-plane pages.</p>
+        </div>
+        <a class="button primary" href="https://github.com/castiliad/agentsite-pilot-test">View source</a>
+      </div>
+    </section>
+  </main>
+</BaseLayout>

@@ -1,0 +1,25 @@
+---
+const steps = [
+  ['01', 'Natural-language intake', 'A request is converted into a small brief: audience, sections, claims, constraints, and deployment target.'],
+  ['02', 'Contract-backed repo setup', 'The repository starts with explicit site, brand, payment, and runbook contracts before page work begins.'],
+  ['03', 'Agent task decomposition', 'Build work is split into design, content, implementation, QA, and deployment lanes with recorded handoffs.'],
+  ['04', 'Verifiable QA', 'Checks cover contracts, unsupported claims, SEO basics, links, and production build output.'],
+  ['05', 'GitHub Pages delivery', 'The result ships as a static public URL with source, commit SHA, and maintenance instructions attached.']
+];
+---
+<section class="section workflow" id="workflow">
+  <div class="section-kicker">Workflow</div>
+  <div class="section-heading split">
+    <h2>From plain English to a maintained static site.</h2>
+    <p>AgentSite Pilot favors explicit contracts over chatty ambiguity. Every build should leave behind source, checks, and a path for future changes.</p>
+  </div>
+  <div class="timeline">
+    {steps.map(([number, title, body]) => (
+      <article class="step-card">
+        <span class="step-number">{number}</span>
+        <h3>{title}</h3>
+        <p>{body}</p>
+      </article>
+    ))}
+  </div>
+</section>

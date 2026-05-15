@@ -1,0 +1,24 @@
+---
+const gates = [
+  ['Contract check', 'Required .agent files exist and declare ownership, boundaries, and disabled payment mode.'],
+  ['Claims check', 'Blocks common unsupported language such as fake customers, fake metrics, and guaranteed outcomes.'],
+  ['SEO check', 'Confirms title, description, heading structure, and crawlable copy exist.'],
+  ['Link check', 'Rejects broken local anchors and unapproved payment or tracking links.']
+];
+---
+<section class="section qa" id="qa">
+  <div class="section-kicker">QA gates</div>
+  <div class="section-heading">
+    <h2>Verifiable by default.</h2>
+    <p>Checks are intentionally lightweight for the pilot, but they encode the habit: every agent handoff should be reproducible.</p>
+  </div>
+  <div class="gate-grid">
+    {gates.map(([title, body]) => (
+      <article class="gate-card">
+        <div class="gate-mark">✓</div>
+        <h3>{title}</h3>
+        <p>{body}</p>
+      </article>
+    ))}
+  </div>
+</section>

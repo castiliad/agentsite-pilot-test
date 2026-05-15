@@ -1,0 +1,31 @@
+name: AgentSite Pilot brand contract
+version: 0.1.0
+voice:
+  tone:
+    - crisp
+    - trustworthy
+    - developer-friendly
+    - direct
+  avoid:
+    - generic SaaS slop
+    - exaggerated AI magic
+    - fake urgency
+    - fake social proof
+visual_system:
+  direction: premium restrained developer/control-plane aesthetic
+  references:
+    - Linear-like clarity without imitation
+    - Vercel-like restraint without imitation
+    - Mintlify/Supabase-ish developer polish without imitation
+  colors:
+    background: '#070b16'
+    text: '#edf2ff'
+    accent: '#85f3d7'
+    accent_secondary: '#9fb7ff'
+  typography:
+    sans: Inter
+    mono: JetBrains Mono
+accessibility:
+  responsive: true
+  semantic_sections: true
+  minimum_contrast: high on dark background
