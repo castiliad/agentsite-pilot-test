@@ -116,8 +116,12 @@ function publishProject() {
   if (!ownerProvided) fail('--owner is required when --publish is set');
   console.log('\nPublish requested; checking GitHub CLI authentication...');
   run('gh', ['auth', 'status']);
+  const ghLogin = output('gh', ['api', 'user', '--jq', '.login']).trim();
+  const ghId = output('gh', ['api', 'user', '--jq', '.id']).trim();
   run('git', ['init'], { cwd: outDir });
   run('git', ['checkout', '-B', 'main'], { cwd: outDir });
+  run('git', ['config', 'user.name', ghLogin], { cwd: outDir });
+  run('git', ['config', 'user.email', `${ghId}+${ghLogin}@users.noreply.github.com`], { cwd: outDir });
   run('npm', ['install'], { cwd: outDir });
   run('npm', ['run', 'qa'], { cwd: outDir });
   run('git', ['add', '.'], { cwd: outDir });
@@ -174,6 +178,12 @@ function shellQuote(value) {
 function run(command, commandArgs, options = {}) {
   const result = spawnSync(command, commandArgs, { stdio: 'inherit', ...options });
   if (result.status !== 0) fail(`Command failed: ${command} ${commandArgs.join(' ')}`);
+}
+
+function output(command, commandArgs, options = {}) {
+  const result = spawnSync(command, commandArgs, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], ...options });
+  if (result.status !== 0) fail(`Command failed: ${command} ${commandArgs.join(' ')}\n${result.stderr || ''}`.trim());
+  return result.stdout;
 }
 
 function usage(code) {
