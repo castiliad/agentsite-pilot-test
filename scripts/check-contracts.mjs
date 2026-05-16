@@ -7,6 +7,10 @@ const required = [
   '.agent/payment.contract.yaml',
   '.agent/runbooks/deploy.md',
   '.agent/runbooks/feature-request.md',
+  '.agent/recipes/README.md',
+  '.agent/recipes/product-cockpit/recipe.yaml',
+  '.agent/recipes/product-cockpit/README.md',
+  '.agent/recipes/product-cockpit/acceptance.md',
   '.hermes/plans/initial-site-build.md'
 ];
 

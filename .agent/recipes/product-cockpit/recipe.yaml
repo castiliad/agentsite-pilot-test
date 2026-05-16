@@ -1,0 +1,83 @@
+id: product-cockpit
+name: Product Cockpit
+version: 0.1.0
+status: draft
+summary: >
+  A reusable AgentSite pattern for turning a product, service, or internal initiative
+  into a high-signal static landing page with a hero, operating context, proof
+  artifacts, workflow panels, risk boundaries, and a clear next-step CTA.
+best_for:
+  - Static launches that need to feel operational and decision-ready.
+  - Founder, product, or operator pages where visitors need context, proof, and next action quickly.
+  - Agent-maintained sites that benefit from compact cards, cockpit-style status language, and contract-aware boundaries.
+not_for:
+  - Live dashboards or real-time telemetry unless separately approved and implemented.
+  - Claims that require unprovided metrics, customer proof, benchmarks, or guarantees.
+  - Payment, analytics, authentication, databases, or server-side runtime by default.
+visual_preset: cockpit-dark
+composable_with:
+  - contract-backed-maintenance
+  - proof-artifact-grid
+  - static-launch-page
+inputs:
+  required:
+    - project_name
+    - audience
+    - brief
+    - primary_cta
+    - supported_claims
+    - proof_artifacts
+  optional:
+    - workflow_stages
+    - risk_boundaries
+    - maintenance_notes
+    - launch_timeline
+sections:
+  - id: hero
+    purpose: State the product promise, static delivery boundary, and primary next step.
+  - id: operating-context
+    purpose: Explain who the page is for and what decision it helps them make.
+  - id: cockpit-panels
+    purpose: Present compact cards for status, workflow, proof, constraints, and handoff evidence.
+  - id: proof
+    purpose: Link claims to repo-local artifacts, contracts, runbooks, or screenshots that actually exist.
+  - id: boundaries
+    purpose: Make explicit what is not live, not automated, or not approved.
+  - id: next-step
+    purpose: Offer one safe CTA aligned with the contract.
+static_safety:
+  required:
+    - Use only user-provided facts or repo-verifiable artifacts.
+    - Label generated or planned items as planned, draft, or proposed when not yet shipped.
+    - Keep no-payment mode intact unless the payment contract changes with explicit approval.
+    - Keep analytics, tracking, custom domains, server runtime, and databases out unless separately approved.
+  forbidden:
+    - Fake metrics, fake customers, fake testimonials, or fabricated screenshots.
+    - Live dashboard language unless the page is actually connected to live data.
+    - Unsupported guarantees about revenue, uptime, conversion, or availability.
+acceptance_files:
+  readme: README.md
+  checklist: acceptance.md
+scoring:
+  pass_threshold: 80
+  criteria:
+    - id: fit
+      label: Brief fit
+      weight: 25
+      question: Does the cockpit pattern match the audience, decision, and CTA in the brief?
+    - id: evidence
+      label: Evidence availability
+      weight: 25
+      question: Are there enough real artifacts or provided facts to populate proof panels truthfully?
+    - id: safety
+      label: Static safety
+      weight: 25
+      question: Can the pattern be implemented without analytics, payments, live data, server runtime, or unsupported claims?
+    - id: maintainability
+      label: Agent maintainability
+      weight: 15
+      question: Can future agents understand the sections, contracts, QA, and handoff boundaries quickly?
+    - id: visual
+      label: Visual differentiation
+      weight: 10
+      question: Does the cockpit visual preset improve clarity without overwhelming the brief?
