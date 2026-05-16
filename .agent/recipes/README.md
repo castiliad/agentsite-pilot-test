@@ -35,6 +35,7 @@ Recipes do not imply live integrations, analytics, payments, customer proof, or 
 | `agentsite-atlas` | `section_recipe` | A site needs a navigable map of generated AgentSite proof sites, recipes, deploy evidence, and next improvements. | Atlas entries are public-safe verified records, not live monitoring or private repo inventory. |
 | `agent-run-ledger` | `section_recipe` | A site needs a public-safe orchestration trail of agent runs, delegated work, checks, deploys, and next actions. | Ledger entries are curated summaries, not raw transcripts, private logs, or live telemetry. |
 | `feature-request-inbox` | `section_recipe` | A site needs a public-safe queue of requested improvements with priority, acceptance criteria, recipes, and verification plans. | Inbox entries are curated public summaries, not private tickets, raw chats, live sync, or support data. |
+| `chief-of-staff-briefing` | `section_recipe` | A site needs a generated executive briefing with top actions, risks, stale/blocked work, wins, and a recommended next recipe. | Briefings are generated from committed public-safe JSON, not live monitoring, private tickets, raw chats, telemetry, or audit proof. |
 
 ## Agent workflow
 
@@ -62,6 +63,7 @@ Recipes do not imply live integrations, analytics, payments, customer proof, or 
    - `recipes: ["agentsite-atlas"]` or `visualPreset: "agentsite-atlas"` adds a generated proof-site directory backed by `src/data/atlas.json`.
    - `recipes: ["agent-run-ledger"]` or `visualPreset: "agent-run-ledger"` adds a static orchestration/run history backed by `src/data/runs.json`.
    - `recipes: ["feature-request-inbox"]` or `visualPreset: "feature-request-inbox"` adds a static request queue backed by `src/data/requests.json`.
+   - `recipes: ["chief-of-staff-briefing"]` or `visualPreset: "chief-of-staff-briefing"` adds a generated static briefing backed by `src/data/briefing.json`.
 7. To let the generator infer from natural-language brief/config signals, pass `--auto-recipes` or set `"autoRecipes": true`. Auto mode is deterministic, can select an archetype plus section recipes, and never overrides explicit `recipes`, `archetype`, or `visualPreset` values.
 8. Run `npm run check:visual-divergence` when changing archetypes or visual presets.
 9. Apply the pattern with static copy and verifiable artifacts only.

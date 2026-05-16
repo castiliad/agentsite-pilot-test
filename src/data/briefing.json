@@ -1,0 +1,121 @@
+{
+  "id": "chief-of-staff-briefing",
+  "generatedAt": "2026-05-16",
+  "summary": "Static chief-of-staff briefing generated from public AgentSite data: requests, roadmap, runs, atlas, and search index.",
+  "topActions": [
+    {
+      "title": "Move primary run ledger closer to top",
+      "rationale": "Run-ledger proof is useful but buried below composed modules. Next: Prototype a run-ledger-first layout in a disposable generated repo.",
+      "source": "request:req-001",
+      "href": "#requests"
+    },
+    {
+      "title": "Generate a site-specific chief-of-staff briefing",
+      "rationale": "Generate a compact static chief-of-staff briefing from atlas, runs, requests, roadmap, and search index data. Next: Publish proof and back-port generator support.",
+      "source": "request:req-005",
+      "href": "#requests"
+    },
+    {
+      "title": "Add collapsible module sections",
+      "rationale": "Composed demo pages become too long when multiple section recipes are enabled. Next: Design a static details/summary pattern with visual QA coverage.",
+      "source": "request:req-002",
+      "href": "#requests"
+    }
+  ],
+  "riskFlags": [
+    {
+      "title": "Agent maintenance cadence",
+      "rationale": "Roadmap item is blocked. Approve a quiet schedule and escalation rules before enabling recurring runs.",
+      "source": "roadmap:undefined",
+      "href": "#roadmap"
+    },
+    {
+      "title": "Layer 8: chief-of-staff briefing",
+      "rationale": "Run status is draft; deploy or verification may still need curation.",
+      "source": "run:layer-8-chief-of-staff-briefing",
+      "href": "#runs"
+    }
+  ],
+  "staleOrBlocked": [
+    {
+      "title": "Add collapsible module sections",
+      "rationale": "Needs triage before implementation. Next: Design a static details/summary pattern with visual QA coverage.",
+      "source": "request:req-002",
+      "href": "#requests"
+    },
+    {
+      "title": "Track failed experiments explicitly",
+      "rationale": "Needs triage before implementation. Next: Extend schemas after inbox proof is stable.",
+      "source": "request:req-004",
+      "href": "#requests"
+    },
+    {
+      "title": "Static intelligence index",
+      "rationale": "Deferred or blocked roadmap item. Prototype a JSON search index from recipe and artifact metadata.",
+      "source": "roadmap:undefined",
+      "href": "#roadmap"
+    },
+    {
+      "title": "Agent maintenance cadence",
+      "rationale": "Deferred or blocked roadmap item. Approve a quiet schedule and escalation rules before enabling recurring runs.",
+      "source": "roadmap:undefined",
+      "href": "#roadmap"
+    }
+  ],
+  "recentWins": [
+    {
+      "title": "Layer 7: feature request inbox",
+      "rationale": "Added public-safe feature-request inbox with status, priority, acceptance criteria, recipe candidates, verification plan, and next action.",
+      "source": "run:layer-7-feature-request-inbox",
+      "href": "#runs"
+    },
+    {
+      "title": "Layer 6: agent run ledger",
+      "rationale": "Added public-safe static run ledger for orchestration decisions, delegated work, checks, deploy evidence, and next actions.",
+      "source": "run:layer-6-agent-run-ledger",
+      "href": "#runs"
+    },
+    {
+      "title": "Layer 5: AgentSite Atlas",
+      "rationale": "Added searchable public directory of generated proof sites and recipe coverage.",
+      "source": "run:layer-5-agentsite-atlas",
+      "href": "#runs"
+    }
+  ],
+  "recommendedRecipe": {
+    "id": "agent-run-ledger",
+    "reason": "Most relevant candidate in the current public request/roadmap data: agent-run-ledger.",
+    "verification": [
+      "npm run build:briefing",
+      "npm run check:briefing",
+      "npm run qa:full"
+    ]
+  },
+  "evidenceSources": [
+    {
+      "label": "Requests",
+      "count": 5,
+      "href": "#requests"
+    },
+    {
+      "label": "Roadmap",
+      "count": 4,
+      "href": "#roadmap"
+    },
+    {
+      "label": "Runs",
+      "count": 8,
+      "href": "#runs"
+    },
+    {
+      "label": "Atlas",
+      "count": 7,
+      "href": "#atlas"
+    },
+    {
+      "label": "Search index",
+      "count": 39,
+      "href": "#search"
+    }
+  ]
+}

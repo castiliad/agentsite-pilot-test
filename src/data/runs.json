@@ -112,7 +112,7 @@
   {
     "id": "layer-6-agent-run-ledger",
     "title": "Layer 6: agent run ledger",
-    "status": "draft",
+    "status": "verified",
     "layer": 6,
     "date": "2026-05-16",
     "orchestrator": "Hermes Agent",
@@ -125,9 +125,53 @@
       "npm run check:runs",
       "npm run qa:full"
     ],
+    "commit": "43f0cfcfb9ea8ff45018bf5bae693e7665c2f3fd",
+    "deployRun": "https://github.com/castiliad/agentsite-pilot-test/actions/runs/25956447339",
+    "outcome": "Added public-safe static run ledger for orchestration decisions, delegated work, checks, deploy evidence, and next actions.",
+    "nextAction": "Add static request intake queue."
+  },
+  {
+    "id": "layer-7-feature-request-inbox",
+    "title": "Layer 7: feature request inbox",
+    "status": "verified",
+    "layer": 7,
+    "date": "2026-05-16",
+    "orchestrator": "Hermes Agent",
+    "delegations": [
+      "Request schema",
+      "Inbox UI",
+      "Request QA"
+    ],
+    "checks": [
+      "npm run check:requests",
+      "npm run qa:full",
+      "npm run verify:deploy"
+    ],
+    "commit": "5fff83b9116db021be83480e4a1ff7e4ea7afbcd",
+    "deployRun": "https://github.com/castiliad/agentsite-pilot-test/actions/runs/25956729191",
+    "outcome": "Added public-safe feature-request inbox with status, priority, acceptance criteria, recipe candidates, verification plan, and next action.",
+    "nextAction": "Generate a chief-of-staff briefing from requests, roadmap, runs, atlas, and search index."
+  },
+  {
+    "id": "layer-8-chief-of-staff-briefing",
+    "title": "Layer 8: chief-of-staff briefing",
+    "status": "draft",
+    "layer": 8,
+    "date": "2026-05-16",
+    "orchestrator": "Hermes Agent",
+    "delegations": [
+      "Briefing builder",
+      "Executive panel UI",
+      "Briefing QA"
+    ],
+    "checks": [
+      "npm run build:briefing",
+      "npm run check:briefing",
+      "npm run qa:full"
+    ],
     "commit": "pending",
     "deployRun": "pending",
-    "outcome": "Planned static run ledger for decisions, delegated tasks, checks, deploys, failures, and next actions.",
+    "outcome": "Planned generated static chief-of-staff briefing for top actions, risk flags, stale work, wins, and next recipe recommendation.",
     "nextAction": "Publish proof site and verify deploy."
   }
 ]

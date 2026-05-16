@@ -1,0 +1,85 @@
+{
+  "name": "Chief of Staff Briefing",
+  "repo": "agentsite-chief-briefing-example",
+  "owner": "castiliad",
+  "description": "A static AgentSite chief-of-staff briefing for autonomous maintenance decisions.",
+  "brief": "Create a static GitHub Pages site that demonstrates a chief-of-staff briefing generated from public-safe AgentSite data: requests, roadmap, runs, atlas, and search index. It should show top three next actions, risk flags, stale or blocked work, recent verified wins, and the recommended recipe to apply next without live monitoring, private tickets, raw chats, auth, analytics, or a database.",
+  "heroHeadline": "A static chief-of-staff brief for the next agent run",
+  "heroLede": "The page turns requests, roadmap items, run history, proof sites, and search metadata into a compact control brief for autonomous maintenance decisions.",
+  "primaryCtaLabel": "Review briefing",
+  "primaryCtaHref": "#briefing",
+  "audience": [
+    "AgentSite chief-of-staff agents",
+    "Autonomous orchestrators",
+    "Technical reviewers evaluating static maintenance loops"
+  ],
+  "visualDirection": "dark cockpit executive briefing with risk flags and action panels",
+  "recipes": [
+    "product-cockpit",
+    "chief-of-staff-briefing",
+    "feature-request-inbox",
+    "agent-run-ledger",
+    "agentsite-atlas",
+    "search-index",
+    "artifact-gallery",
+    "roadmap-board",
+    "copy-evidence-strip"
+  ],
+  "visualPreset": "cockpit-dark",
+  "sections": [
+    {
+      "id": "briefing-loop",
+      "navLabel": "Briefing",
+      "title": "The chief-of-staff view starts with decisions",
+      "body": "The generated briefing surfaces the few actions and risks an orchestrator should review before delegating work."
+    },
+    {
+      "id": "source-signals",
+      "navLabel": "Signals",
+      "title": "Static signals replace vague status chatter",
+      "body": "Requests, roadmap, runs, atlas, and search metadata are transformed into a curated public-safe operating summary."
+    },
+    {
+      "id": "briefing-boundaries",
+      "navLabel": "Boundaries",
+      "title": "No live monitoring or private intake",
+      "body": "The panel is generated from committed static data, not private tickets, raw chats, analytics, telemetry, auth, or a database."
+    }
+  ],
+  "proofArtifacts": [
+    {
+      "label": "Briefing builder",
+      "body": "scripts/build-briefing.mjs generates src/data/briefing.json from public-safe static sources."
+    },
+    {
+      "label": "Briefing QA",
+      "body": "scripts/check-briefing.mjs validates top actions, risk flags, wins, recommendation, and source counts."
+    },
+    {
+      "label": "Briefing UI",
+      "body": "src/components/ChiefOfStaffBriefing.astro renders the executive panel and source evidence links."
+    }
+  ],
+  "allowedClaims": [
+    "Static GitHub Pages delivery",
+    "Public-safe chief-of-staff briefing",
+    "Repo-local QA scripts validate briefing records",
+    "Payment disabled / no-payment mode"
+  ],
+  "forbiddenClaims": [
+    "fake customer endorsements",
+    "fake metrics",
+    "unsupported guarantees",
+    "analytics or tracking",
+    "live payment links",
+    "private tickets",
+    "raw chats",
+    "live monitoring"
+  ],
+  "approvalRequired": [
+    "Adding analytics, cookies, tracking pixels, or third-party forms",
+    "Adding payment links or enabling payment mode",
+    "Indexing private tickets, raw chats, credentials, secrets, or unpublished user data",
+    "Adding live monitoring, server runtime, authentication, telemetry, or a database"
+  ]
+}

@@ -1,0 +1,60 @@
+---
+import briefing from '../data/briefing.json';
+---
+<section class="section chief-briefing" id="briefing" data-chief-briefing aria-labelledby="briefing-title">
+  <div class="briefing-heading">
+    <div>
+      <div class="section-kicker">Chief-of-staff briefing</div>
+      <h2 id="briefing-title">A generated control brief for the next agent decision.</h2>
+    </div>
+    <p>{briefing.summary} Generated {briefing.generatedAt}. This is static public data, not live monitoring.</p>
+  </div>
+
+  <div class="briefing-surface">
+    <article class="briefing-panel briefing-actions" aria-labelledby="briefing-actions-title">
+      <div class="briefing-panel-top"><span>Top 3</span><strong>Next actions</strong></div>
+      <h3 id="briefing-actions-title">Do these before starting broad new work.</h3>
+      <ol>
+        {briefing.topActions.map((action) => (
+          <li data-briefing-action>
+            <a href={action.href}>{action.title}</a>
+            <p>{action.rationale}</p>
+            <small>{action.source}</small>
+          </li>
+        ))}
+      </ol>
+    </article>
+
+    <article class="briefing-panel briefing-risks" aria-labelledby="briefing-risks-title">
+      <div class="briefing-panel-top"><span>Risk</span><strong>Flags</strong></div>
+      <h3 id="briefing-risks-title">What can slow the next autonomous run.</h3>
+      <ul>
+        {briefing.riskFlags.map((risk) => <li><a href={risk.href}>{risk.title}</a><p>{risk.rationale}</p></li>)}
+      </ul>
+    </article>
+
+    <article class="briefing-panel briefing-wins" aria-labelledby="briefing-wins-title">
+      <div class="briefing-panel-top"><span>Verified</span><strong>Wins</strong></div>
+      <h3 id="briefing-wins-title">Recent proof the system can keep compounding.</h3>
+      <ul>
+        {briefing.recentWins.map((win) => <li><a href={win.href}>{win.title}</a><p>{win.rationale}</p></li>)}
+      </ul>
+    </article>
+
+    <article class="briefing-panel briefing-recipe" aria-labelledby="briefing-recipe-title">
+      <div class="briefing-panel-top"><span>Recommendation</span><strong>{briefing.recommendedRecipe.id}</strong></div>
+      <h3 id="briefing-recipe-title">Recommended recipe to apply next.</h3>
+      <p>{briefing.recommendedRecipe.reason}</p>
+      <div class="briefing-tags">
+        {briefing.recommendedRecipe.verification.map((command) => <span>{command}</span>)}
+      </div>
+    </article>
+  </div>
+
+  <details class="briefing-details">
+    <summary>Evidence sources used for this static brief</summary>
+    <div>
+      {briefing.evidenceSources.map((source) => <a href={source.href}>{source.label}: {source.count}</a>)}
+    </div>
+  </details>
+</section>

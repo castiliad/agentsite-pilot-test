@@ -47,7 +47,7 @@
   {
     "id": "req-003",
     "title": "Create request intake queue",
-    "status": "in_progress",
+    "status": "done",
     "priority": "high",
     "source": "Layer 7",
     "summary": "Add a public-safe feature-request inbox to complete the static loop from request to verification.",
@@ -65,7 +65,7 @@
       "npm run qa:full",
       "npm run verify:deploy"
     ],
-    "nextAction": "Publish proof and back-port generator support."
+    "nextAction": "Use the inbox as input for briefing generation."
   },
   {
     "id": "req-004",
@@ -92,23 +92,27 @@
   {
     "id": "req-005",
     "title": "Generate a site-specific chief-of-staff briefing",
-    "status": "backlog",
-    "priority": "low",
-    "source": "future layer",
-    "summary": "Produce a compact weekly static briefing from atlas, runs, requests, roadmap, and search index data.",
+    "status": "in_progress",
+    "priority": "high",
+    "source": "Layer 8",
+    "summary": "Generate a compact static chief-of-staff briefing from atlas, runs, requests, roadmap, and search index data.",
     "acceptance": [
       "briefing is generated from public data",
       "top three actions are explicit",
       "no live monitoring claims"
     ],
     "recipeCandidates": [
+      "chief-of-staff-briefing",
       "search-index",
       "agent-run-ledger",
       "feature-request-inbox"
     ],
     "verification": [
-      "npm run qa:full"
+      "npm run build:briefing",
+      "npm run check:briefing",
+      "npm run qa:full",
+      "npm run verify:deploy"
     ],
-    "nextAction": "Wait until request inbox proves stable."
+    "nextAction": "Publish proof and back-port generator support."
   }
 ]

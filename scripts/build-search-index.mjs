@@ -19,6 +19,8 @@ function readJson(file) {
 
 const siteContract = fs.existsSync('.agent/site.contract.yaml') ? fs.readFileSync('.agent/site.contract.yaml', 'utf8') : '';
 const readme = fs.existsSync('README.md') ? fs.readFileSync('README.md', 'utf8') : '';
+const pageSource = fs.existsSync('src/pages/index.astro') ? fs.readFileSync('src/pages/index.astro', 'utf8') : '';
+const hasSection = (id, componentName = '') => pageSource.includes(`id=\"${id}\"`) || pageSource.includes(`id="${id}"`) || Boolean(componentName && pageSource.includes(componentName));
 if (siteContract) push({ title: 'Site contract', type: 'contract', href: '#proof', summary: 'Public source of truth for site mission, required sections, allowed claims, and approval boundaries.', tags: ['contract', 'claims', 'approval'] });
 if (readme) push({ title: 'README handoff', type: 'contract', href: '#top', summary: 'Repository overview, selected recipes, live URL, QA commands, and agent maintenance notes.', tags: ['handoff', 'repo', 'agents'] });
 
@@ -31,7 +33,15 @@ if (fs.existsSync(recipeRoot)) {
     const name = text.match(/^name:\s*(.+)$/m)?.[1]?.trim() || id;
     const kind = text.match(/^kind:\s*(.+)$/m)?.[1]?.trim() || 'recipe';
     const summary = text.match(/^summary:\s*>\s*\n([\s\S]*?)(?:\n\S|$)/m)?.[1]?.replace(/\s+/g, ' ').trim() || `${name} recipe metadata.`;
-    push({ title: name, type: 'recipe', href: id === 'artifact-gallery' ? '#artifacts' : id === 'roadmap-board' ? '#roadmap' : '#proof', summary, tags: [id, kind, 'recipe'] });
+    const href = id === 'artifact-gallery' ? (hasSection('artifacts', 'ArtifactGallery') ? '#artifacts' : '#proof')
+      : id === 'roadmap-board' ? (hasSection('roadmap', 'RoadmapBoard') ? '#roadmap' : '#proof')
+        : id === 'search-index' ? (hasSection('search', 'SearchIndex') ? '#search' : '#proof')
+          : id === 'agentsite-atlas' ? (hasSection('atlas', 'AgentSiteAtlas') ? '#atlas' : '#proof')
+            : id === 'agent-run-ledger' ? (hasSection('runs', 'AgentRunLedger') ? '#runs' : '#proof')
+              : id === 'feature-request-inbox' ? (hasSection('requests', 'FeatureRequestInbox') ? '#requests' : '#proof')
+                : id === 'chief-of-staff-briefing' ? (hasSection('briefing', 'ChiefOfStaffBriefing') ? '#briefing' : '#proof')
+                  : '#proof';
+    push({ title: name, type: 'recipe', href, summary, tags: [id, kind, 'recipe'] });
   }
 }
 

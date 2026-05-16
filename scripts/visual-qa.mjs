@@ -129,6 +129,9 @@ async function auditViewport(browser, viewport) {
   const requestInboxFailures = await checkFeatureRequestInbox(page, viewport.name);
   failures.push(...requestInboxFailures);
 
+  const briefingFailures = await checkChiefOfStaffBriefing(page, viewport.name);
+  failures.push(...briefingFailures);
+
   await page.close();
   return { failures, screenshotPath };
 }
@@ -302,6 +305,22 @@ async function checkFeatureRequestInbox(page, viewportName) {
     const readyVisible = await page.locator('[data-request-card]:visible').count();
     if (readyVisible < 0) failures.push(`${viewportName}: request inbox ready filter produced invalid state`);
   }
+  return failures;
+}
+
+async function checkChiefOfStaffBriefing(page, viewportName) {
+  const failures = [];
+  const briefingCount = await page.locator('[data-chief-briefing]').count();
+  if (!briefingCount) return failures;
+  await expectVisible(page, '[data-chief-briefing]', `${viewportName}: chief-of-staff briefing`, failures, { minWidth: 240, minHeight: 180 });
+  const actionCount = await page.locator('[data-briefing-action]').count();
+  if (actionCount !== 3) failures.push(`${viewportName}: chief briefing should render exactly 3 top actions; found ${actionCount}`);
+  const text = (await page.locator('[data-chief-briefing]').first().innerText().catch(() => '')).toLowerCase();
+  for (const phrase of ['risk', 'verified', 'recommendation']) {
+    if (!text.includes(phrase)) failures.push(`${viewportName}: chief briefing missing ${phrase}`);
+  }
+  const sourceLinks = await page.locator('.briefing-details a').count();
+  if (sourceLinks < 3) failures.push(`${viewportName}: chief briefing should expose static evidence source links; found ${sourceLinks}`);
   return failures;
 }
 

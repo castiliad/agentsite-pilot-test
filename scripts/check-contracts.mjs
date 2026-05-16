@@ -35,6 +35,9 @@ const required = [
   '.agent/recipes/feature-request-inbox/recipe.yaml',
   '.agent/recipes/feature-request-inbox/README.md',
   '.agent/recipes/feature-request-inbox/acceptance.md',
+  '.agent/recipes/chief-of-staff-briefing/recipe.yaml',
+  '.agent/recipes/chief-of-staff-briefing/README.md',
+  '.agent/recipes/chief-of-staff-briefing/acceptance.md',
   '.hermes/plans/initial-site-build.md'
 ];
 

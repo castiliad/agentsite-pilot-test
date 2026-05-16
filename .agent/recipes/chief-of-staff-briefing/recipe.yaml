@@ -1,0 +1,77 @@
+id: chief-of-staff-briefing
+name: Chief-of-staff briefing
+version: 0.1.0
+status: experimental
+kind: section_recipe
+section_recipe: chief-of-staff-briefing
+visual_preset: chief-of-staff-briefing
+summary: >
+  Generates a public-safe executive briefing panel from static AgentSite data:
+  requests, roadmap, runs, atlas, and search index. It surfaces top actions,
+  risks, stale or blocked work, recent verified wins, and the recommended recipe
+  to apply next.
+best_for:
+  - Autonomous AgentSite maintenance loops.
+  - Chief-of-staff control surfaces.
+  - Static public project health summaries.
+  - Request-to-run-to-deploy operating briefs.
+not_for:
+  - Live monitoring, private ticket dashboards, raw transcript summarization, telemetry, analytics, auth, databases, or compliance proof.
+composable_with:
+  - feature-request-inbox
+  - agent-run-ledger
+  - roadmap-board
+  - agentsite-atlas
+  - search-index
+inputs:
+  required:
+    - src/data/requests.json
+    - src/data/roadmap.json
+    - src/data/runs.json
+    - src/data/atlas.json
+    - src/data/search-index.json
+outputs:
+  - src/data/briefing.json
+  - src/components/ChiefOfStaffBriefing.astro
+  - scripts/build-briefing.mjs
+  - scripts/check-briefing.mjs
+sections:
+  - id: briefing
+    purpose: Top-three next actions, risk flags, verified wins, recipe recommendation, and source counts.
+static_safety:
+  required:
+    - Use curated repo-local JSON only.
+    - Describe the briefing as generated static public data, not live monitoring or audit proof.
+    - Keep all source data public-safe and committed to the repository.
+  forbidden:
+    - Private tickets, raw chats, credentials, secrets, telemetry, analytics, authentication, database reads, or unsupported live monitoring claims.
+    - Fake metrics, customer proof, endorsements, or guarantees.
+approval_required:
+  - Ingesting private task systems, raw chats, credentials, telemetry, unpublished user data, or support conversations.
+  - Adding live monitoring, server runtime, authentication, database storage, analytics, or payments.
+acceptance_files:
+  readme: README.md
+  checklist: acceptance.md
+scoring:
+  pass_threshold: 80
+  criteria:
+    - id: source-synthesis
+      label: Static source synthesis
+      weight: 30
+      question: Does the briefing synthesize requests, roadmap, runs, atlas, and search index into one useful panel?
+    - id: decision-quality
+      label: Orchestrator decision quality
+      weight: 25
+      question: Are top actions and recommended next recipe clear enough for delegation?
+    - id: risk-visibility
+      label: Risk and blocker visibility
+      weight: 20
+      question: Are blocked, stale, risky, or unverified items visible without noisy chatter?
+    - id: static-safety
+      label: Static safety
+      weight: 15
+      question: Does the recipe avoid private data, live monitoring, telemetry, auth, analytics, and unsupported claims?
+    - id: qa-generation
+      label: QA-validated generation
+      weight: 10
+      question: Do build and check scripts generate and validate the briefing deterministically?

@@ -46,10 +46,21 @@
   {
     "title": "Artifact Gallery",
     "type": "recipe",
-    "href": "#artifacts",
+    "href": "#proof",
     "summary": "A static, searchable, filterable gallery for repo artifacts, QA evidence,",
     "tags": [
       "artifact-gallery",
+      "section-recipe",
+      "recipe"
+    ]
+  },
+  {
+    "title": "Chief-of-staff briefing",
+    "type": "recipe",
+    "href": "#proof",
+    "summary": "Generates a public-safe executive briefing panel from static AgentSite data:",
+    "tags": [
+      "chief-of-staff-briefing",
       "section-recipe",
       "recipe"
     ]
@@ -101,7 +112,7 @@
   {
     "title": "Roadmap Board",
     "type": "recipe",
-    "href": "#roadmap",
+    "href": "#proof",
     "summary": "A static local-first improvement board for AgentSite repos. It renders a",
     "tags": [
       "roadmap-board",

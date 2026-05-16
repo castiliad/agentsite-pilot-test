@@ -16,6 +16,8 @@ export const AGENT_RUN_LEDGER_RECIPE = 'agent-run-ledger';
 export const AGENT_RUN_LEDGER_PRESET = 'agent-run-ledger';
 export const FEATURE_REQUEST_INBOX_RECIPE = 'feature-request-inbox';
 export const FEATURE_REQUEST_INBOX_PRESET = 'feature-request-inbox';
+export const CHIEF_OF_STAFF_BRIEFING_RECIPE = 'chief-of-staff-briefing';
+export const CHIEF_OF_STAFF_BRIEFING_PRESET = 'chief-of-staff-briefing';
 
 const PRODUCT_COCKPIT_PATTERNS = [
   ['product', /\bproducts?\b/i],
@@ -65,6 +67,14 @@ const ARTIFACT_GALLERY_PATTERNS = [
   ['plans/deploys', /plans?|deploy(?:s|ed|ment)?|runbooks?/i]
 ];
 
+
+const CHIEF_OF_STAFF_BRIEFING_PATTERNS = [
+  ['chief of staff', /\bchief[- ]of[- ]staff\b|\bchief of staff\b/i],
+  ['briefing', /\bbriefing\b|\bexecutive brief\b|\bcontrol brief\b/i],
+  ['top actions', /\btop (three|3) next actions?\b|\bnext actions?\b.*\brisk/i],
+  ['risk flags', /\brisk flags?\b|\bstale\b|\bblocked work\b/i],
+  ['recommended recipe', /\brecommended recipe\b|\brecipe to apply next\b/i]
+];
 
 const FEATURE_REQUEST_INBOX_PATTERNS = [
   ['request inbox', /\b(request|feature) inbox\b|\brequest queue\b|\bintake queue\b/i],
@@ -124,6 +134,7 @@ export function recommendRecipes(input = {}) {
   const atlasReasons = [];
   const runLedgerReasons = [];
   const requestInboxReasons = [];
+  const chiefBriefingReasons = [];
 
   collectMatches(haystack, PRODUCT_COCKPIT_PATTERNS, productReasons);
   collectMatches(haystack, EDITORIAL_LEDGER_PATTERNS, editorialReasons);
@@ -134,6 +145,7 @@ export function recommendRecipes(input = {}) {
   collectMatches(haystack, AGENTSITE_ATLAS_PATTERNS, atlasReasons);
   collectMatches(haystack, AGENT_RUN_LEDGER_PATTERNS, runLedgerReasons);
   collectMatches(haystack, FEATURE_REQUEST_INBOX_PATTERNS, requestInboxReasons);
+  collectMatches(haystack, CHIEF_OF_STAFF_BRIEFING_PATTERNS, chiefBriefingReasons);
 
   const proofArtifacts = Array.isArray(input.proofArtifacts) ? input.proofArtifacts : [];
   if (proofArtifacts.length >= 2) {
@@ -143,6 +155,7 @@ export function recommendRecipes(input = {}) {
   }
   if (proofArtifacts.length > 0) productReasons.push(`proofArtifacts provided (${proofArtifacts.length})`);
   if (/roadmap|next step|improvement|local-first/i.test(haystack)) roadmapReasons.push('roadmap/local-first language detected');
+  if (/requests?.*runs?|runs?.*requests?|orchestrat|maintenance loop/i.test(haystack)) chiefBriefingReasons.push('maintenance-loop synthesis language detected');
 
   const sections = Array.isArray(input.sections) ? input.sections : [];
   for (const section of sections) {
@@ -170,6 +183,7 @@ export function recommendRecipes(input = {}) {
   const atlasUnique = [...new Set(atlasReasons)];
   const runLedgerUnique = [...new Set(runLedgerReasons)];
   const requestInboxUnique = [...new Set(requestInboxReasons)];
+  const chiefBriefingUnique = [...new Set(chiefBriefingReasons)];
 
   // Prefer one full-page archetype. Editorial-ledger wins when narrative/provenance/claim-ledger
   // signals dominate; product-cockpit wins for operational/tool/control-plane signals.
@@ -220,6 +234,11 @@ export function recommendRecipes(input = {}) {
     reasons.push(...requestInboxUnique.map((reason) => `${FEATURE_REQUEST_INBOX_RECIPE}: ${reason}`));
   }
 
+  if (chiefBriefingUnique.length > 0) {
+    selectedRecipes.push(CHIEF_OF_STAFF_BRIEFING_RECIPE);
+    reasons.push(...chiefBriefingUnique.map((reason) => `${CHIEF_OF_STAFF_BRIEFING_RECIPE}: ${reason}`));
+  }
+
   const uniqueReasons = [...new Set(reasons)];
   const selected = selectedRecipes.length > 0;
   const archetype = selectedRecipes.includes(EDITORIAL_LEDGER_RECIPE)
@@ -245,7 +264,9 @@ export function recommendRecipes(input = {}) {
                   ? AGENT_RUN_LEDGER_PRESET
                   : selectedRecipes.includes(FEATURE_REQUEST_INBOX_RECIPE)
                     ? FEATURE_REQUEST_INBOX_PRESET
-                    : '';
+                    : selectedRecipes.includes(CHIEF_OF_STAFF_BRIEFING_RECIPE)
+                      ? CHIEF_OF_STAFF_BRIEFING_PRESET
+                      : '';
   return {
     selectedRecipes,
     archetype,

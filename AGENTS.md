@@ -36,6 +36,8 @@ npm run check:contract
 npm run check:claims
 npm run check:seo
 npm run check:links
+npm run build:briefing
+npm run check:briefing
 npm run build
 ```
 
