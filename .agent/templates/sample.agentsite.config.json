@@ -3,6 +3,8 @@
   "repo": "harbor-notes-agentsite",
   "owner": "castiliad",
   "description": "A calm launch page for Harbor Notes, a tiny field-journal workflow for solo operators who need decisions, receipts, and next actions in one durable place.",
+  "heroHeadline": "Harbor Notes turns messy calls into durable next actions",
+  "heroLede": "A calm proof-of-concept for consultants and fractional operators who need decisions, receipts, and owners captured without a heavy project-management rollout.",
   "brief": "Create a restrained, premium static landing page for Harbor Notes: a disposable but polished proof-of-concept for independent consultants and fractional operators who capture messy meeting notes, extract decisions, and hand off a clear next-action log. The site should feel specific, trustworthy, and operational rather than hype-driven.",
   "primaryCtaLabel": "Review the Harbor Notes brief",
   "primaryCtaHref": "#brief-shape",
@@ -15,16 +17,19 @@
   "sections": [
     {
       "id": "brief-shape",
+      "navLabel": "Workflow",
       "title": "From meeting residue to a reliable action log",
       "body": "Harbor Notes is framed around the moment after a client call: rough notes, uncertain owners, and decisions that need to become a durable handoff without turning into a full project-management rollout."
     },
     {
       "id": "operator-fit",
+      "navLabel": "Operators",
       "title": "Made for operators who sell clarity",
       "body": "The page speaks to consultants and fractional leaders who need a credible way to show that decisions were captured, next steps were named, and the source material remains available for review."
     },
     {
       "id": "workflow-proof",
+      "navLabel": "Guardrails",
       "title": "Proof is the workflow, not inflated outcomes",
       "body": "The site should point to observable artifacts: a brief, a contract, QA commands, and a deployable static repository. It should not invent customers, revenue impact, adoption counts, or guaranteed productivity gains."
     }

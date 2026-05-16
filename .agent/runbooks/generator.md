@@ -40,10 +40,11 @@ npm run qa
 
 Supported JSON fields:
 - `name`, `repo`, `owner`, `description`, `brief`
+- `heroHeadline`, `heroLede`: optional visible hero copy overrides; without them the generator derives concise, user-facing copy instead of reusing raw instruction text
 - `primaryCtaLabel`, `primaryCtaHref`
 - `audience`: string array
 - `visualDirection`: string
-- `sections`: array of `{ "id", "title", "body" }`; ids must start with a lowercase letter and use lowercase letters, numbers, and dashes
+- `sections`: array of `{ "id", "title", "body", "navLabel" }`; ids must start with a lowercase letter and use lowercase letters, numbers, and dashes; `navLabel` is optional and should be short
 - `proofArtifacts`: array of `{ "label", "body" }`
 - `allowedClaims`, `forbiddenClaims`, `approvalRequired`: string arrays
 

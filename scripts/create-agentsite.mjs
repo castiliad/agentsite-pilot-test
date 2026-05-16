@@ -30,6 +30,8 @@ const visualDirection = present(args.visualDirection) ? cleanText(args.visualDir
 const primaryCtaLabel = present(args.primaryCtaLabel) ? cleanText(args.primaryCtaLabel, 'primaryCtaLabel') : 'Review next step';
 const primaryCtaHref = present(args.primaryCtaHref) ? cleanHref(args.primaryCtaHref) : '#cta';
 const sections = normalizeSections(args.sections, brief, audience);
+const heroHeadline = present(args.heroHeadline) ? cleanText(args.heroHeadline, 'heroHeadline') : defaultHeroHeadline(projectName, description, brief, sections);
+const heroLede = present(args.heroLede) ? cleanText(args.heroLede, 'heroLede') : defaultHeroLede(brief, description, projectName);
 const proofArtifacts = normalizeProofArtifacts(args.proofArtifacts);
 const allowedClaims = normalizeStringArray(args.allowedClaims, 'allowedClaims', [
   'Static GitHub Pages delivery',
@@ -77,7 +79,8 @@ const view = {
   OWNER_REPO: `${owner}/${repoName}`,
   TODAY: today,
   EXPECT_TEXT: projectName,
-  HERO: `${projectName}: ${description}`,
+  HERO: heroHeadline,
+  HERO_LEDE: heroLede,
   PRIMARY_CTA_LABEL: primaryCtaLabel,
   PRIMARY_CTA_HREF: primaryCtaHref,
   AUDIENCE_LIST_MD: mdList(audience),
@@ -156,12 +159,12 @@ else {
 }
 
 function buildIndexAstro() {
-  const navLinks = sections.slice(0, 3).map((section) => `<a href="#${attr(section.id)}">${escapeHtml(shortTitle(section.title))}</a>`).join('');
+  const navLinks = sections.slice(0, 3).map((section) => `<a href="#${attr(section.id)}">${escapeHtml(section.navLabel)}</a>`).join('');
   const audienceItems = audience.map((item) => `<li>${escapeHtml(item)}</li>`).join('\n');
   const sectionHtml = sections.map((section, index) => `\n    <section class="section content-section" id="${attr(section.id)}">\n      <div class="section-kicker">${String(index + 1).padStart(2, '0')} · ${escapeHtml(section.id.replaceAll('-', ' '))}</div>\n      <h2>${escapeHtml(section.title)}</h2>\n      <p>${escapeHtml(section.body)}</p>\n    </section>`).join('\n');
   const proofHtml = proofArtifacts.map((item) => `<article><h3>${escapeHtml(item.label)}</h3><p>${escapeHtml(item.body)}</p></article>`).join('\n');
   const claimHtml = allowedClaims.slice(0, 4).map((claim) => `<p><span>${escapeHtml(claim.split(/\s+/).slice(0, 2).join(' '))}</span> ${escapeHtml(claim)}</p>`).join('\n');
-  return `---\nimport BaseLayout from '../layouts/BaseLayout.astro';\nimport '../styles/global.css';\n---\n<BaseLayout title="${attr(projectName)}" description="${attr(description)}">\n  <main>\n    <section class="hero" id="top">\n      <nav class="nav" aria-label="Primary navigation">\n        <a class="brand" href="#top" aria-label="${attr(projectName)} home"><span class="brand-mark">${escapeHtml(projectName.slice(0, 1).toUpperCase())}</span><span>${escapeHtml(projectName)}</span></a>\n        <div class="nav-links">${navLinks}<a href="#proof">Proof</a></div>\n      </nav>\n      <div class="hero-grid">\n        <div class="hero-copy">\n          <p class="eyebrow">Static AgentSite · GitHub Pages · no-payment mode</p>\n          <h1>${escapeHtml(description.replace(/\.$/, ''))}</h1>\n          <p class="hero-lede">${escapeHtml(brief)}</p>\n          <div class="hero-actions"><a class="button primary" href="${attr(primaryCtaHref)}">${escapeHtml(primaryCtaLabel)}</a><a class="button secondary" href="${attr(repoUrl)}">View source</a></div>\n        </div>\n        <aside class="terminal-card" aria-label="Project summary"><div class="terminal-top"><span></span><span></span><span></span><strong>agentsite/status</strong></div><div class="terminal-body">${claimHtml}</div></aside>\n      </div>\n    </section>\n\n    <section class="section audience" id="brief"><div class="section-kicker">Audience</div><h2>Built for the people named in the brief</h2><ul>${audienceItems}</ul></section>${sectionHtml}\n\n    <section class="section cards" id="proof"><div class="section-kicker">Proof artifacts</div><h2>Evidence this site can safely maintain</h2><div class="card-grid">${proofHtml}</div></section>\n\n    <section class="section cta" id="cta"><div><div class="section-kicker">Next step</div><h2>${escapeHtml(primaryCtaLabel)}</h2><p>Use the repository contracts and QA commands before changing claims, scope, payments, analytics, or deployment settings.</p></div><a class="button primary" href="${attr(primaryCtaHref)}">${escapeHtml(primaryCtaLabel)}</a></section>\n  </main>\n</BaseLayout>\n`;
+  return `---\nimport BaseLayout from '../layouts/BaseLayout.astro';\nimport '../styles/global.css';\n---\n<BaseLayout title="${attr(projectName)}" description="${attr(description)}">\n  <main>\n    <section class="hero" id="top">\n      <nav class="nav" aria-label="Primary navigation">\n        <a class="brand" href="#top" aria-label="${attr(projectName)} home"><span class="brand-mark">${escapeHtml(projectName.slice(0, 1).toUpperCase())}</span><span>${escapeHtml(projectName)}</span></a>\n        <div class="nav-links">${navLinks}<a href="#proof">Proof</a></div>\n      </nav>\n      <div class="hero-grid">\n        <div class="hero-copy">\n          <p class="eyebrow">Static AgentSite · GitHub Pages · no-payment mode</p>\n          <h1>${escapeHtml(heroHeadline.replace(/\.$/, ''))}</h1>\n          <p class="hero-lede">${escapeHtml(heroLede)}</p>\n          <div class="hero-actions"><a class="button primary" href="${attr(primaryCtaHref)}">${escapeHtml(primaryCtaLabel)}</a><a class="button secondary" href="${attr(repoUrl)}">View source</a></div>\n        </div>\n        <aside class="terminal-card" aria-label="Project summary"><div class="terminal-top"><span></span><span></span><span></span><strong>agentsite/status</strong></div><div class="terminal-body">${claimHtml}</div></aside>\n      </div>\n    </section>\n\n    <section class="section audience" id="brief"><div class="section-kicker">Audience</div><h2>Built for the people named in the brief</h2><ul>${audienceItems}</ul></section>${sectionHtml}\n\n    <section class="section cards" id="proof"><div class="section-kicker">Proof artifacts</div><h2>Evidence this site can safely maintain</h2><div class="card-grid">${proofHtml}</div></section>\n\n    <section class="section cta" id="cta"><div><div class="section-kicker">Next step</div><h2>${escapeHtml(primaryCtaLabel)}</h2><p>Use the repository contracts and QA commands before changing claims, scope, payments, analytics, or deployment settings.</p></div><a class="button primary" href="${attr(primaryCtaHref)}">${escapeHtml(primaryCtaLabel)}</a></section>\n  </main>\n</BaseLayout>\n`;
 }
 
 function buildGlobalCss() {
@@ -245,7 +248,8 @@ function normalizeSections(value, fallbackBrief, fallbackAudience) {
     return {
       id,
       title: cleanText(section.title, `sections[${index}].title`),
-      body: cleanText(section.body, `sections[${index}].body`)
+      body: cleanText(section.body, `sections[${index}].body`),
+      navLabel: present(section.navLabel) ? cleanText(section.navLabel, `sections[${index}].navLabel`) : shortNavLabel(section.title, id)
     };
   });
 }
@@ -319,8 +323,59 @@ function attr(value) {
   return escapeHtml(value);
 }
 
-function shortTitle(title) {
-  return title.length > 18 ? `${title.slice(0, 16).trim()}…` : title;
+function shortNavLabel(title, id) {
+  const phrase = String(title)
+    .replace(/[.…]+/g, '')
+    .split(/[:;—–-]/)[0]
+    .trim();
+  if (phrase && phrase.length <= 18) return phrase;
+  const stop = new Set(['a', 'an', 'and', 'are', 'for', 'from', 'in', 'into', 'is', 'of', 'on', 'the', 'to', 'who', 'with']);
+  const words = phrase.split(/\s+/).filter((word) => word && !stop.has(word.toLowerCase()));
+  const picked = [];
+  for (const word of words) {
+    const next = [...picked, word].join(' ');
+    if (next.length > 18) break;
+    picked.push(word);
+    if (picked.length === 3) break;
+  }
+  return picked.join(' ') || id.replaceAll('-', ' ');
+}
+
+function defaultHeroHeadline(name, desc, sourceBrief, siteSections) {
+  const candidate = userFacingSummary(desc, name, 58) || userFacingSummary(siteSections[0]?.title, name, 58) || userFacingSummary(sourceBrief, name, 58) || 'Static site with guardrails';
+  const headline = candidate.toLowerCase().includes(name.toLowerCase()) ? candidate : `${name}: ${candidate}`;
+  return conciseText(headline, 92);
+}
+
+function defaultHeroLede(sourceBrief, desc, name) {
+  return userFacingSummary(sourceBrief, name, 150) || userFacingSummary(desc, name, 150) || `${name} is a static AgentSite with contracts, QA, and GitHub Pages deployment evidence.`;
+}
+
+function userFacingSummary(value, name, limit) {
+  if (!present(value)) return '';
+  let text = cleanInstructionCopy(String(value));
+  if (/^create\b/i.test(text)) text = '';
+  if (!text) return '';
+  return conciseText(text.replace(/\.$/, ''), limit);
+}
+
+function cleanInstructionCopy(value) {
+  return String(value)
+    .replace(/\s+/g, ' ')
+    .trim()
+    .replace(/^(create|build|design|make|generate)\s+(a|an|the)?\s*/i, '')
+    .replace(/^static landing page for\s+/i, '')
+    .replace(/^landing page for\s+/i, '')
+    .replace(/^(.*?):\s*/, '$1 is ')
+    .trim();
+}
+
+function conciseText(value, limit) {
+  const text = String(value).replace(/[.…]+/g, '').trim();
+  if (text.length <= limit) return text;
+  const cut = text.slice(0, limit + 1);
+  const boundary = Math.max(cut.lastIndexOf(' '), cut.lastIndexOf(','), cut.lastIndexOf(';'));
+  return text.slice(0, boundary > 42 ? boundary : limit).trim();
 }
 
 function slug(value) {
