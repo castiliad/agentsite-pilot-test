@@ -99,6 +99,17 @@
     ]
   },
   {
+    "title": "Primary Surface Layout",
+    "type": "recipe",
+    "href": "#proof",
+    "summary": "Places the selected primary functional module immediately after the hero/context",
+    "tags": [
+      "primary-surface-layout",
+      "section-recipe",
+      "recipe"
+    ]
+  },
+  {
     "title": "Product Cockpit",
     "type": "recipe",
     "href": "#proof",

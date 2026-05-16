@@ -92,7 +92,7 @@
   {
     "id": "req-005",
     "title": "Generate a site-specific chief-of-staff briefing",
-    "status": "in_progress",
+    "status": "done",
     "priority": "high",
     "source": "Layer 8",
     "summary": "Generate a compact static chief-of-staff briefing from atlas, runs, requests, roadmap, and search index data.",
@@ -110,6 +110,31 @@
     "verification": [
       "npm run build:briefing",
       "npm run check:briefing",
+      "npm run qa:full",
+      "npm run verify:deploy"
+    ],
+    "nextAction": "Use briefing as candidate primary surface for layout recipe."
+  },
+  {
+    "id": "req-006",
+    "title": "Keep the primary module above supporting surfaces",
+    "status": "in_progress",
+    "priority": "high",
+    "source": "Layer 9",
+    "summary": "Dense composed pages bury the functional module visitors came to use; add a primary-first layout with collapsible supporting modules.",
+    "acceptance": [
+      "primary surface appears before secondary modules",
+      "secondary modules use accessible details/summary wrappers",
+      "layout QA validates placement"
+    ],
+    "recipeCandidates": [
+      "primary-surface-layout",
+      "chief-of-staff-briefing",
+      "feature-request-inbox",
+      "agent-run-ledger"
+    ],
+    "verification": [
+      "npm run check:layout",
       "npm run qa:full",
       "npm run verify:deploy"
     ],

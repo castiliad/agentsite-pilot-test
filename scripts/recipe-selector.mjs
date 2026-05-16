@@ -18,6 +18,8 @@ export const FEATURE_REQUEST_INBOX_RECIPE = 'feature-request-inbox';
 export const FEATURE_REQUEST_INBOX_PRESET = 'feature-request-inbox';
 export const CHIEF_OF_STAFF_BRIEFING_RECIPE = 'chief-of-staff-briefing';
 export const CHIEF_OF_STAFF_BRIEFING_PRESET = 'chief-of-staff-briefing';
+export const PRIMARY_SURFACE_LAYOUT_RECIPE = 'primary-surface-layout';
+export const PRIMARY_SURFACE_LAYOUT_PRESET = 'primary-surface-layout';
 
 const PRODUCT_COCKPIT_PATTERNS = [
   ['product', /\bproducts?\b/i],
@@ -67,6 +69,13 @@ const ARTIFACT_GALLERY_PATTERNS = [
   ['plans/deploys', /plans?|deploy(?:s|ed|ment)?|runbooks?/i]
 ];
 
+
+const PRIMARY_SURFACE_LAYOUT_PATTERNS = [
+  ['primary surface', /\bprimary[- ]surface\b|\bprimary module\b|\bprimary task\b/i],
+  ['module priority', /\bmodule priority\b|\bpriority layout\b|\bprimary[- ]first\b/i],
+  ['collapsible', /\bcollaps(?:e|ible|ing)\b|\bdetails\/summary\b/i],
+  ['buried module', /\bbury(?:ing|ied)?\b|\btoo dense\b|\bdense composed\b/i]
+];
 
 const CHIEF_OF_STAFF_BRIEFING_PATTERNS = [
   ['chief of staff', /\bchief[- ]of[- ]staff\b|\bchief of staff\b/i],
@@ -135,6 +144,7 @@ export function recommendRecipes(input = {}) {
   const runLedgerReasons = [];
   const requestInboxReasons = [];
   const chiefBriefingReasons = [];
+  const primarySurfaceReasons = [];
 
   collectMatches(haystack, PRODUCT_COCKPIT_PATTERNS, productReasons);
   collectMatches(haystack, EDITORIAL_LEDGER_PATTERNS, editorialReasons);
@@ -146,6 +156,7 @@ export function recommendRecipes(input = {}) {
   collectMatches(haystack, AGENT_RUN_LEDGER_PATTERNS, runLedgerReasons);
   collectMatches(haystack, FEATURE_REQUEST_INBOX_PATTERNS, requestInboxReasons);
   collectMatches(haystack, CHIEF_OF_STAFF_BRIEFING_PATTERNS, chiefBriefingReasons);
+  collectMatches(haystack, PRIMARY_SURFACE_LAYOUT_PATTERNS, primarySurfaceReasons);
 
   const proofArtifacts = Array.isArray(input.proofArtifacts) ? input.proofArtifacts : [];
   if (proofArtifacts.length >= 2) {
@@ -156,6 +167,7 @@ export function recommendRecipes(input = {}) {
   if (proofArtifacts.length > 0) productReasons.push(`proofArtifacts provided (${proofArtifacts.length})`);
   if (/roadmap|next step|improvement|local-first/i.test(haystack)) roadmapReasons.push('roadmap/local-first language detected');
   if (/requests?.*runs?|runs?.*requests?|orchestrat|maintenance loop/i.test(haystack)) chiefBriefingReasons.push('maintenance-loop synthesis language detected');
+  if (/briefing|requests?|runs?|atlas|search|roadmap|artifacts?/i.test(haystack) && /first|top|primary|collapse|dense|buried/i.test(haystack)) primarySurfaceReasons.push('primary-module layout language detected');
 
   const sections = Array.isArray(input.sections) ? input.sections : [];
   for (const section of sections) {
@@ -184,6 +196,7 @@ export function recommendRecipes(input = {}) {
   const runLedgerUnique = [...new Set(runLedgerReasons)];
   const requestInboxUnique = [...new Set(requestInboxReasons)];
   const chiefBriefingUnique = [...new Set(chiefBriefingReasons)];
+  const primarySurfaceUnique = [...new Set(primarySurfaceReasons)];
 
   // Prefer one full-page archetype. Editorial-ledger wins when narrative/provenance/claim-ledger
   // signals dominate; product-cockpit wins for operational/tool/control-plane signals.
@@ -239,6 +252,11 @@ export function recommendRecipes(input = {}) {
     reasons.push(...chiefBriefingUnique.map((reason) => `${CHIEF_OF_STAFF_BRIEFING_RECIPE}: ${reason}`));
   }
 
+  if (primarySurfaceUnique.length > 0) {
+    selectedRecipes.push(PRIMARY_SURFACE_LAYOUT_RECIPE);
+    reasons.push(...primarySurfaceUnique.map((reason) => `${PRIMARY_SURFACE_LAYOUT_RECIPE}: ${reason}`));
+  }
+
   const uniqueReasons = [...new Set(reasons)];
   const selected = selectedRecipes.length > 0;
   const archetype = selectedRecipes.includes(EDITORIAL_LEDGER_RECIPE)
@@ -266,7 +284,9 @@ export function recommendRecipes(input = {}) {
                     ? FEATURE_REQUEST_INBOX_PRESET
                     : selectedRecipes.includes(CHIEF_OF_STAFF_BRIEFING_RECIPE)
                       ? CHIEF_OF_STAFF_BRIEFING_PRESET
-                      : '';
+                      : selectedRecipes.includes(PRIMARY_SURFACE_LAYOUT_RECIPE)
+                        ? PRIMARY_SURFACE_LAYOUT_PRESET
+                        : '';
   return {
     selectedRecipes,
     archetype,

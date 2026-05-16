@@ -1,0 +1,73 @@
+id: primary-surface-layout
+name: Primary Surface Layout
+version: 0.1.0
+status: experimental
+kind: section_recipe
+section_recipe: primary-surface-layout
+visual_preset: primary-surface-layout
+summary: >
+  Places the selected primary functional module immediately after the hero/context
+  and folds secondary modules into accessible details/summary panels so dense
+  composed AgentSites do not bury the page's main job-to-be-done.
+best_for:
+  - AgentSites with multiple functional section recipes enabled.
+  - Chief-of-staff briefing, request inbox, run ledger, atlas, search, roadmap, or artifact-first pages.
+  - Composed proof sites where the primary surface was previously buried.
+not_for:
+  - One-module sites where collapsing content adds friction.
+  - Narrative/editorial pages where all sections should be read in order.
+composable_with:
+  - chief-of-staff-briefing
+  - feature-request-inbox
+  - agent-run-ledger
+  - agentsite-atlas
+  - search-index
+  - roadmap-board
+  - artifact-gallery
+inputs:
+  required:
+    - primary surface id or inferred primary recipe
+  optional:
+    - secondary module list
+    - collapsible module labels
+sections:
+  - id: secondary-modules
+    purpose: Collapsible supporting surfaces that keep the primary module prominent.
+static_safety:
+  required:
+    - Use semantic details/summary HTML and keep modules static.
+    - Primary module must appear before secondary module wrappers.
+    - Collapsing is presentation only; it must not hide required legal/safety boundaries.
+  forbidden:
+    - Client-side state that implies repository changes.
+    - Hiding approval boundaries, payment status, or public-safety caveats.
+    - Adding analytics, tracking, auth, live sync, telemetry, or database-backed personalization.
+approval_required:
+  - Hiding any content required by contracts or legal/compliance review.
+  - Introducing persistence, analytics, server runtime, auth, or database behavior.
+acceptance_files:
+  readme: README.md
+  checklist: acceptance.md
+scoring:
+  pass_threshold: 80
+  criteria:
+    - id: primary-placement
+      label: Primary placement
+      weight: 30
+      question: Does the selected primary module appear before secondary modules and generic proof?
+    - id: density-reduction
+      label: Density reduction
+      weight: 25
+      question: Are supporting modules collapsed or de-emphasized without becoming inaccessible?
+    - id: accessibility
+      label: Accessibility
+      weight: 20
+      question: Does the layout use keyboard-accessible semantic controls?
+    - id: static-safety
+      label: Static safety
+      weight: 15
+      question: Does the layout avoid hidden unsafe claims, live data, auth, tracking, and persistence claims?
+    - id: qa
+      label: QA validation
+      weight: 10
+      question: Does a repo-local layout check validate primary placement?

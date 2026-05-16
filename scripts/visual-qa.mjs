@@ -111,6 +111,8 @@ async function auditViewport(browser, viewport) {
   const anchorFailures = await checkInternalAnchors(page, viewport.name);
   failures.push(...anchorFailures);
 
+  await openSecondaryModules(page);
+
   const artifactFailures = await checkArtifactGallery(page, viewport.name);
   failures.push(...artifactFailures);
 
@@ -134,6 +136,12 @@ async function auditViewport(browser, viewport) {
 
   await page.close();
   return { failures, screenshotPath };
+}
+
+async function openSecondaryModules(page) {
+  await page.$$eval('[data-secondary-module]', (modules) => {
+    for (const module of modules) module.setAttribute('open', '');
+  }).catch(() => {});
 }
 
 async function expectVisible(page, selector, label, failures, minimum) {

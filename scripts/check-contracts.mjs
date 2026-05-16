@@ -38,6 +38,9 @@ const required = [
   '.agent/recipes/chief-of-staff-briefing/recipe.yaml',
   '.agent/recipes/chief-of-staff-briefing/README.md',
   '.agent/recipes/chief-of-staff-briefing/acceptance.md',
+  '.agent/recipes/primary-surface-layout/recipe.yaml',
+  '.agent/recipes/primary-surface-layout/README.md',
+  '.agent/recipes/primary-surface-layout/acceptance.md',
   '.hermes/plans/initial-site-build.md'
 ];
 

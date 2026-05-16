@@ -40,7 +40,8 @@ if (fs.existsSync(recipeRoot)) {
             : id === 'agent-run-ledger' ? (hasSection('runs', 'AgentRunLedger') ? '#runs' : '#proof')
               : id === 'feature-request-inbox' ? (hasSection('requests', 'FeatureRequestInbox') ? '#requests' : '#proof')
                 : id === 'chief-of-staff-briefing' ? (hasSection('briefing', 'ChiefOfStaffBriefing') ? '#briefing' : '#proof')
-                  : '#proof';
+                  : id === 'primary-surface-layout' ? (hasSection('secondary-modules') ? '#secondary-modules' : '#proof')
+                    : '#proof';
     push({ title: name, type: 'recipe', href, summary, tags: [id, kind, 'recipe'] });
   }
 }

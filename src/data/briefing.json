@@ -10,9 +10,9 @@
       "href": "#requests"
     },
     {
-      "title": "Generate a site-specific chief-of-staff briefing",
-      "rationale": "Generate a compact static chief-of-staff briefing from atlas, runs, requests, roadmap, and search index data. Next: Publish proof and back-port generator support.",
-      "source": "request:req-005",
+      "title": "Keep the primary module above supporting surfaces",
+      "rationale": "Dense composed pages bury the functional module visitors came to use; add a primary-first layout with collapsible supporting modules. Next: Publish proof and back-port generator support.",
+      "source": "request:req-006",
       "href": "#requests"
     },
     {
@@ -30,9 +30,9 @@
       "href": "#roadmap"
     },
     {
-      "title": "Layer 8: chief-of-staff briefing",
+      "title": "Layer 9: primary surface layout",
       "rationale": "Run status is draft; deploy or verification may still need curation.",
-      "source": "run:layer-8-chief-of-staff-briefing",
+      "source": "run:layer-9-primary-surface-layout",
       "href": "#runs"
     }
   ],
@@ -64,6 +64,12 @@
   ],
   "recentWins": [
     {
+      "title": "Layer 8: chief-of-staff briefing",
+      "rationale": "Added generated static chief-of-staff briefing for top actions, risk flags, stale work, wins, and next recipe recommendation.",
+      "source": "run:layer-8-chief-of-staff-briefing",
+      "href": "#runs"
+    },
+    {
       "title": "Layer 7: feature request inbox",
       "rationale": "Added public-safe feature-request inbox with status, priority, acceptance criteria, recipe candidates, verification plan, and next action.",
       "source": "run:layer-7-feature-request-inbox",
@@ -73,12 +79,6 @@
       "title": "Layer 6: agent run ledger",
       "rationale": "Added public-safe static run ledger for orchestration decisions, delegated work, checks, deploy evidence, and next actions.",
       "source": "run:layer-6-agent-run-ledger",
-      "href": "#runs"
-    },
-    {
-      "title": "Layer 5: AgentSite Atlas",
-      "rationale": "Added searchable public directory of generated proof sites and recipe coverage.",
-      "source": "run:layer-5-agentsite-atlas",
       "href": "#runs"
     }
   ],
@@ -94,7 +94,7 @@
   "evidenceSources": [
     {
       "label": "Requests",
-      "count": 5,
+      "count": 6,
       "href": "#requests"
     },
     {
@@ -104,7 +104,7 @@
     },
     {
       "label": "Runs",
-      "count": 8,
+      "count": 9,
       "href": "#runs"
     },
     {
@@ -114,7 +114,7 @@
     },
     {
       "label": "Search index",
-      "count": 39,
+      "count": 40,
       "href": "#search"
     }
   ]

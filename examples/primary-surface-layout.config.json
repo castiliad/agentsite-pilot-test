@@ -1,0 +1,87 @@
+{
+  "name": "Primary Surface Layout",
+  "repo": "agentsite-primary-surface-example",
+  "owner": "castiliad",
+  "description": "A static AgentSite layout proof that keeps the primary functional module first and collapses secondary modules.",
+  "brief": "Create a static GitHub Pages site that demonstrates a primary-surface layout for dense AgentSite compositions. The chief-of-staff briefing should appear first after the hero, while supporting modules such as requests, runs, atlas, search, roadmap, and artifacts remain available as collapsible secondary sections. It must not add live monitoring, private tickets, raw chats, auth, analytics, persistence claims, telemetry, or a database.",
+  "heroHeadline": "A primary-first layout for dense AgentSite control pages",
+  "heroLede": "The page keeps the chief-of-staff briefing as the main decision surface and folds supporting modules into accessible secondary panels.",
+  "primaryCtaLabel": "Review primary briefing",
+  "primaryCtaHref": "#briefing",
+  "primarySurface": "briefing",
+  "audience": [
+    "AgentSite maintainers",
+    "Autonomous orchestrators",
+    "Technical reviewers evaluating dense static control pages"
+  ],
+  "visualDirection": "dark cockpit primary briefing with collapsible supporting modules",
+  "recipes": [
+    "product-cockpit",
+    "primary-surface-layout",
+    "chief-of-staff-briefing",
+    "feature-request-inbox",
+    "agent-run-ledger",
+    "agentsite-atlas",
+    "search-index",
+    "artifact-gallery",
+    "roadmap-board",
+    "copy-evidence-strip"
+  ],
+  "visualPreset": "cockpit-dark",
+  "sections": [
+    {
+      "id": "primary-first",
+      "navLabel": "Primary",
+      "title": "Primary modules should not be buried",
+      "body": "The selected surface appears before secondary modules so the page starts with the user's actual task."
+    },
+    {
+      "id": "supporting-modules",
+      "navLabel": "Support",
+      "title": "Supporting surfaces stay reachable",
+      "body": "Secondary modules remain accessible through semantic collapsible sections instead of expanding the whole page by default."
+    },
+    {
+      "id": "layout-boundaries",
+      "navLabel": "Boundaries",
+      "title": "Collapsing is layout, not data behavior",
+      "body": "The layout does not add persistence, auth, analytics, live sync, telemetry, private data, or database behavior."
+    }
+  ],
+  "proofArtifacts": [
+    {
+      "label": "Layout recipe",
+      "body": ".agent/recipes/primary-surface-layout documents primary-first composition rules."
+    },
+    {
+      "label": "Layout check",
+      "body": "scripts/check-layout.mjs validates primary module placement and secondary module wrappers."
+    },
+    {
+      "label": "Primary briefing",
+      "body": "src/components/ChiefOfStaffBriefing.astro renders first while secondary modules remain available."
+    }
+  ],
+  "allowedClaims": [
+    "Static GitHub Pages delivery",
+    "Primary functional module appears before supporting modules",
+    "Repo-local QA scripts validate primary-surface layout",
+    "Payment disabled / no-payment mode"
+  ],
+  "forbiddenClaims": [
+    "fake customer endorsements",
+    "fake metrics",
+    "unsupported guarantees",
+    "analytics or tracking",
+    "live payment links",
+    "private tickets",
+    "raw chats",
+    "live monitoring"
+  ],
+  "approvalRequired": [
+    "Adding analytics, cookies, tracking pixels, or third-party forms",
+    "Adding payment links or enabling payment mode",
+    "Hiding approval boundaries, no-payment mode, or public-safety caveats",
+    "Adding live monitoring, server runtime, authentication, telemetry, persistence, or a database"
+  ]
+}
