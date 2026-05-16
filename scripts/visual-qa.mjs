@@ -120,6 +120,9 @@ async function auditViewport(browser, viewport) {
   const searchIndexFailures = await checkSearchIndex(page, viewport.name);
   failures.push(...searchIndexFailures);
 
+  const atlasFailures = await checkAgentSiteAtlas(page, viewport.name);
+  failures.push(...atlasFailures);
+
   await page.close();
   return { failures, screenshotPath };
 }
@@ -260,6 +263,30 @@ async function checkSearchIndex(page, viewportName) {
     await page.waitForTimeout(80);
     const recipeVisible = await page.locator('[data-search-card]:visible').count();
     if (recipeVisible < 1) failures.push(`${viewportName}: search recipe filter did not leave any cards visible`);
+  }
+  return failures;
+}
+
+async function checkAgentSiteAtlas(page, viewportName) {
+  const failures = [];
+  const atlasCount = await page.locator('[data-agentsite-atlas]').count();
+  if (!atlasCount) return failures;
+  await expectVisible(page, '[data-atlas-search]', `${viewportName}: atlas search`, failures, { minWidth: 160, minHeight: 34 });
+  await expectVisible(page, '[data-atlas-recipe="all"]', `${viewportName}: atlas all filter`, failures, { minWidth: 70, minHeight: 34 });
+  const cardCount = await page.locator('[data-atlas-card]').count();
+  if (cardCount < 3) failures.push(`${viewportName}: atlas should render at least 3 proof-site cards; found ${cardCount}`);
+  const search = page.locator('[data-atlas-search]').first();
+  await search.fill('roadmap');
+  await page.waitForTimeout(80);
+  const searchVisible = await page.locator('[data-atlas-card]:visible').count();
+  if (searchVisible < 1) failures.push(`${viewportName}: atlas search did not leave any roadmap-related cards visible`);
+  await search.fill('');
+  const recipe = page.locator('[data-atlas-recipe="search-index"]').first();
+  if (await recipe.count()) {
+    await recipe.click();
+    await page.waitForTimeout(80);
+    const recipeVisible = await page.locator('[data-atlas-card]:visible').count();
+    if (recipeVisible < 1) failures.push(`${viewportName}: atlas search-index recipe filter did not leave any cards visible`);
   }
   return failures;
 }

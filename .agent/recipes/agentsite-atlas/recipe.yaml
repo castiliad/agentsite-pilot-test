@@ -1,0 +1,70 @@
+id: agentsite-atlas
+name: AgentSite Atlas
+version: 0.1.0
+status: draft
+kind: section_recipe
+section_recipe: agentsite-atlas
+visual_preset: agentsite-atlas
+summary: >
+  A static directory of generated AgentSite proof sites, including live links,
+  repositories, recipe coverage, deploy evidence, layers, and next improvements.
+best_for:
+  - Showing a portfolio/system of generated AgentSites.
+  - Comparing recipe coverage and proof-site progression across layers.
+  - Giving future agents a navigable map of what has already been validated.
+not_for:
+  - Private repo inventory, live GitHub crawling, or authoritative deployment monitoring.
+  - Sites where proof entries have not been verified.
+composable_with:
+  - product-cockpit
+  - artifact-gallery
+  - roadmap-board
+  - search-index
+inputs:
+  required:
+    - proof site name
+    - repo
+    - live URL
+    - deploy run
+    - layer
+    - recipes
+    - next step
+sections:
+  - id: atlas
+    purpose: Browse generated proof sites by recipe and keyword.
+static_safety:
+  required:
+    - Atlas data must be public-safe and manually verified or generated from public repo metadata.
+    - Include only HTTPS live/deploy links and repo owner/name handles.
+    - Validate data shape and blocked language in QA.
+    - Preserve no-payment mode, no analytics, no auth, no server runtime, and no API keys.
+  forbidden:
+    - Fake metrics, fake customers, unsupported guarantees, or unverifiable proof entries.
+    - Private repos, credentials, internal task queues, or private deployment data.
+    - Claiming live monitoring or real-time GitHub inventory unless separately implemented.
+acceptance_files:
+  readme: README.md
+  checklist: acceptance.md
+scoring:
+  pass_threshold: 80
+  criteria:
+    - id: fit
+      label: Brief fit
+      weight: 20
+      question: Does the site need a navigable map of generated proof sites?
+    - id: data-quality
+      label: Atlas data quality
+      weight: 25
+      question: Are proof entries verified, public-safe, and useful for future agents?
+    - id: interaction
+      label: Atlas interaction
+      weight: 20
+      question: Do search and recipe filters work clearly?
+    - id: safety
+      label: Static safety
+      weight: 20
+      question: Does the atlas avoid private data, fake proof, analytics, auth, and live-monitoring claims?
+    - id: maintainability
+      label: Agent maintainability
+      weight: 15
+      question: Can future agents add proof sites by editing JSON and rerunning QA?

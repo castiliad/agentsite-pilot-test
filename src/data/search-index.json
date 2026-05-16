@@ -22,6 +22,17 @@
     ]
   },
   {
+    "title": "AgentSite Atlas",
+    "type": "recipe",
+    "href": "#proof",
+    "summary": "A static directory of generated AgentSite proof sites, including live links,",
+    "tags": [
+      "agentsite-atlas",
+      "section-recipe",
+      "recipe"
+    ]
+  },
+  {
     "title": "Artifact Gallery",
     "type": "recipe",
     "href": "#artifacts",
@@ -332,6 +343,16 @@
     "type": "plan",
     "href": "#proof",
     "summary": "Layer 4: static intelligence search index Goal Add a precomputed public safe search index over AgentSite repo/site intelligence so static sites feel queryable without a backend. Scope Add search index recipe. Add index b",
+    "tags": [
+      "plan",
+      "next-step"
+    ]
+  },
+  {
+    "title": "Layer 5: AgentSite Atlas",
+    "type": "plan",
+    "href": "#proof",
+    "summary": "Layer 5: AgentSite Atlas Add a public safe static directory of generated proof sites with recipe filters, live links, deploy evidence, and next improvements.",
     "tags": [
       "plan",
       "next-step"

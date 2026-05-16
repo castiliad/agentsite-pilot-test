@@ -10,6 +10,8 @@ export const ROADMAP_BOARD_RECIPE = 'roadmap-board';
 export const ROADMAP_BOARD_PRESET = 'roadmap-board';
 export const SEARCH_INDEX_RECIPE = 'search-index';
 export const SEARCH_INDEX_PRESET = 'search-index';
+export const AGENTSITE_ATLAS_RECIPE = 'agentsite-atlas';
+export const AGENTSITE_ATLAS_PRESET = 'agentsite-atlas';
 
 const PRODUCT_COCKPIT_PATTERNS = [
   ['product', /\bproducts?\b/i],
@@ -60,6 +62,13 @@ const ARTIFACT_GALLERY_PATTERNS = [
 ];
 
 
+const AGENTSITE_ATLAS_PATTERNS = [
+  ['atlas/directory', /\batlas\b|\bdirectory\b|\bproof sites?\b/i],
+  ['generated sites', /\bgenerated sites?\b|\bsite map\b|\bsystem map\b/i],
+  ['recipe coverage', /\bcoverage\b|\brecipe coverage\b|\bproof-site\b/i],
+  ['deploy evidence', /\bdeploy evidence\b|\blive links?\b|\brepos?\b/i]
+];
+
 const SEARCH_INDEX_PATTERNS = [
   ['search/index', /\bsearch\b|\bindex\b|\bcommand palette\b/i],
   ['queryable', /\bqueryable\b|\bdiscoverable\b|\bsite brain\b/i],
@@ -94,6 +103,7 @@ export function recommendRecipes(input = {}) {
   const artifactReasons = [];
   const roadmapReasons = [];
   const searchIndexReasons = [];
+  const atlasReasons = [];
 
   collectMatches(haystack, PRODUCT_COCKPIT_PATTERNS, productReasons);
   collectMatches(haystack, EDITORIAL_LEDGER_PATTERNS, editorialReasons);
@@ -101,6 +111,7 @@ export function recommendRecipes(input = {}) {
   collectMatches(haystack, ARTIFACT_GALLERY_PATTERNS, artifactReasons);
   collectMatches(haystack, ROADMAP_BOARD_PATTERNS, roadmapReasons);
   collectMatches(haystack, SEARCH_INDEX_PATTERNS, searchIndexReasons);
+  collectMatches(haystack, AGENTSITE_ATLAS_PATTERNS, atlasReasons);
 
   const proofArtifacts = Array.isArray(input.proofArtifacts) ? input.proofArtifacts : [];
   if (proofArtifacts.length >= 2) {
@@ -134,6 +145,7 @@ export function recommendRecipes(input = {}) {
   const artifactUnique = [...new Set(artifactReasons)];
   const roadmapUnique = [...new Set(roadmapReasons)];
   const searchIndexUnique = [...new Set(searchIndexReasons)];
+  const atlasUnique = [...new Set(atlasReasons)];
 
   // Prefer one full-page archetype. Editorial-ledger wins when narrative/provenance/claim-ledger
   // signals dominate; product-cockpit wins for operational/tool/control-plane signals.
@@ -169,6 +181,11 @@ export function recommendRecipes(input = {}) {
     reasons.push(...searchIndexUnique.map((reason) => `${SEARCH_INDEX_RECIPE}: ${reason}`));
   }
 
+  if (atlasUnique.length > 0) {
+    selectedRecipes.push(AGENTSITE_ATLAS_RECIPE);
+    reasons.push(...atlasUnique.map((reason) => `${AGENTSITE_ATLAS_RECIPE}: ${reason}`));
+  }
+
   const uniqueReasons = [...new Set(reasons)];
   const selected = selectedRecipes.length > 0;
   const archetype = selectedRecipes.includes(EDITORIAL_LEDGER_RECIPE)
@@ -188,7 +205,9 @@ export function recommendRecipes(input = {}) {
             ? ROADMAP_BOARD_PRESET
             : selectedRecipes.includes(SEARCH_INDEX_RECIPE)
               ? SEARCH_INDEX_PRESET
-              : '';
+              : selectedRecipes.includes(AGENTSITE_ATLAS_RECIPE)
+                ? AGENTSITE_ATLAS_PRESET
+                : '';
   return {
     selectedRecipes,
     archetype,

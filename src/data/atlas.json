@@ -1,0 +1,115 @@
+[
+  {
+    "name": "Generator Pilot",
+    "repo": "castiliad/agentsite-pilot-test",
+    "liveUrl": "https://castiliad.github.io/agentsite-pilot-test/",
+    "status": "verified",
+    "archetype": "default-landing",
+    "recipes": [
+      "product-cockpit",
+      "editorial-ledger",
+      "copy-evidence-strip",
+      "artifact-gallery",
+      "roadmap-board",
+      "search-index"
+    ],
+    "layer": 0,
+    "summary": "Source-of-truth generator and workflow repo for AgentSite experiments.",
+    "nextStep": "Continue adding verified static-site capability layers.",
+    "deployRun": "https://github.com/castiliad/agentsite-pilot-test/actions"
+  },
+  {
+    "name": "Product Cockpit Proof",
+    "repo": "castiliad/agentsite-cockpit-generated-20260515212318",
+    "liveUrl": "https://castiliad.github.io/agentsite-cockpit-generated-20260515212318/",
+    "status": "verified",
+    "archetype": "product-cockpit",
+    "recipes": [
+      "product-cockpit"
+    ],
+    "layer": 1,
+    "summary": "Dark cockpit archetype proof for operator/product-reviewer audiences.",
+    "nextStep": "Use for technical product/control-plane sites.",
+    "deployRun": "https://github.com/castiliad/agentsite-cockpit-generated-20260515212318/actions/runs/25951548792"
+  },
+  {
+    "name": "Editorial Ledger Proof",
+    "repo": "castiliad/agentsite-editorial-ledger-generated-20260515234524",
+    "liveUrl": "https://castiliad.github.io/agentsite-editorial-ledger-generated-20260515234524/",
+    "status": "verified",
+    "archetype": "editorial-ledger",
+    "recipes": [
+      "editorial-ledger",
+      "copy-evidence-strip"
+    ],
+    "layer": 1,
+    "summary": "Light editorial memo/ledger archetype proving visual divergence from cockpit layouts.",
+    "nextStep": "Use for credibility-first narratives and provenance-heavy pages.",
+    "deployRun": "https://github.com/castiliad/agentsite-editorial-ledger-generated-20260515234524/actions/runs/25954238138"
+  },
+  {
+    "name": "Evidence Strip Proof",
+    "repo": "castiliad/agentsite-evidence-strip-generated-20260515231333",
+    "liveUrl": "https://castiliad.github.io/agentsite-evidence-strip-generated-20260515231333/",
+    "status": "verified",
+    "archetype": "default-landing",
+    "recipes": [
+      "copy-evidence-strip"
+    ],
+    "layer": 2,
+    "summary": "Claim-to-artifact section recipe for grounding marketing copy in verifiable evidence.",
+    "nextStep": "Keep proof copy tied to real repo artifacts.",
+    "deployRun": "https://github.com/castiliad/agentsite-evidence-strip-generated-20260515231333/actions/runs/25953649546"
+  },
+  {
+    "name": "Artifact Gallery Proof",
+    "repo": "castiliad/agentsite-artifact-gallery-generated-20260516001714",
+    "liveUrl": "https://castiliad.github.io/agentsite-artifact-gallery-generated-20260516001714/",
+    "status": "verified",
+    "archetype": "product-cockpit",
+    "recipes": [
+      "product-cockpit",
+      "artifact-gallery",
+      "copy-evidence-strip"
+    ],
+    "layer": 2,
+    "summary": "Searchable/filterable proof browser backed by static artifact JSON.",
+    "nextStep": "Use for proof-heavy handoff sites.",
+    "deployRun": "https://github.com/castiliad/agentsite-artifact-gallery-generated-20260516001714/actions/runs/25955042348"
+  },
+  {
+    "name": "Roadmap Board Proof",
+    "repo": "castiliad/agentsite-roadmap-board-generated-20260516005337",
+    "liveUrl": "https://castiliad.github.io/agentsite-roadmap-board-generated-20260516005337/",
+    "status": "verified",
+    "archetype": "product-cockpit",
+    "recipes": [
+      "product-cockpit",
+      "roadmap-board",
+      "artifact-gallery",
+      "copy-evidence-strip"
+    ],
+    "layer": 3,
+    "summary": "Local-first roadmap mini app with JSON data, filters, columns, and localStorage status overrides.",
+    "nextStep": "Use for public next-step queues and safe agent-maintained roadmaps.",
+    "deployRun": "https://github.com/castiliad/agentsite-roadmap-board-generated-20260516005337/actions/runs/25955501896"
+  },
+  {
+    "name": "Search Index Proof",
+    "repo": "castiliad/agentsite-search-index-generated-20260516011158",
+    "liveUrl": "https://castiliad.github.io/agentsite-search-index-generated-20260516011158/",
+    "status": "verified",
+    "archetype": "product-cockpit",
+    "recipes": [
+      "product-cockpit",
+      "search-index",
+      "artifact-gallery",
+      "roadmap-board",
+      "copy-evidence-strip"
+    ],
+    "layer": 4,
+    "summary": "Static intelligence pack with precomputed search over public contracts, recipes, artifacts, roadmap items, and plans.",
+    "nextStep": "Use when a site needs queryable public repo intelligence without backend search.",
+    "deployRun": "https://github.com/castiliad/agentsite-search-index-generated-20260516011158/actions/runs/25955852163"
+  }
+]

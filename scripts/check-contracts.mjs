@@ -26,6 +26,9 @@ const required = [
   '.agent/recipes/search-index/recipe.yaml',
   '.agent/recipes/search-index/README.md',
   '.agent/recipes/search-index/acceptance.md',
+  '.agent/recipes/agentsite-atlas/recipe.yaml',
+  '.agent/recipes/agentsite-atlas/README.md',
+  '.agent/recipes/agentsite-atlas/acceptance.md',
   '.hermes/plans/initial-site-build.md'
 ];
 

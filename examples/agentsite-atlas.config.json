@@ -1,0 +1,81 @@
+{
+  "name": "AgentSite Atlas",
+  "repo": "agentsite-atlas-example",
+  "owner": "castiliad",
+  "description": "A static atlas of generated AgentSite proof sites and recipe coverage.",
+  "brief": "Create a static GitHub Pages site that demonstrates an AgentSite Atlas: a searchable directory of generated proof sites, live links, repos, recipe coverage, deploy evidence, layers, and next improvements. It must be public-safe and not claim live monitoring.",
+  "heroHeadline": "A navigable atlas of generated AgentSites",
+  "heroLede": "The page turns scattered proof sites into a public static system map with recipe coverage, deploy links, live URLs, and next improvements.",
+  "primaryCtaLabel": "Browse atlas",
+  "primaryCtaHref": "#atlas",
+  "audience": [
+    "AgentSite maintainers",
+    "Autonomous improvement agents",
+    "Technical reviewers evaluating generated-site systems"
+  ],
+  "visualDirection": "dark cockpit atlas directory with static proof-site cards and recipe filters",
+  "recipes": [
+    "product-cockpit",
+    "agentsite-atlas",
+    "search-index",
+    "artifact-gallery",
+    "roadmap-board",
+    "copy-evidence-strip"
+  ],
+  "visualPreset": "cockpit-dark",
+  "sections": [
+    {
+      "id": "system-map",
+      "navLabel": "System map",
+      "title": "Proof sites become a system map",
+      "body": "The atlas captures each generated proof site with repo, live URL, deploy evidence, recipes, layer, and next step."
+    },
+    {
+      "id": "recipe-coverage",
+      "navLabel": "Coverage",
+      "title": "Recipe coverage is visible",
+      "body": "Future agents can see which archetypes and section recipes have been validated and where to apply them next."
+    },
+    {
+      "id": "atlas-boundaries",
+      "navLabel": "Boundaries",
+      "title": "Atlas data stays public-safe",
+      "body": "The atlas is not live monitoring, private repo inventory, or an authoritative deploy dashboard."
+    }
+  ],
+  "proofArtifacts": [
+    {
+      "label": "Atlas data",
+      "body": "src/data/atlas.json contains public-safe verified proof-site records validated by npm run check:atlas."
+    },
+    {
+      "label": "Atlas UI",
+      "body": "src/components/AgentSiteAtlas.astro filters proof sites by text and recipe."
+    },
+    {
+      "label": "Atlas QA",
+      "body": "Visual QA exercises atlas search and recipe filters when the atlas is present."
+    }
+  ],
+  "allowedClaims": [
+    "Static GitHub Pages delivery",
+    "Public-safe AgentSite proof-site directory",
+    "Repo-local QA scripts validate atlas data",
+    "Payment disabled / no-payment mode"
+  ],
+  "forbiddenClaims": [
+    "fake customer testimonials",
+    "fake metrics",
+    "unsupported guarantees",
+    "analytics or tracking",
+    "live payment links",
+    "private repo inventory",
+    "live monitoring"
+  ],
+  "approvalRequired": [
+    "Adding analytics, cookies, tracking pixels, or third-party forms",
+    "Adding payment links or enabling payment mode",
+    "Indexing private repos, credentials, secrets, or unpublished user data",
+    "Adding live GitHub API monitoring, server runtime, authentication, or a database"
+  ]
+}

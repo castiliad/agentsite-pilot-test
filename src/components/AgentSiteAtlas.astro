@@ -1,0 +1,70 @@
+---
+import sites from '../data/atlas.json';
+const recipes = Array.from(new Set(sites.flatMap((site) => site.recipes || []))).sort();
+---
+<section class="section agentsite-atlas" id="atlas" data-agentsite-atlas aria-labelledby="atlas-title">
+  <div class="atlas-heading">
+    <div>
+      <div class="section-kicker">AgentSite Atlas</div>
+      <h2 id="atlas-title">A generated directory of proof sites.</h2>
+    </div>
+    <p>The atlas turns prior generated sites into a navigable system: live links, repo links, recipe coverage, deploy evidence, and the next useful improvement.</p>
+  </div>
+  <div class="atlas-controls" aria-label="Atlas filters">
+    <label class="atlas-search-label" for="atlas-search">Search atlas</label>
+    <input id="atlas-search" data-atlas-search type="search" placeholder="Search layers, recipes, repos…" autocomplete="off" />
+    <div class="atlas-filter-row" aria-label="Recipe filters">
+      <button type="button" class="active" data-atlas-recipe="all">All recipes</button>
+      {recipes.map((recipe) => <button type="button" data-atlas-recipe={recipe}>{recipe}</button>)}
+    </div>
+  </div>
+  <p class="atlas-count" data-atlas-count aria-live="polite">Showing {sites.length} proof sites</p>
+  <div class="atlas-grid">
+    {sites.map((site) => (
+      <article class="atlas-card" data-atlas-card data-recipe={(site.recipes || []).join(' ')} data-title={`${site.name} ${site.repo} ${site.archetype} ${site.summary} ${site.nextStep} ${(site.recipes || []).join(' ')}`.toLowerCase()}>
+        <div class="atlas-card-top"><span>Layer {site.layer}</span><strong>{site.status}</strong></div>
+        <h3>{site.name}</h3>
+        <p>{site.summary}</p>
+        <dl>
+          <div><dt>Archetype</dt><dd>{site.archetype}</dd></div>
+          <div><dt>Repo</dt><dd>{site.repo}</dd></div>
+        </dl>
+        <div class="atlas-tags">{(site.recipes || []).map((recipe) => <span>{recipe}</span>)}</div>
+        <p class="atlas-next"><strong>Next:</strong> {site.nextStep}</p>
+        <div class="atlas-actions"><a href={site.liveUrl}>Open live</a><a href={`https://github.com/${site.repo}`}>Repo</a><a href={site.deployRun}>Deploy</a></div>
+      </article>
+    ))}
+  </div>
+</section>
+
+<script is:inline>
+  (() => {
+    for (const root of document.querySelectorAll('[data-agentsite-atlas]')) {
+      const input = root.querySelector('[data-atlas-search]');
+      const buttons = [...root.querySelectorAll('[data-atlas-recipe]')];
+      const cards = [...root.querySelectorAll('[data-atlas-card]')];
+      const count = root.querySelector('[data-atlas-count]');
+      let activeRecipe = 'all';
+      function apply() {
+        const query = String(input?.value || '').trim().toLowerCase();
+        let visible = 0;
+        for (const card of cards) {
+          const recipeMatch = activeRecipe === 'all' || String(card.dataset.recipe || '').split(/\s+/).includes(activeRecipe);
+          const textMatch = !query || String(card.dataset.title || '').includes(query);
+          const show = recipeMatch && textMatch;
+          card.hidden = !show;
+          if (show) visible += 1;
+        }
+        for (const button of buttons) {
+          const active = button.dataset.atlasRecipe === activeRecipe;
+          button.classList.toggle('active', active);
+          button.setAttribute('aria-pressed', String(active));
+        }
+        if (count) count.textContent = `Showing ${visible} proof site${visible === 1 ? '' : 's'}`;
+      }
+      input?.addEventListener('input', apply);
+      for (const button of buttons) button.addEventListener('click', () => { activeRecipe = button.dataset.atlasRecipe || 'all'; apply(); });
+      apply();
+    }
+  })();
+</script>
