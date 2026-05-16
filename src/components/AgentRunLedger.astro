@@ -1,0 +1,74 @@
+---
+import runs from '../data/runs.json';
+const statuses = Array.from(new Set(runs.map((run) => run.status))).sort();
+---
+<section class="section agent-run-ledger" id="runs" data-agent-run-ledger aria-labelledby="runs-title">
+  <div class="run-ledger-heading">
+    <div>
+      <div class="section-kicker">Agent run ledger</div>
+      <h2 id="runs-title">A static orchestration trail future agents can inspect.</h2>
+    </div>
+    <p>Each run records the layer, decision, delegated work, verification checks, deploy evidence, and the next action. It is a public handoff ledger, not live telemetry.</p>
+  </div>
+  <div class="run-ledger-controls" aria-label="Run ledger filters">
+    <label class="run-ledger-search-label" for="run-ledger-search">Search run ledger</label>
+    <input id="run-ledger-search" data-run-search type="search" placeholder="Search decisions, checks, commits…" autocomplete="off" />
+    <div class="run-ledger-filter-row" aria-label="Status filters">
+      <button type="button" class="active" data-run-status="all">All runs</button>
+      {statuses.map((status) => <button type="button" data-run-status={status}>{status}</button>)}
+    </div>
+  </div>
+  <p class="run-ledger-count" data-run-count aria-live="polite">Showing {runs.length} runs</p>
+  <div class="run-ledger-timeline">
+    {runs.map((run) => (
+      <article class="run-card" data-run-card data-status={run.status} data-title={`${run.title} ${run.status} ${run.outcome} ${run.nextAction} ${run.checks.join(' ')} ${run.delegations.join(' ')}`.toLowerCase()}>
+        <div class="run-card-top"><span>Layer {run.layer}</span><strong>{run.status}</strong></div>
+        <h3>{run.title}</h3>
+        <p>{run.outcome}</p>
+        <dl>
+          <div><dt>Date</dt><dd>{run.date}</dd></div>
+          <div><dt>Orchestrator</dt><dd>{run.orchestrator}</dd></div>
+          <div><dt>Commit</dt><dd>{run.commit}</dd></div>
+        </dl>
+        <div class="run-lists">
+          <div><h4>Delegated work</h4><ul>{run.delegations.map((item) => <li>{item}</li>)}</ul></div>
+          <div><h4>Checks</h4><ul>{run.checks.map((item) => <li>{item}</li>)}</ul></div>
+        </div>
+        <p class="run-next"><strong>Next:</strong> {run.nextAction}</p>
+        {run.deployRun !== 'pending' && <a class="run-deploy" href={run.deployRun}>Deploy evidence</a>}
+      </article>
+    ))}
+  </div>
+</section>
+
+<script is:inline>
+  (() => {
+    for (const root of document.querySelectorAll('[data-agent-run-ledger]')) {
+      const input = root.querySelector('[data-run-search]');
+      const buttons = [...root.querySelectorAll('[data-run-status]')];
+      const cards = [...root.querySelectorAll('[data-run-card]')];
+      const count = root.querySelector('[data-run-count]');
+      let activeStatus = 'all';
+      function apply() {
+        const query = String(input?.value || '').trim().toLowerCase();
+        let visible = 0;
+        for (const card of cards) {
+          const statusMatch = activeStatus === 'all' || card.dataset.status === activeStatus;
+          const textMatch = !query || String(card.dataset.title || '').includes(query);
+          const show = statusMatch && textMatch;
+          card.hidden = !show;
+          if (show) visible += 1;
+        }
+        for (const button of buttons) {
+          const active = button.dataset.runStatus === activeStatus;
+          button.classList.toggle('active', active);
+          button.setAttribute('aria-pressed', String(active));
+        }
+        if (count) count.textContent = `Showing ${visible} run${visible === 1 ? '' : 's'}`;
+      }
+      input?.addEventListener('input', apply);
+      for (const button of buttons) button.addEventListener('click', () => { activeStatus = button.dataset.runStatus || 'all'; apply(); });
+      apply();
+    }
+  })();
+</script>

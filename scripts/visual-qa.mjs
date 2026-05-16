@@ -123,6 +123,9 @@ async function auditViewport(browser, viewport) {
   const atlasFailures = await checkAgentSiteAtlas(page, viewport.name);
   failures.push(...atlasFailures);
 
+  const runLedgerFailures = await checkAgentRunLedger(page, viewport.name);
+  failures.push(...runLedgerFailures);
+
   await page.close();
   return { failures, screenshotPath };
 }
@@ -263,6 +266,30 @@ async function checkSearchIndex(page, viewportName) {
     await page.waitForTimeout(80);
     const recipeVisible = await page.locator('[data-search-card]:visible').count();
     if (recipeVisible < 1) failures.push(`${viewportName}: search recipe filter did not leave any cards visible`);
+  }
+  return failures;
+}
+
+async function checkAgentRunLedger(page, viewportName) {
+  const failures = [];
+  const ledgerCount = await page.locator('[data-agent-run-ledger]').count();
+  if (!ledgerCount) return failures;
+  await expectVisible(page, '[data-run-search]', `${viewportName}: run ledger search`, failures, { minWidth: 160, minHeight: 34 });
+  await expectVisible(page, '[data-run-status="all"]', `${viewportName}: run ledger all filter`, failures, { minWidth: 60, minHeight: 34 });
+  const cardCount = await page.locator('[data-run-card]').count();
+  if (cardCount < 3) failures.push(`${viewportName}: run ledger should render at least 3 cards; found ${cardCount}`);
+  const search = page.locator('[data-run-search]').first();
+  await search.fill('deploy');
+  await page.waitForTimeout(80);
+  const searchVisible = await page.locator('[data-run-card]:visible').count();
+  if (searchVisible < 1) failures.push(`${viewportName}: run ledger search did not leave deploy-related cards visible`);
+  await search.fill('');
+  const verified = page.locator('[data-run-status="verified"]').first();
+  if (await verified.count()) {
+    await verified.click();
+    await page.waitForTimeout(80);
+    const verifiedVisible = await page.locator('[data-run-card]:visible').count();
+    if (verifiedVisible < 1) failures.push(`${viewportName}: run ledger verified filter did not leave any cards visible`);
   }
   return failures;
 }

@@ -1,0 +1,133 @@
+[
+  {
+    "id": "layer-1-archetype-divergence",
+    "title": "Layer 1: archetype divergence",
+    "status": "verified",
+    "layer": 1,
+    "date": "2026-05-15",
+    "orchestrator": "Hermes Agent",
+    "delegations": [
+      "Generator patch",
+      "Editorial proof publish",
+      "Visual review"
+    ],
+    "checks": [
+      "npm run qa:full",
+      "npm run check:visual-divergence",
+      "npm run verify:deploy"
+    ],
+    "commit": "eca9b19c39cdbc35a20ffd52e097232998ac6fcc",
+    "deployRun": "https://github.com/castiliad/agentsite-pilot-test/actions/runs/25954263464",
+    "outcome": "Added editorial-ledger and visual divergence guard.",
+    "nextAction": "Add richer static interactions."
+  },
+  {
+    "id": "layer-2-artifact-gallery",
+    "title": "Layer 2: artifact gallery",
+    "status": "verified",
+    "layer": 2,
+    "date": "2026-05-16",
+    "orchestrator": "Hermes Agent",
+    "delegations": [
+      "Recipe implementation",
+      "Proof site publish",
+      "Final review"
+    ],
+    "checks": [
+      "npm run qa:full",
+      "npm audit --audit-level=moderate",
+      "npm run verify:deploy"
+    ],
+    "commit": "9ce018487f7d4706db063ce14d4b5aca7b3675c7",
+    "deployRun": "https://github.com/castiliad/agentsite-pilot-test/actions/runs/25955228618",
+    "outcome": "Added searchable/filterable artifact gallery with URL tag state.",
+    "nextAction": "Add local-first roadmap state."
+  },
+  {
+    "id": "layer-3-roadmap-board",
+    "title": "Layer 3: roadmap board",
+    "status": "verified",
+    "layer": 3,
+    "date": "2026-05-16",
+    "orchestrator": "Hermes Agent",
+    "delegations": [
+      "Local-first component",
+      "Roadmap QA",
+      "Proof site publish"
+    ],
+    "checks": [
+      "npm run qa:full",
+      "npm run check:roadmap",
+      "npm run verify:deploy"
+    ],
+    "commit": "a266bd924d509e4ce6365628baf0ee0a352a9c13",
+    "deployRun": "https://github.com/castiliad/agentsite-pilot-test/actions/runs/25955525893",
+    "outcome": "Added JSON-backed roadmap board with localStorage status overrides.",
+    "nextAction": "Add precomputed static intelligence index."
+  },
+  {
+    "id": "layer-4-search-index",
+    "title": "Layer 4: search index",
+    "status": "verified",
+    "layer": 4,
+    "date": "2026-05-16",
+    "orchestrator": "Hermes Agent",
+    "delegations": [
+      "Index builder",
+      "Search UI",
+      "Visual QA"
+    ],
+    "checks": [
+      "npm run build:search-index",
+      "npm run check:search-index",
+      "npm run qa:full"
+    ],
+    "commit": "2b632ce9dd64e454291bb06ecd637d2adbf05b25",
+    "deployRun": "https://github.com/castiliad/agentsite-pilot-test/actions/runs/25955883225",
+    "outcome": "Added public-safe static search over contracts, recipes, artifacts, roadmap, and plans.",
+    "nextAction": "Add generated proof-site atlas."
+  },
+  {
+    "id": "layer-5-agentsite-atlas",
+    "title": "Layer 5: AgentSite Atlas",
+    "status": "verified",
+    "layer": 5,
+    "date": "2026-05-16",
+    "orchestrator": "Hermes Agent",
+    "delegations": [
+      "Atlas data",
+      "Atlas UI",
+      "Deploy verification"
+    ],
+    "checks": [
+      "npm run check:atlas",
+      "npm run qa:full",
+      "npm run verify:deploy"
+    ],
+    "commit": "75a23145fd1d834560165feb7f5e9b6ff50f9878",
+    "deployRun": "https://github.com/castiliad/agentsite-pilot-test/actions/runs/25956147764",
+    "outcome": "Added searchable public directory of generated proof sites and recipe coverage.",
+    "nextAction": "Model the orchestrator/subagent maintenance loop as a static run ledger."
+  },
+  {
+    "id": "layer-6-agent-run-ledger",
+    "title": "Layer 6: agent run ledger",
+    "status": "draft",
+    "layer": 6,
+    "date": "2026-05-16",
+    "orchestrator": "Hermes Agent",
+    "delegations": [
+      "Run schema",
+      "Ledger UI",
+      "Run QA"
+    ],
+    "checks": [
+      "npm run check:runs",
+      "npm run qa:full"
+    ],
+    "commit": "pending",
+    "deployRun": "pending",
+    "outcome": "Planned static run ledger for decisions, delegated tasks, checks, deploys, failures, and next actions.",
+    "nextAction": "Publish proof site and verify deploy."
+  }
+]

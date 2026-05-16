@@ -12,6 +12,8 @@ export const SEARCH_INDEX_RECIPE = 'search-index';
 export const SEARCH_INDEX_PRESET = 'search-index';
 export const AGENTSITE_ATLAS_RECIPE = 'agentsite-atlas';
 export const AGENTSITE_ATLAS_PRESET = 'agentsite-atlas';
+export const AGENT_RUN_LEDGER_RECIPE = 'agent-run-ledger';
+export const AGENT_RUN_LEDGER_PRESET = 'agent-run-ledger';
 
 const PRODUCT_COCKPIT_PATTERNS = [
   ['product', /\bproducts?\b/i],
@@ -62,6 +64,13 @@ const ARTIFACT_GALLERY_PATTERNS = [
 ];
 
 
+const AGENT_RUN_LEDGER_PATTERNS = [
+  ['run ledger', /\brun ledger\b|\brun history\b|\brun log\b/i],
+  ['orchestration', /\borchestrat(?:e|ion|or)\b|\bsubagents?\b|\bdelegat(?:e|ed|ion)\b/i],
+  ['checks/deploys', /\bchecks?\b.*\bdeploy\b|\bdeploy evidence\b|\bverification evidence\b/i],
+  ['next actions', /\bnext actions?\b|\boutcomes?\b|\bfailures?\b/i]
+];
+
 const AGENTSITE_ATLAS_PATTERNS = [
   ['atlas/directory', /\batlas\b|\bdirectory\b|\bproof sites?\b/i],
   ['generated sites', /\bgenerated sites?\b|\bsite map\b|\bsystem map\b/i],
@@ -104,6 +113,7 @@ export function recommendRecipes(input = {}) {
   const roadmapReasons = [];
   const searchIndexReasons = [];
   const atlasReasons = [];
+  const runLedgerReasons = [];
 
   collectMatches(haystack, PRODUCT_COCKPIT_PATTERNS, productReasons);
   collectMatches(haystack, EDITORIAL_LEDGER_PATTERNS, editorialReasons);
@@ -112,6 +122,7 @@ export function recommendRecipes(input = {}) {
   collectMatches(haystack, ROADMAP_BOARD_PATTERNS, roadmapReasons);
   collectMatches(haystack, SEARCH_INDEX_PATTERNS, searchIndexReasons);
   collectMatches(haystack, AGENTSITE_ATLAS_PATTERNS, atlasReasons);
+  collectMatches(haystack, AGENT_RUN_LEDGER_PATTERNS, runLedgerReasons);
 
   const proofArtifacts = Array.isArray(input.proofArtifacts) ? input.proofArtifacts : [];
   if (proofArtifacts.length >= 2) {
@@ -146,6 +157,7 @@ export function recommendRecipes(input = {}) {
   const roadmapUnique = [...new Set(roadmapReasons)];
   const searchIndexUnique = [...new Set(searchIndexReasons)];
   const atlasUnique = [...new Set(atlasReasons)];
+  const runLedgerUnique = [...new Set(runLedgerReasons)];
 
   // Prefer one full-page archetype. Editorial-ledger wins when narrative/provenance/claim-ledger
   // signals dominate; product-cockpit wins for operational/tool/control-plane signals.
@@ -186,6 +198,11 @@ export function recommendRecipes(input = {}) {
     reasons.push(...atlasUnique.map((reason) => `${AGENTSITE_ATLAS_RECIPE}: ${reason}`));
   }
 
+  if (runLedgerUnique.length > 0) {
+    selectedRecipes.push(AGENT_RUN_LEDGER_RECIPE);
+    reasons.push(...runLedgerUnique.map((reason) => `${AGENT_RUN_LEDGER_RECIPE}: ${reason}`));
+  }
+
   const uniqueReasons = [...new Set(reasons)];
   const selected = selectedRecipes.length > 0;
   const archetype = selectedRecipes.includes(EDITORIAL_LEDGER_RECIPE)
@@ -207,7 +224,9 @@ export function recommendRecipes(input = {}) {
               ? SEARCH_INDEX_PRESET
               : selectedRecipes.includes(AGENTSITE_ATLAS_RECIPE)
                 ? AGENTSITE_ATLAS_PRESET
-                : '';
+                : selectedRecipes.includes(AGENT_RUN_LEDGER_RECIPE)
+                  ? AGENT_RUN_LEDGER_PRESET
+                  : '';
   return {
     selectedRecipes,
     archetype,

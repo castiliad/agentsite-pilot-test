@@ -1,0 +1,83 @@
+{
+  "name": "Agent Run Ledger",
+  "repo": "agentsite-run-ledger-example",
+  "owner": "castiliad",
+  "description": "A static AgentSite orchestration ledger for autonomous agent runs and verification evidence.",
+  "brief": "Create a static GitHub Pages site that demonstrates an agent run ledger: a public-safe history of orchestrator decisions, delegated work, checks, deploy evidence, outcomes, failures, and next actions. It must not include raw private logs or claim live monitoring.",
+  "heroHeadline": "A static ledger for autonomous AgentSite runs",
+  "heroLede": "The page makes orchestrator and subagent work inspectable with curated run records, verification checks, deploy evidence, and next actions.",
+  "primaryCtaLabel": "Review runs",
+  "primaryCtaHref": "#runs",
+  "audience": [
+    "AgentSite maintainers",
+    "Autonomous orchestrators",
+    "Technical reviewers evaluating agent maintenance loops"
+  ],
+  "visualDirection": "dark cockpit orchestration dashboard with run history, filters, and verification evidence",
+  "recipes": [
+    "product-cockpit",
+    "agent-run-ledger",
+    "artifact-gallery",
+    "agentsite-atlas",
+    "search-index",
+    "roadmap-board",
+    "copy-evidence-strip"
+  ],
+  "visualPreset": "cockpit-dark",
+  "sections": [
+    {
+      "id": "orchestration",
+      "navLabel": "Orchestration",
+      "title": "Runs become inspectable handoffs",
+      "body": "Each entry summarizes what happened, who delegated what, which checks passed, where it deployed, and what should happen next."
+    },
+    {
+      "id": "review-loop",
+      "navLabel": "Review loop",
+      "title": "Future agents can start from evidence",
+      "body": "The ledger gives later agents the context they need without scraping raw chat logs or guessing from commit history."
+    },
+    {
+      "id": "ledger-boundaries",
+      "navLabel": "Boundaries",
+      "title": "Curated summaries only",
+      "body": "The ledger avoids raw transcripts, credentials, private logs, unsupported compliance claims, and live monitoring claims."
+    }
+  ],
+  "proofArtifacts": [
+    {
+      "label": "Run ledger data",
+      "body": "src/data/runs.json contains public-safe run records validated by npm run check:runs."
+    },
+    {
+      "label": "Run ledger UI",
+      "body": "src/components/AgentRunLedger.astro filters run records by text and status."
+    },
+    {
+      "label": "Run ledger QA",
+      "body": "Visual QA exercises run-ledger search and status filters when the ledger is present."
+    }
+  ],
+  "allowedClaims": [
+    "Static GitHub Pages delivery",
+    "Public-safe AgentSite run ledger",
+    "Repo-local QA scripts validate run records",
+    "Payment disabled / no-payment mode"
+  ],
+  "forbiddenClaims": [
+    "fake customer endorsements",
+    "fake metrics",
+    "unsupported guarantees",
+    "analytics or tracking",
+    "live payment links",
+    "private logs",
+    "live monitoring",
+    "audited compliance"
+  ],
+  "approvalRequired": [
+    "Adding analytics, cookies, tracking pixels, or third-party forms",
+    "Adding payment links or enabling payment mode",
+    "Indexing private logs, credentials, secrets, or unpublished user data",
+    "Adding live GitHub API monitoring, server runtime, authentication, or a database"
+  ]
+}

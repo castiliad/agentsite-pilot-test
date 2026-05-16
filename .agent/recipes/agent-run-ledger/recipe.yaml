@@ -1,0 +1,75 @@
+id: agent-run-ledger
+name: Agent Run Ledger
+version: 0.1.0
+status: draft
+kind: section_recipe
+section_recipe: agent-run-ledger
+visual_preset: agent-run-ledger
+summary: >
+  A static orchestration ledger for agent-maintained sites: decisions, delegated
+  tasks, verification checks, deploy evidence, outcomes, failures, and next actions.
+best_for:
+  - Showing how autonomous agent runs improved the site over time.
+  - Making orchestrator/subagent work inspectable without backend telemetry.
+  - Giving future agents a compact run history before they propose next work.
+not_for:
+  - Private logs, raw chat transcripts, credentials, or live task monitoring.
+  - Replacing issue trackers, CI dashboards, or authoritative audit systems.
+composable_with:
+  - product-cockpit
+  - agentsite-atlas
+  - roadmap-board
+  - search-index
+inputs:
+  required:
+    - run id
+    - title
+    - status
+    - layer
+    - date
+    - delegated work
+    - checks
+    - commit
+    - deploy run
+    - outcome
+    - next action
+sections:
+  - id: runs
+    purpose: Browse static records of orchestrated agent runs.
+static_safety:
+  required:
+    - Ledger data must be public-safe summaries, not raw private transcripts.
+    - Deploy evidence must be public GitHub URLs or explicit pending values.
+    - Durable updates happen by editing JSON and rerunning QA.
+  forbidden:
+    - Credentials, raw logs with secrets, private user data, internal tickets, or private repos.
+    - Claims of live monitoring, autonomous authority, or audited compliance unless separately implemented and explicitly approved.
+approval_required:
+  - Indexing private logs, credentials, secrets, or unpublished user data.
+  - Adding live GitHub API monitoring, server runtime, authentication, or a database.
+acceptance_files:
+  readme: README.md
+  checklist: acceptance.md
+scoring:
+  pass_threshold: 80
+  criteria:
+    - id: fit
+      label: Brief fit
+      weight: 20
+      question: Does the site need an inspectable public history of agent runs?
+    - id: data-quality
+      label: Run data quality
+      weight: 25
+      question: Are run entries complete, useful, and public-safe?
+    - id: interaction
+      label: Ledger interaction
+      weight: 20
+      question: Do search and status filters work clearly?
+    - id: safety
+      label: Static safety
+      weight: 20
+      question: Does the ledger avoid raw private logs, secrets, unsupported compliance, and live-monitoring claims?
+    - id: maintainability
+      label: Agent maintainability
+      weight: 15
+      question: Can future agents append runs by editing JSON and rerunning QA?

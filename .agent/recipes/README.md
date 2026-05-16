@@ -33,6 +33,7 @@ Recipes do not imply live integrations, analytics, payments, customer proof, or 
 | `roadmap-board` | `section_recipe` | A site needs a public-safe improvement queue, next-step board, or local-first static app behavior. | Local browser changes are non-authoritative; durable changes require editing JSON and rerunning QA. |
 | `search-index` | `section_recipe` | A site needs searchable public repo/site intelligence across contracts, recipes, artifacts, roadmap items, and plans. | Index only public-safe content; no secrets, private data, auth, API keys, or unsupported semantic/live search claims. |
 | `agentsite-atlas` | `section_recipe` | A site needs a navigable map of generated AgentSite proof sites, recipes, deploy evidence, and next improvements. | Atlas entries are public-safe verified records, not live monitoring or private repo inventory. |
+| `agent-run-ledger` | `section_recipe` | A site needs a public-safe orchestration trail of agent runs, delegated work, checks, deploys, and next actions. | Ledger entries are curated summaries, not raw transcripts, private logs, or live telemetry. |
 
 ## Agent workflow
 
@@ -58,6 +59,7 @@ Recipes do not imply live integrations, analytics, payments, customer proof, or 
    - `recipes: ["roadmap-board"]` or `visualPreset: "roadmap-board"` adds a local-first roadmap board backed by `src/data/roadmap.json`.
    - `recipes: ["search-index"]` or `visualPreset: "search-index"` adds a precomputed search surface backed by `src/data/search-index.json`.
    - `recipes: ["agentsite-atlas"]` or `visualPreset: "agentsite-atlas"` adds a generated proof-site directory backed by `src/data/atlas.json`.
+   - `recipes: ["agent-run-ledger"]` or `visualPreset: "agent-run-ledger"` adds a static orchestration/run history backed by `src/data/runs.json`.
 7. To let the generator infer from natural-language brief/config signals, pass `--auto-recipes` or set `"autoRecipes": true`. Auto mode is deterministic, can select an archetype plus section recipes, and never overrides explicit `recipes`, `archetype`, or `visualPreset` values.
 8. Run `npm run check:visual-divergence` when changing archetypes or visual presets.
 9. Apply the pattern with static copy and verifiable artifacts only.

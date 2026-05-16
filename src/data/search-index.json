@@ -22,6 +22,17 @@
     ]
   },
   {
+    "title": "Agent Run Ledger",
+    "type": "recipe",
+    "href": "#proof",
+    "summary": "A static orchestration ledger for agent-maintained sites: decisions, delegated",
+    "tags": [
+      "agent-run-ledger",
+      "section-recipe",
+      "recipe"
+    ]
+  },
+  {
     "title": "AgentSite Atlas",
     "type": "recipe",
     "href": "#proof",
@@ -353,6 +364,16 @@
     "type": "plan",
     "href": "#proof",
     "summary": "Layer 5: AgentSite Atlas Add a public safe static directory of generated proof sites with recipe filters, live links, deploy evidence, and next improvements.",
+    "tags": [
+      "plan",
+      "next-step"
+    ]
+  },
+  {
+    "title": "Layer 6: Agent Run Ledger",
+    "type": "plan",
+    "href": "#proof",
+    "summary": "Layer 6: Agent Run Ledger Add a public safe static orchestration ledger showing agent runs, delegated tasks, checks, deploy evidence, outcomes, failures, and next actions.",
     "tags": [
       "plan",
       "next-step"
