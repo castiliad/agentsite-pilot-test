@@ -1,0 +1,77 @@
+{
+  "name": "Artifact Gallery AgentSite",
+  "repo": "agentsite-artifact-gallery-example",
+  "owner": "castiliad",
+  "description": "A static AgentSite proof browser with searchable artifacts and agent-maintainable evidence data.",
+  "brief": "Create a static GitHub Pages site that demonstrates a searchable and filterable artifact gallery for contracts, QA output, deploy evidence, recipes, plans, and screenshots. Keep it backend-free and safe for autonomous agents to maintain.",
+  "heroHeadline": "A static proof browser future agents can maintain",
+  "heroLede": "The page turns repo artifacts into a searchable, filterable interface without adding a backend, analytics, payments, or private data.",
+  "primaryCtaLabel": "Browse artifacts",
+  "primaryCtaHref": "#artifacts",
+  "audience": [
+    "AgentSite maintainers",
+    "Autonomous website improvement agents",
+    "Technical reviewers evaluating static proof"
+  ],
+  "visualDirection": "dark premium static app interface with accessible filters and proof cards",
+  "recipes": [
+    "product-cockpit",
+    "artifact-gallery",
+    "copy-evidence-strip"
+  ],
+  "visualPreset": "cockpit-dark",
+  "sections": [
+    {
+      "id": "static-behavior",
+      "navLabel": "Behavior",
+      "title": "Static behavior that feels like software",
+      "body": "Search, tag filtering, visible result counts, and URL tag state run entirely in the browser from a public JSON data file."
+    },
+    {
+      "id": "agent-maintenance",
+      "navLabel": "Maintenance",
+      "title": "Future agents edit the data, not the architecture",
+      "body": "New artifacts are added by updating src/data/artifacts.json and rerunning artifact, visual, and build checks."
+    },
+    {
+      "id": "safety-boundaries",
+      "navLabel": "Safety",
+      "title": "Proof stays public-safe and static",
+      "body": "The gallery rejects unsafe hrefs, payment or tracking domains, private data claims, and unsupported proof language."
+    }
+  ],
+  "proofArtifacts": [
+    {
+      "label": "Artifact data contract",
+      "body": "src/data/artifacts.json is validated by npm run check:artifacts before build and deploy."
+    },
+    {
+      "label": "Recipe docs",
+      "body": ".agent/recipes/artifact-gallery documents fit, static safety rules, and acceptance criteria."
+    },
+    {
+      "label": "Visual QA",
+      "body": "npm run test:visual checks desktop and mobile layouts for overflow, console errors, and visible controls."
+    }
+  ],
+  "allowedClaims": [
+    "Static GitHub Pages delivery",
+    "Search and tag filtering run in browser-only JavaScript",
+    "Artifact data is repo-local JSON",
+    "Payment disabled / no-payment mode"
+  ],
+  "forbiddenClaims": [
+    "fake customer testimonials",
+    "fake metrics",
+    "unsupported guarantees",
+    "analytics or tracking",
+    "live payment links",
+    "private artifact access"
+  ],
+  "approvalRequired": [
+    "Adding analytics, cookies, tracking pixels, or third-party forms",
+    "Adding payment links or enabling payment mode",
+    "Linking private artifacts or secrets",
+    "Introducing server-side runtime, authentication, or a database"
+  ]
+}

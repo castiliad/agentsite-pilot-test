@@ -1,0 +1,50 @@
+[
+  {
+    "title": "AgentSite contracts",
+    "type": "contract",
+    "status": "verified",
+    "tags": [
+      "contracts",
+      "guardrails",
+      "agents"
+    ],
+    "href": "https://github.com/castiliad/agentsite-pilot-test/blob/main/.agent/site.contract.yaml",
+    "summary": "Repo-local contracts define the site mission, safe claims, approval boundaries, and maintenance rules."
+  },
+  {
+    "title": "QA command suite",
+    "type": "qa",
+    "status": "verified",
+    "tags": [
+      "qa",
+      "build",
+      "verification"
+    ],
+    "href": "https://github.com/castiliad/agentsite-pilot-test/blob/main/package.json",
+    "summary": "The package scripts run contract, claims, SEO, link, artifact, build, and visual checks before handoff."
+  },
+  {
+    "title": "Recipe registry",
+    "type": "recipe",
+    "status": "verified",
+    "tags": [
+      "recipes",
+      "patterns",
+      "agents"
+    ],
+    "href": "https://github.com/castiliad/agentsite-pilot-test/blob/main/.agent/recipes/README.md",
+    "summary": "Reusable archetypes and section recipes let future agents improve sites without reinventing the wheel."
+  },
+  {
+    "title": "Deploy verifier",
+    "type": "deploy",
+    "status": "verified",
+    "tags": [
+      "deploy",
+      "github-pages",
+      "verification"
+    ],
+    "href": "https://github.com/castiliad/agentsite-pilot-test/blob/main/scripts/verify-deploy.mjs",
+    "summary": "Live URL verification checks expected page content after GitHub Pages deployment succeeds."
+  }
+]

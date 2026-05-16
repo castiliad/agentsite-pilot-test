@@ -1,0 +1,74 @@
+id: artifact-gallery
+name: Artifact Gallery
+version: 0.1.0
+status: draft
+kind: section_recipe
+section_recipe: artifact-gallery
+visual_preset: artifact-gallery
+summary: >
+  A static, searchable, filterable gallery for repo artifacts, QA evidence,
+  plans, deploy records, screenshots, and recipe proof that future agents can
+  maintain by editing a JSON data file.
+best_for:
+  - Agent-maintained sites that need browsable proof without a backend.
+  - Documentation, portfolio, product, or service pages with real artifacts to expose.
+  - Static sites testing richer client-side behavior while staying GitHub Pages-safe.
+not_for:
+  - Private artifacts or sensitive operational data that should not ship to the browser.
+  - Fake live dashboards, analytics evidence, customer proof, or payment activity.
+  - Sites where filtering/search behavior cannot be QA-verified.
+composable_with:
+  - product-cockpit
+  - editorial-ledger
+  - copy-evidence-strip
+inputs:
+  required:
+    - artifact title
+    - artifact type
+    - artifact tags
+    - artifact href
+    - artifact summary
+  optional:
+    - artifact status
+    - featured tag
+sections:
+  - id: artifacts
+    purpose: Search and filter static proof artifacts without server runtime.
+  - id: proof
+    purpose: Keep evidence inspectable and easy for future agents to extend.
+static_safety:
+  required:
+    - Use only public, non-sensitive artifacts that are safe to expose from a static site.
+    - Keep artifact data in a simple JSON file future agents can edit.
+    - Validate titles, tags, summaries, href safety, and unsupported proof language in QA.
+    - Preserve no-payment mode, no analytics, no tracking, no server runtime, and no live-data boundaries.
+  forbidden:
+    - Fake metrics, fake customers, fake testimonials, fabricated logos, or unsupported guarantees.
+    - Links to private data, secrets, payment systems, analytics dashboards, or tracking domains.
+    - Claims that a deploy, screenshot, audit, or artifact exists before it has been created.
+acceptance_files:
+  readme: README.md
+  checklist: acceptance.md
+scoring:
+  pass_threshold: 80
+  criteria:
+    - id: fit
+      label: Brief fit
+      weight: 20
+      question: Does the site benefit from browsable proof, docs, screenshots, deploys, or maintenance artifacts?
+    - id: data-quality
+      label: Data quality
+      weight: 25
+      question: Are artifacts represented with safe hrefs, useful summaries, and lowercase filter tags?
+    - id: interaction
+      label: Static interaction quality
+      weight: 20
+      question: Do search, tag filtering, URL tag state, keyboard focus, and mobile layout work without a backend?
+    - id: safety
+      label: Static safety
+      weight: 20
+      question: Does the gallery avoid private data, payment links, analytics, fake proof, and unsupported claims?
+    - id: maintainability
+      label: Agent maintainability
+      weight: 15
+      question: Can future agents add or revise artifacts by editing the JSON data and rerunning QA?

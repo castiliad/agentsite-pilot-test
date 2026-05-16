@@ -111,6 +111,9 @@ async function auditViewport(browser, viewport) {
   const anchorFailures = await checkInternalAnchors(page, viewport.name);
   failures.push(...anchorFailures);
 
+  const artifactFailures = await checkArtifactGallery(page, viewport.name);
+  failures.push(...artifactFailures);
+
   await page.close();
   return { failures, screenshotPath };
 }
@@ -157,6 +160,35 @@ async function checkInternalAnchors(page, viewportName) {
     await page.waitForTimeout(80);
     const hash = await page.evaluate(() => window.location.hash);
     if (hash !== anchor.href) failures.push(`${viewportName}: clicking ${anchor.href} left URL hash as ${hash || '(empty)'}`);
+  }
+  return failures;
+}
+
+async function checkArtifactGallery(page, viewportName) {
+  const failures = [];
+  const galleryCount = await page.locator('[data-artifact-gallery]').count();
+  if (!galleryCount) return failures;
+
+  await expectVisible(page, '[data-artifact-search]', `${viewportName}: artifact search`, failures, { minWidth: 160, minHeight: 34 });
+  await expectVisible(page, '[data-artifact-tag="all"]', `${viewportName}: artifact all filter`, failures, { minWidth: 44, minHeight: 34 });
+  const cardCount = await page.locator('[data-artifact-card]').count();
+  if (cardCount < 3) failures.push(`${viewportName}: artifact gallery should render at least 3 cards; found ${cardCount}`);
+
+  const search = page.locator('[data-artifact-search]').first();
+  await search.fill('deploy');
+  await page.waitForTimeout(80);
+  const searchVisible = await page.locator('[data-artifact-card]:visible').count();
+  if (searchVisible < 1) failures.push(`${viewportName}: artifact search did not leave any deploy-related cards visible`);
+  await search.fill('');
+
+  const qaTag = page.locator('[data-artifact-tag="qa"]').first();
+  if (await qaTag.count()) {
+    await qaTag.click();
+    await page.waitForTimeout(80);
+    const url = page.url();
+    const qaVisible = await page.locator('[data-artifact-card]:visible').count();
+    if (!url.includes('tag=qa')) failures.push(`${viewportName}: artifact tag filter did not persist tag=qa in URL`);
+    if (qaVisible < 1) failures.push(`${viewportName}: artifact qa tag did not leave any cards visible`);
   }
   return failures;
 }

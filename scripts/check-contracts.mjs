@@ -17,6 +17,9 @@ const required = [
   '.agent/recipes/editorial-ledger/recipe.yaml',
   '.agent/recipes/editorial-ledger/README.md',
   '.agent/recipes/editorial-ledger/acceptance.md',
+  '.agent/recipes/artifact-gallery/recipe.yaml',
+  '.agent/recipes/artifact-gallery/README.md',
+  '.agent/recipes/artifact-gallery/acceptance.md',
   '.hermes/plans/initial-site-build.md'
 ];
 

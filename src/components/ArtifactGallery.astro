@@ -1,0 +1,98 @@
+---
+import artifacts from '../data/artifacts.json';
+
+const allTags = [...new Set(artifacts.flatMap((artifact) => artifact.tags || []))].sort();
+const typeLabels = {
+  contract: 'Contract',
+  qa: 'QA',
+  deploy: 'Deploy',
+  plan: 'Plan',
+  recipe: 'Recipe',
+  screenshot: 'Screenshot',
+  docs: 'Docs',
+  source: 'Source',
+  evidence: 'Evidence'
+};
+---
+<section class="section artifact-gallery" id="artifacts" data-artifact-gallery aria-labelledby="artifact-gallery-title">
+  <div class="artifact-gallery-heading">
+    <div>
+      <div class="section-kicker">Artifact gallery</div>
+      <h2 id="artifact-gallery-title">Browse the proof future agents can maintain.</h2>
+    </div>
+    <p>Search and filter static repo artifacts, plans, QA evidence, deploy records, and recipes without adding a backend or live tracking.</p>
+  </div>
+
+  <div class="artifact-controls" role="search" aria-label="Filter artifacts">
+    <label class="artifact-search-label" for="artifact-search">Search artifacts</label>
+    <input id="artifact-search" data-artifact-search type="search" placeholder="Search contracts, QA, deploys…" autocomplete="off" />
+    <div class="artifact-tags" aria-label="Artifact tags">
+      <button type="button" class="active" data-artifact-tag="all">All</button>
+      {allTags.map((tag) => <button type="button" data-artifact-tag={tag}>{tag}</button>)}
+    </div>
+  </div>
+
+  <p class="artifact-count" data-artifact-count aria-live="polite">Showing {artifacts.length} artifacts</p>
+
+  <div class="artifact-gallery-grid">
+    {artifacts.map((artifact) => (
+      <article class="artifact-card" data-artifact-card data-tags={(artifact.tags || []).join(' ')} data-title={`${artifact.title} ${artifact.summary} ${(artifact.tags || []).join(' ')}`.toLowerCase()}>
+        <div class="artifact-card-top">
+          <span>{typeLabels[artifact.type] || artifact.type}</span>
+          <strong>{artifact.status || 'static'}</strong>
+        </div>
+        <h3>{artifact.title}</h3>
+        <p>{artifact.summary}</p>
+        <div class="artifact-chip-row" aria-label="Tags">
+          {(artifact.tags || []).map((tag) => <span>{tag}</span>)}
+        </div>
+        <a class="artifact-link" href={artifact.href}>Inspect artifact</a>
+      </article>
+    ))}
+  </div>
+</section>
+
+<script is:inline>
+  (() => {
+    for (const gallery of document.querySelectorAll('[data-artifact-gallery]')) {
+      const search = gallery.querySelector('[data-artifact-search]');
+      const cards = [...gallery.querySelectorAll('[data-artifact-card]')];
+      const buttons = [...gallery.querySelectorAll('[data-artifact-tag]')];
+      const count = gallery.querySelector('[data-artifact-count]');
+      let activeTag = new URLSearchParams(window.location.search).get('tag') || 'all';
+
+      function applyFilters() {
+        const query = String(search?.value || '').trim().toLowerCase();
+        let visible = 0;
+        for (const card of cards) {
+          const tags = String(card.dataset.tags || '').split(/\s+/);
+          const haystack = String(card.dataset.title || '');
+          const tagMatch = activeTag === 'all' || tags.includes(activeTag);
+          const searchMatch = !query || haystack.includes(query);
+          const show = tagMatch && searchMatch;
+          card.hidden = !show;
+          if (show) visible += 1;
+        }
+        for (const button of buttons) {
+          button.classList.toggle('active', button.dataset.artifactTag === activeTag);
+          button.setAttribute('aria-pressed', String(button.dataset.artifactTag === activeTag));
+        }
+        if (count) count.textContent = `Showing ${visible} artifact${visible === 1 ? '' : 's'}`;
+      }
+
+      for (const button of buttons) {
+        button.addEventListener('click', () => {
+          activeTag = button.dataset.artifactTag || 'all';
+          const url = new URL(window.location.href);
+          if (activeTag === 'all') url.searchParams.delete('tag');
+          else url.searchParams.set('tag', activeTag);
+          window.history.replaceState({}, '', url);
+          applyFilters();
+        });
+      }
+      search?.addEventListener('input', applyFilters);
+      if (!buttons.some((button) => button.dataset.artifactTag === activeTag)) activeTag = 'all';
+      applyFilters();
+    }
+  })();
+</script>

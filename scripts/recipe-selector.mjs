@@ -4,6 +4,8 @@ export const EDITORIAL_LEDGER_RECIPE = 'editorial-ledger';
 export const EDITORIAL_LEDGER_PRESET = 'editorial-light';
 export const COPY_EVIDENCE_STRIP_RECIPE = 'copy-evidence-strip';
 export const COPY_EVIDENCE_STRIP_PRESET = 'evidence-strip';
+export const ARTIFACT_GALLERY_RECIPE = 'artifact-gallery';
+export const ARTIFACT_GALLERY_PRESET = 'artifact-gallery';
 
 const PRODUCT_COCKPIT_PATTERNS = [
   ['product', /\bproducts?\b/i],
@@ -43,6 +45,16 @@ const COPY_EVIDENCE_PATTERNS = [
   ['portfolio/case context', /\bportfolio\b|\bcase\b|\bshowcase\b/i]
 ];
 
+
+const ARTIFACT_GALLERY_PATTERNS = [
+  ['artifact gallery', /artifact gallery|artifacts?/i],
+  ['search/filter', /search(?:able)?|filter(?:able|ing)?|faceted/i],
+  ['catalog/directory', /catalog|directory|library|index/i],
+  ['proof browser', /proof browser|evidence browser|receipts?/i],
+  ['screenshots/audits', /screenshots?|audits?|visual qa/i],
+  ['plans/deploys', /plans?|deploy(?:s|ed|ment)?|runbooks?/i]
+];
+
 const SECTION_PATTERNS = [
   ['proof section', /\bproof\b|\bevidence\b/i],
   ['workflow section', /\bworkflows?\b|\bprocess\b/i],
@@ -59,14 +71,17 @@ export function recommendRecipes(input = {}) {
   const productReasons = [];
   const editorialReasons = [];
   const evidenceReasons = [];
+  const artifactReasons = [];
 
   collectMatches(haystack, PRODUCT_COCKPIT_PATTERNS, productReasons);
   collectMatches(haystack, EDITORIAL_LEDGER_PATTERNS, editorialReasons);
   collectMatches(haystack, COPY_EVIDENCE_PATTERNS, evidenceReasons);
+  collectMatches(haystack, ARTIFACT_GALLERY_PATTERNS, artifactReasons);
 
   const proofArtifacts = Array.isArray(input.proofArtifacts) ? input.proofArtifacts : [];
   if (proofArtifacts.length >= 2) {
     evidenceReasons.push(`proofArtifacts provided (${proofArtifacts.length})`);
+    artifactReasons.push(`proofArtifacts provided (${proofArtifacts.length})`);
     editorialReasons.push(`proofArtifacts provided (${proofArtifacts.length})`);
   }
   if (proofArtifacts.length > 0) productReasons.push(`proofArtifacts provided (${proofArtifacts.length})`);
@@ -91,6 +106,7 @@ export function recommendRecipes(input = {}) {
   const productUnique = [...new Set(productReasons)];
   const editorialUnique = [...new Set(editorialReasons)];
   const evidenceUnique = [...new Set(evidenceReasons)];
+  const artifactUnique = [...new Set(artifactReasons)];
 
   // Prefer one full-page archetype. Editorial-ledger wins when narrative/provenance/claim-ledger
   // signals dominate; product-cockpit wins for operational/tool/control-plane signals.
@@ -111,6 +127,11 @@ export function recommendRecipes(input = {}) {
     reasons.push(...evidenceUnique.map((reason) => `${COPY_EVIDENCE_STRIP_RECIPE}: ${reason}`));
   }
 
+  if (artifactUnique.length > 0) {
+    selectedRecipes.push(ARTIFACT_GALLERY_RECIPE);
+    reasons.push(...artifactUnique.map((reason) => `${ARTIFACT_GALLERY_RECIPE}: ${reason}`));
+  }
+
   const uniqueReasons = [...new Set(reasons)];
   const selected = selectedRecipes.length > 0;
   const archetype = selectedRecipes.includes(EDITORIAL_LEDGER_RECIPE)
@@ -124,7 +145,9 @@ export function recommendRecipes(input = {}) {
       ? PRODUCT_COCKPIT_PRESET
       : selectedRecipes.includes(COPY_EVIDENCE_STRIP_RECIPE)
         ? COPY_EVIDENCE_STRIP_PRESET
-        : '';
+        : selectedRecipes.includes(ARTIFACT_GALLERY_RECIPE)
+          ? ARTIFACT_GALLERY_PRESET
+          : '';
   return {
     selectedRecipes,
     archetype,
