@@ -1,0 +1,50 @@
+[
+  {
+    "title": "Recipe selector polish",
+    "status": "now",
+    "priority": "high",
+    "owner": "agent",
+    "tags": [
+      "recipes",
+      "qa"
+    ],
+    "summary": "Tighten recipe selection and composition rules as more static app recipes are added.",
+    "nextStep": "Add a regression config whenever a selector rule changes."
+  },
+  {
+    "title": "Local-first board persistence",
+    "status": "next",
+    "priority": "high",
+    "owner": "agent",
+    "tags": [
+      "local-first",
+      "browser"
+    ],
+    "summary": "Let users change local card status in the browser without writing to a server or repo.",
+    "nextStep": "Store user-side board overrides in localStorage with a reset control."
+  },
+  {
+    "title": "Static intelligence index",
+    "status": "later",
+    "priority": "medium",
+    "owner": "agent",
+    "tags": [
+      "search",
+      "data"
+    ],
+    "summary": "Generate precomputed indexes that make large static sites feel queryable and alive.",
+    "nextStep": "Prototype a JSON search index from recipe and artifact metadata."
+  },
+  {
+    "title": "Agent maintenance cadence",
+    "status": "blocked",
+    "priority": "medium",
+    "owner": "human",
+    "tags": [
+      "orchestration",
+      "approval"
+    ],
+    "summary": "Define when autonomous agents may propose or apply changes without creating notification noise.",
+    "nextStep": "Approve a quiet schedule and escalation rules before enabling recurring runs."
+  }
+]

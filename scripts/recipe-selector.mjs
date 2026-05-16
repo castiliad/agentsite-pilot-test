@@ -6,6 +6,8 @@ export const COPY_EVIDENCE_STRIP_RECIPE = 'copy-evidence-strip';
 export const COPY_EVIDENCE_STRIP_PRESET = 'evidence-strip';
 export const ARTIFACT_GALLERY_RECIPE = 'artifact-gallery';
 export const ARTIFACT_GALLERY_PRESET = 'artifact-gallery';
+export const ROADMAP_BOARD_RECIPE = 'roadmap-board';
+export const ROADMAP_BOARD_PRESET = 'roadmap-board';
 
 const PRODUCT_COCKPIT_PATTERNS = [
   ['product', /\bproducts?\b/i],
@@ -55,6 +57,15 @@ const ARTIFACT_GALLERY_PATTERNS = [
   ['plans/deploys', /plans?|deploy(?:s|ed|ment)?|runbooks?/i]
 ];
 
+
+const ROADMAP_BOARD_PATTERNS = [
+  ['roadmap board', /roadmap|board|kanban/i],
+  ['next steps', /next steps?|improvement queue|backlog/i],
+  ['status/priority', /status|priority|priorities/i],
+  ['local-first', /local-first|localStorage|browser-local/i],
+  ['agent maintenance', /maintain(?:ed|er|ers|ance)?|agents?/i]
+];
+
 const SECTION_PATTERNS = [
   ['proof section', /\bproof\b|\bevidence\b/i],
   ['workflow section', /\bworkflows?\b|\bprocess\b/i],
@@ -72,11 +83,13 @@ export function recommendRecipes(input = {}) {
   const editorialReasons = [];
   const evidenceReasons = [];
   const artifactReasons = [];
+  const roadmapReasons = [];
 
   collectMatches(haystack, PRODUCT_COCKPIT_PATTERNS, productReasons);
   collectMatches(haystack, EDITORIAL_LEDGER_PATTERNS, editorialReasons);
   collectMatches(haystack, COPY_EVIDENCE_PATTERNS, evidenceReasons);
   collectMatches(haystack, ARTIFACT_GALLERY_PATTERNS, artifactReasons);
+  collectMatches(haystack, ROADMAP_BOARD_PATTERNS, roadmapReasons);
 
   const proofArtifacts = Array.isArray(input.proofArtifacts) ? input.proofArtifacts : [];
   if (proofArtifacts.length >= 2) {
@@ -85,6 +98,7 @@ export function recommendRecipes(input = {}) {
     editorialReasons.push(`proofArtifacts provided (${proofArtifacts.length})`);
   }
   if (proofArtifacts.length > 0) productReasons.push(`proofArtifacts provided (${proofArtifacts.length})`);
+  if (/roadmap|next step|improvement|local-first/i.test(haystack)) roadmapReasons.push('roadmap/local-first language detected');
 
   const sections = Array.isArray(input.sections) ? input.sections : [];
   for (const section of sections) {
@@ -107,6 +121,7 @@ export function recommendRecipes(input = {}) {
   const editorialUnique = [...new Set(editorialReasons)];
   const evidenceUnique = [...new Set(evidenceReasons)];
   const artifactUnique = [...new Set(artifactReasons)];
+  const roadmapUnique = [...new Set(roadmapReasons)];
 
   // Prefer one full-page archetype. Editorial-ledger wins when narrative/provenance/claim-ledger
   // signals dominate; product-cockpit wins for operational/tool/control-plane signals.
@@ -132,6 +147,11 @@ export function recommendRecipes(input = {}) {
     reasons.push(...artifactUnique.map((reason) => `${ARTIFACT_GALLERY_RECIPE}: ${reason}`));
   }
 
+  if (roadmapUnique.length > 0) {
+    selectedRecipes.push(ROADMAP_BOARD_RECIPE);
+    reasons.push(...roadmapUnique.map((reason) => `${ROADMAP_BOARD_RECIPE}: ${reason}`));
+  }
+
   const uniqueReasons = [...new Set(reasons)];
   const selected = selectedRecipes.length > 0;
   const archetype = selectedRecipes.includes(EDITORIAL_LEDGER_RECIPE)
@@ -147,7 +167,9 @@ export function recommendRecipes(input = {}) {
         ? COPY_EVIDENCE_STRIP_PRESET
         : selectedRecipes.includes(ARTIFACT_GALLERY_RECIPE)
           ? ARTIFACT_GALLERY_PRESET
-          : '';
+          : selectedRecipes.includes(ROADMAP_BOARD_RECIPE)
+            ? ROADMAP_BOARD_PRESET
+            : '';
   return {
     selectedRecipes,
     archetype,

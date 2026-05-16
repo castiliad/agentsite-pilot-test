@@ -20,6 +20,9 @@ const required = [
   '.agent/recipes/artifact-gallery/recipe.yaml',
   '.agent/recipes/artifact-gallery/README.md',
   '.agent/recipes/artifact-gallery/acceptance.md',
+  '.agent/recipes/roadmap-board/recipe.yaml',
+  '.agent/recipes/roadmap-board/README.md',
+  '.agent/recipes/roadmap-board/acceptance.md',
   '.hermes/plans/initial-site-build.md'
 ];
 

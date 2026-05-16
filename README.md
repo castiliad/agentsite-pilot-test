@@ -44,6 +44,7 @@ npm run check:claims
 npm run check:seo
 npm run check:links
 npm run check:artifacts
+npm run check:roadmap
 npm run test:visual
 ```
 
@@ -84,14 +85,15 @@ npm run qa
 npm run test:visual
 ```
 
-Config JSON supports `name`, `repo`, `owner`, `description`, `brief`, optional hero copy fields (`heroHeadline`, `heroLede`), CTA fields, `audience`, `visualDirection`, `sections`, `proofArtifacts`, `allowedClaims`, `forbiddenClaims`, `approvalRequired`, explicit `recipes`, explicit `archetype`, explicit `visualPreset`, and `autoRecipes`. Sections may include an optional `navLabel` for short navigation text. CLI flags override config values. The generator validates invalid JSON, missing merged `name`/`repo`/`brief`, invalid section ids, and publish attempts without an owner. Generated repos include `check:artifacts`, `test:visual`, `qa:full`, and `check:visual-divergence`; install Chromium with `npx playwright install chromium` if the first browser QA run asks for it.
+Config JSON supports `name`, `repo`, `owner`, `description`, `brief`, optional hero copy fields (`heroHeadline`, `heroLede`), CTA fields, `audience`, `visualDirection`, `sections`, `proofArtifacts`, `allowedClaims`, `forbiddenClaims`, `approvalRequired`, explicit `recipes`, explicit `archetype`, explicit `visualPreset`, and `autoRecipes`. Sections may include an optional `navLabel` for short navigation text. CLI flags override config values. The generator validates invalid JSON, missing merged `name`/`repo`/`brief`, invalid section ids, and publish attempts without an owner. Generated repos include `check:artifacts`, `check:roadmap`, `test:visual`, `qa:full`, and `check:visual-divergence`; install Chromium with `npx playwright install chromium` if the first browser QA run asks for it.
 
-Recipe selection stays explicit by default. If `--auto-recipes` or `"autoRecipes": true` is set and no explicit `recipes`, `archetype`, or `visualPreset` is provided, deterministic heuristics may select a full-page archetype plus section recipes. `product-cockpit` fits product/service/pilot/agent/workflow/AI/tool/dashboard/review/QA/deploy/operator/founder/B2B/dev/technical signals. `editorial-ledger` fits editorial/memo/ledger/provenance/narrative/trust/copy/evidence signals. `copy-evidence-strip` fits proof/claims/trust/artifact/docs/screenshot/contract/copy-positioning signals and proof artifacts. `artifact-gallery` fits searchable/filterable artifact, directory, catalog, screenshots, plans, deploys, and proof-browser signals. The generated README, AGENTS, and site contract record `archetype` and `auto_recipe_selection`. Preview recommendations without writing files:
+Recipe selection stays explicit by default. If `--auto-recipes` or `"autoRecipes": true` is set and no explicit `recipes`, `archetype`, or `visualPreset` is provided, deterministic heuristics may select a full-page archetype plus section recipes. `product-cockpit` fits product/service/pilot/agent/workflow/AI/tool/dashboard/review/QA/deploy/operator/founder/B2B/dev/technical signals. `editorial-ledger` fits editorial/memo/ledger/provenance/narrative/trust/copy/evidence signals. `copy-evidence-strip` fits proof/claims/trust/artifact/docs/screenshot/contract/copy-positioning signals and proof artifacts. `artifact-gallery` fits searchable/filterable artifact, directory, catalog, screenshots, plans, deploys, and proof-browser signals. `roadmap-board` fits roadmap, backlog, next-step, status, priority, local-first, and agent-maintenance signals. The generated README, AGENTS, and site contract record `archetype` and `auto_recipe_selection`. Preview recommendations without writing files:
 ```bash
 npm run recommend:recipes -- --config examples/auto-recipes.config.json
 npm run recommend:recipes -- --config examples/auto-evidence-strip.config.json
 npm run recommend:recipes -- --config examples/editorial-ledger.config.json
 npm run recommend:recipes -- --config examples/artifact-gallery.config.json
+npm run recommend:recipes -- --config examples/roadmap-board.config.json
 npm run check:visual-divergence
 ```
 

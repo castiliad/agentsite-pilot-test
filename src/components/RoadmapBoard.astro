@@ -1,0 +1,133 @@
+---
+import items from '../data/roadmap.json';
+
+const columns = [
+  { id: 'now', label: 'Now' },
+  { id: 'next', label: 'Next' },
+  { id: 'later', label: 'Later' },
+  { id: 'blocked', label: 'Blocked' }
+];
+const priorities = ['high', 'medium', 'low'];
+---
+<section class="section roadmap-board" id="roadmap" data-roadmap-board aria-labelledby="roadmap-title">
+  <div class="roadmap-heading">
+    <div>
+      <div class="section-kicker">Local-first roadmap</div>
+      <h2 id="roadmap-title">A static improvement board agents can keep current.</h2>
+    </div>
+    <p>Filter the generated roadmap, then try local-only status changes. Browser overrides stay on your device and never imply repo changes or live workflow automation.</p>
+  </div>
+
+  <div class="roadmap-controls" aria-label="Roadmap controls">
+    <label class="roadmap-search-label" for="roadmap-search">Search roadmap</label>
+    <input id="roadmap-search" data-roadmap-search type="search" placeholder="Search local-first, QA, recipes…" autocomplete="off" />
+    <div class="roadmap-filter-row" aria-label="Priority filters">
+      <button type="button" class="active" data-roadmap-priority="all">All priorities</button>
+      {priorities.map((priority) => <button type="button" data-roadmap-priority={priority}>{priority}</button>)}
+      <button type="button" data-roadmap-reset>Reset local changes</button>
+    </div>
+  </div>
+
+  <p class="roadmap-count" data-roadmap-count aria-live="polite">Showing {items.length} roadmap items</p>
+
+  <div class="roadmap-columns">
+    {columns.map((column) => (
+      <section class="roadmap-column" data-roadmap-column={column.id} aria-label={`${column.label} roadmap items`}>
+        <h3>{column.label}</h3>
+        <div class="roadmap-stack">
+          {items.filter((item) => item.status === column.id).map((item) => (
+            <article class="roadmap-card" data-roadmap-card data-id={item.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')} data-status={item.status} data-priority={item.priority} data-title={`${item.title} ${item.summary} ${item.nextStep} ${(item.tags || []).join(' ')}`.toLowerCase()}>
+              <div class="roadmap-card-top"><span>{item.priority}</span><strong>{item.owner}</strong></div>
+              <h4>{item.title}</h4>
+              <p>{item.summary}</p>
+              <p class="roadmap-next"><strong>Next:</strong> {item.nextStep}</p>
+              <div class="roadmap-tags">{(item.tags || []).map((tag) => <span>{tag}</span>)}</div>
+              <label>
+                <span>Local status</span>
+                <select data-roadmap-status aria-label={`Set local status for ${item.title}`}>
+                  {columns.map((option) => <option value={option.id} selected={option.id === item.status}>{option.label}</option>)}
+                </select>
+              </label>
+            </article>
+          ))}
+        </div>
+      </section>
+    ))}
+  </div>
+</section>
+
+<script is:inline>
+  (() => {
+    const storageKey = 'agentsite-roadmap-board:v1';
+    for (const board of document.querySelectorAll('[data-roadmap-board]')) {
+      const search = board.querySelector('[data-roadmap-search]');
+      const cards = [...board.querySelectorAll('[data-roadmap-card]')];
+      const columns = [...board.querySelectorAll('[data-roadmap-column]')];
+      const priorityButtons = [...board.querySelectorAll('[data-roadmap-priority]')];
+      const reset = board.querySelector('[data-roadmap-reset]');
+      const count = board.querySelector('[data-roadmap-count]');
+      let activePriority = 'all';
+      let overrides = readOverrides();
+
+      function readOverrides() {
+        try { return JSON.parse(localStorage.getItem(storageKey) || '{}'); }
+        catch { return {}; }
+      }
+      function writeOverrides() { localStorage.setItem(storageKey, JSON.stringify(overrides)); }
+      function moveCard(card, status) {
+        const stack = board.querySelector(`[data-roadmap-column="${status}"] .roadmap-stack`);
+        if (stack && card.parentElement !== stack) stack.appendChild(card);
+        card.dataset.status = status;
+      }
+      function applyOverrides() {
+        for (const card of cards) {
+          const override = overrides[card.dataset.id || ''];
+          if (override) {
+            moveCard(card, override);
+            const select = card.querySelector('[data-roadmap-status]');
+            if (select) select.value = override;
+          }
+        }
+      }
+      function applyFilters() {
+        const query = String(search?.value || '').trim().toLowerCase();
+        let visible = 0;
+        for (const card of cards) {
+          const priorityMatch = activePriority === 'all' || card.dataset.priority === activePriority;
+          const searchMatch = !query || String(card.dataset.title || '').includes(query);
+          const show = priorityMatch && searchMatch;
+          card.hidden = !show;
+          if (show) visible += 1;
+        }
+        for (const button of priorityButtons) {
+          const active = button.dataset.roadmapPriority === activePriority;
+          button.classList.toggle('active', active);
+          button.setAttribute('aria-pressed', String(active));
+        }
+        for (const column of columns) {
+          const visibleCards = column.querySelectorAll('[data-roadmap-card]:not([hidden])').length;
+          column.toggleAttribute('data-empty', visibleCards === 0);
+        }
+        if (count) count.textContent = `Showing ${visible} roadmap item${visible === 1 ? '' : 's'}`;
+      }
+
+      for (const button of priorityButtons) {
+        button.addEventListener('click', () => { activePriority = button.dataset.roadmapPriority || 'all'; applyFilters(); });
+      }
+      for (const select of board.querySelectorAll('[data-roadmap-status]')) {
+        select.addEventListener('change', () => {
+          const card = select.closest('[data-roadmap-card]');
+          if (!card) return;
+          overrides[card.dataset.id || ''] = select.value;
+          writeOverrides();
+          moveCard(card, select.value);
+          applyFilters();
+        });
+      }
+      reset?.addEventListener('click', () => { overrides = {}; localStorage.removeItem(storageKey); window.location.reload(); });
+      search?.addEventListener('input', applyFilters);
+      applyOverrides();
+      applyFilters();
+    }
+  })();
+</script>

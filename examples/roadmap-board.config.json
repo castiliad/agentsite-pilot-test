@@ -1,0 +1,78 @@
+{
+  "name": "Roadmap Board AgentSite",
+  "repo": "agentsite-roadmap-board-example",
+  "owner": "castiliad",
+  "description": "A static AgentSite with a local-first improvement board for autonomous agents.",
+  "brief": "Create a static GitHub Pages site that demonstrates a local-first roadmap board for agent-maintained next steps. It should support search, priority filters, status columns, and browser-local status changes without a backend.",
+  "heroHeadline": "A local-first roadmap board for agent-maintained sites",
+  "heroLede": "The page turns next-step planning into a static mini app: searchable, filterable, locally adjustable, and safe to host on GitHub Pages.",
+  "primaryCtaLabel": "Review roadmap",
+  "primaryCtaHref": "#roadmap",
+  "audience": [
+    "AgentSite maintainers",
+    "Autonomous website improvement agents",
+    "Technical reviewers evaluating static app behavior"
+  ],
+  "visualDirection": "dark product cockpit with local-first roadmap board and proof surfaces",
+  "recipes": [
+    "product-cockpit",
+    "roadmap-board",
+    "artifact-gallery",
+    "copy-evidence-strip"
+  ],
+  "visualPreset": "cockpit-dark",
+  "sections": [
+    {
+      "id": "local-first-behavior",
+      "navLabel": "Local-first",
+      "title": "Browser-local behavior without a backend",
+      "body": "Roadmap filters and status overrides run in the browser with localStorage and never claim to update GitHub or shared state."
+    },
+    {
+      "id": "agent-maintenance",
+      "navLabel": "Agent upkeep",
+      "title": "Future agents update durable state by editing JSON",
+      "body": "Durable roadmap changes happen in src/data/roadmap.json, followed by roadmap, visual, build, and deploy checks."
+    },
+    {
+      "id": "safety-boundaries",
+      "navLabel": "Safety",
+      "title": "Static safety stays explicit",
+      "body": "No auth, analytics, payment links, issue sync, fake automation, or private work queues are included."
+    }
+  ],
+  "proofArtifacts": [
+    {
+      "label": "Roadmap data contract",
+      "body": "src/data/roadmap.json is validated by npm run check:roadmap before build and deploy."
+    },
+    {
+      "label": "Local-only behavior",
+      "body": "Roadmap status changes use browser localStorage and are explicitly non-authoritative."
+    },
+    {
+      "label": "Visual QA",
+      "body": "npm run test:visual exercises search, priority filtering, and local status movement when the board is present."
+    }
+  ],
+  "allowedClaims": [
+    "Static GitHub Pages delivery",
+    "Roadmap data is repo-local JSON",
+    "Browser-local status overrides use localStorage",
+    "Payment disabled / no-payment mode"
+  ],
+  "forbiddenClaims": [
+    "fake customer testimonials",
+    "fake metrics",
+    "unsupported guarantees",
+    "analytics or tracking",
+    "live payment links",
+    "authoritative task sync"
+  ],
+  "approvalRequired": [
+    "Adding analytics, cookies, tracking pixels, or third-party forms",
+    "Adding payment links or enabling payment mode",
+    "Connecting GitHub Issues, project management APIs, or shared task sync",
+    "Introducing server-side runtime, authentication, or a database"
+  ]
+}

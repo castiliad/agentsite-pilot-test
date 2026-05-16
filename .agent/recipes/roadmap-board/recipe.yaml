@@ -1,0 +1,75 @@
+id: roadmap-board
+name: Roadmap Board
+version: 0.1.0
+status: draft
+kind: section_recipe
+section_recipe: roadmap-board
+visual_preset: roadmap-board
+summary: >
+  A static local-first improvement board for AgentSite repos. It renders a
+  JSON-backed roadmap with status columns, priority filters, search, and
+  browser-local status overrides that never imply repository changes.
+best_for:
+  - Agent-maintained sites that need visible next steps and improvement queues.
+  - Static app experiments that should test localStorage without a backend.
+  - Repos where future agents need a compact, inspectable work board.
+not_for:
+  - Authoritative task management, private work queues, or multi-user state.
+  - Claims that local browser changes update the repository or deploy automatically.
+  - Project management requiring authentication, notifications, or database persistence.
+composable_with:
+  - product-cockpit
+  - editorial-ledger
+  - artifact-gallery
+inputs:
+  required:
+    - roadmap title
+    - status
+    - priority
+    - owner
+    - summary
+    - next step
+  optional:
+    - tags
+    - local status override
+sections:
+  - id: roadmap
+    purpose: Show a static improvement board with local-only browser state.
+  - id: next_step_cta
+    purpose: Point future agents to the highest-value next improvement.
+static_safety:
+  required:
+    - Treat roadmap data as public static JSON safe to ship to the browser.
+    - Make browser persistence explicitly local-only and non-authoritative.
+    - Validate statuses, priorities, tags, and unsupported automation language in QA.
+    - Preserve no-payment mode, no analytics, no tracking, no auth, and no server runtime.
+  forbidden:
+    - Fake completed work, fake automation, fake deploy status, or unsupported guarantees.
+    - Private user data, secrets, credentials, or internal task queues.
+    - Implying localStorage changes update GitHub, issues, commits, or deploys.
+acceptance_files:
+  readme: README.md
+  checklist: acceptance.md
+scoring:
+  pass_threshold: 80
+  criteria:
+    - id: fit
+      label: Brief fit
+      weight: 20
+      question: Does the site need a visible improvement queue or agent-maintained next-step board?
+    - id: data-quality
+      label: Data quality
+      weight: 20
+      question: Are roadmap items clear, public-safe, tagged, and statused?
+    - id: local-first
+      label: Local-first behavior
+      weight: 25
+      question: Do filters and local status overrides work without backend or authoritative sync claims?
+    - id: safety
+      label: Static safety
+      weight: 20
+      question: Does the board avoid private data, fake automation, analytics, auth, and unsupported guarantees?
+    - id: maintainability
+      label: Agent maintainability
+      weight: 15
+      question: Can future agents update the board by editing JSON and rerunning QA?

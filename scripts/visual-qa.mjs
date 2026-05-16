@@ -114,6 +114,9 @@ async function auditViewport(browser, viewport) {
   const artifactFailures = await checkArtifactGallery(page, viewport.name);
   failures.push(...artifactFailures);
 
+  const roadmapFailures = await checkRoadmapBoard(page, viewport.name);
+  failures.push(...roadmapFailures);
+
   await page.close();
   return { failures, screenshotPath };
 }
@@ -189,6 +192,44 @@ async function checkArtifactGallery(page, viewportName) {
     const qaVisible = await page.locator('[data-artifact-card]:visible').count();
     if (!url.includes('tag=qa')) failures.push(`${viewportName}: artifact tag filter did not persist tag=qa in URL`);
     if (qaVisible < 1) failures.push(`${viewportName}: artifact qa tag did not leave any cards visible`);
+  }
+  return failures;
+}
+
+async function checkRoadmapBoard(page, viewportName) {
+  const failures = [];
+  const boardCount = await page.locator('[data-roadmap-board]').count();
+  if (!boardCount) return failures;
+
+  await expectVisible(page, '[data-roadmap-search]', `${viewportName}: roadmap search`, failures, { minWidth: 160, minHeight: 34 });
+  await expectVisible(page, '[data-roadmap-priority="all"]', `${viewportName}: roadmap all filter`, failures, { minWidth: 80, minHeight: 34 });
+  const cardCount = await page.locator('[data-roadmap-card]').count();
+  if (cardCount < 3) failures.push(`${viewportName}: roadmap board should render at least 3 cards; found ${cardCount}`);
+
+  const search = page.locator('[data-roadmap-search]').first();
+  await search.fill('local');
+  await page.waitForTimeout(80);
+  const searchVisible = await page.locator('[data-roadmap-card]:visible').count();
+  if (searchVisible < 1) failures.push(`${viewportName}: roadmap search did not leave any local-related cards visible`);
+  await search.fill('');
+
+  const high = page.locator('[data-roadmap-priority="high"]').first();
+  if (await high.count()) {
+    await high.click();
+    await page.waitForTimeout(80);
+    const highVisible = await page.locator('[data-roadmap-card]:visible').count();
+    if (highVisible < 1) failures.push(`${viewportName}: roadmap high priority filter did not leave any cards visible`);
+  }
+  await page.locator('[data-roadmap-priority="all"]').first().click().catch(() => {});
+
+  const firstSelect = page.locator('[data-roadmap-status]').first();
+  if (await firstSelect.count()) {
+    await firstSelect.selectOption('later');
+    await page.waitForTimeout(80);
+    const laterCards = await page.locator('[data-roadmap-column="later"] [data-roadmap-card]:visible').count();
+    const stored = await page.evaluate(() => Object.keys(JSON.parse(localStorage.getItem('agentsite-roadmap-board:v1') || '{}')).length);
+    if (laterCards < 1) failures.push(`${viewportName}: roadmap local status change did not move a card into later column`);
+    if (stored < 1) failures.push(`${viewportName}: roadmap local status change did not write localStorage override`);
   }
   return failures;
 }
