@@ -1,0 +1,72 @@
+id: copy-evidence-strip
+name: Copy Evidence Strip
+version: 0.1.0
+status: draft
+summary: >
+  A composable AgentSite pattern that pairs the strongest visible claims with
+  concrete repo-verifiable artifacts so marketing copy stays grounded, scannable,
+  and safe for future autonomous agents to maintain.
+best_for:
+  - Static pages where the copy needs more trust without adding fake social proof.
+  - Service, tool, portfolio, or project pages that have real artifacts, contracts, screenshots, QA output, or docs to cite.
+  - Agent-maintained sites where future agents need to understand why a claim is allowed.
+not_for:
+  - Pages with no real artifacts or user-provided facts to connect to the claims.
+  - Customer-proof sections that imply endorsements, logos, metrics, or case studies that were not provided.
+  - Live proof, analytics proof, payment proof, or private-data proof unless separately approved and implemented.
+visual_preset: evidence-strip
+composable_with:
+  - product-cockpit
+  - static-launch-page
+  - proof-artifact-grid
+inputs:
+  required:
+    - project_name
+    - supported_claims
+    - proof_artifacts
+    - brief
+  optional:
+    - short_claim_labels
+    - artifact_paths
+    - reviewer_notes
+sections:
+  - id: copy-evidence-strip
+    purpose: Pair each major claim with a concrete artifact or supplied fact.
+  - id: proof
+    purpose: Keep proof visible without inventing testimonials, metrics, customer logos, or benchmarks.
+static_safety:
+  required:
+    - Use only allowed claims and provided proof artifacts.
+    - Phrase proof as repo-verifiable evidence, documentation, screenshots, QA output, contracts, or stated scope.
+    - Treat missing artifacts as a prompt to weaken or remove the claim rather than fabricate proof.
+    - Keep no-payment mode, no analytics, no server runtime, and no live-data boundaries intact.
+  forbidden:
+    - Fake metrics, fake customers, fake testimonials, fabricated logos, or unsupported guarantees.
+    - Implying that a planned artifact already exists.
+    - Describing private, payment, analytics, or live user data as proof without explicit approval.
+acceptance_files:
+  readme: README.md
+  checklist: acceptance.md
+scoring:
+  pass_threshold: 80
+  criteria:
+    - id: fit
+      label: Brief fit
+      weight: 20
+      question: Does the brief need stronger trust, proof, or grounded copy rather than a full layout change?
+    - id: evidence
+      label: Evidence availability
+      weight: 30
+      question: Are there enough real proof artifacts or provided facts to pair with visible claims?
+    - id: safety
+      label: Static safety
+      weight: 25
+      question: Can every proof item be shown without fake metrics, live data, customer proof, payments, analytics, or unsupported claims?
+    - id: composability
+      label: Composability
+      weight: 15
+      question: Can the strip be added to the default or cockpit page without disrupting the primary CTA or responsive layout?
+    - id: maintainability
+      label: Agent maintainability
+      weight: 10
+      question: Will future agents understand which artifacts justify which claims?

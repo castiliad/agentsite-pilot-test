@@ -1,0 +1,36 @@
+{
+  "name": "Auto Evidence AgentSite",
+  "repo": "agentsite-auto-evidence-example",
+  "owner": "castiliad",
+  "description": "A static landing page that uses proof artifacts to keep service copy credible and maintainable.",
+  "brief": "Create a credibility-focused static landing page for a service where every marketing claim is paired with proof, evidence artifacts, QA output, contracts, and deployment receipts. Keep it static and avoid fake quoted endorsements, fake metrics, analytics, and payment links.",
+  "autoRecipes": true,
+  "heroHeadline": "Trustworthy service copy with proof attached",
+  "heroLede": "Every claim points back to a contract, QA check, deployment receipt, or documented scope boundary so future agents can improve the site without inventing credibility.",
+  "primaryCtaLabel": "Inspect the evidence",
+  "primaryCtaHref": "#evidence-strip",
+  "audience": [
+    "Founders refining service positioning",
+    "Agents maintaining trustworthy marketing copy",
+    "Reviewers who need evidence before approving stronger claims"
+  ],
+  "proofArtifacts": [
+    {
+      "label": "Contract file",
+      "body": "The generated site contract records allowed claims and approval-required changes."
+    },
+    {
+      "label": "QA scripts",
+      "body": "Repo-local checks scan contracts, claims, links, SEO basics, and build output."
+    },
+    {
+      "label": "Deploy receipt",
+      "body": "The deploy verifier checks the live GitHub Pages URL for expected text."
+    }
+  ],
+  "allowedClaims": [
+    "Static GitHub Pages delivery",
+    "Repo-local QA scripts",
+    "Contract-backed maintenance boundaries"
+  ]
+}

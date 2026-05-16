@@ -1,0 +1,69 @@
+{
+  "name": "Evidence Ledger AgentSite",
+  "repo": "agentsite-evidence-strip-example",
+  "owner": "castiliad",
+  "description": "A static landing page that shows how each core claim maps to a repo-verifiable artifact.",
+  "brief": "Create a credibility-focused static landing page for a service where every marketing claim is paired with proof artifacts, QA evidence, contracts, and deployment receipts. Keep it static, no analytics, no payments, no fabricated quoted endorsements, no fake metrics.",
+  "heroHeadline": "A static site where every claim carries its receipt",
+  "heroLede": "Evidence Ledger shows how service copy can stay persuasive without inventing proof: each claim points to contracts, QA output, deployment receipts, or documented scope.",
+  "primaryCtaLabel": "Review the proof ledger",
+  "primaryCtaHref": "#evidence-strip",
+  "audience": [
+    "Founders who need trustworthy service copy",
+    "Maintainers who need claims tied to real artifacts",
+    "Agents improving a static site without inventing proof"
+  ],
+  "visualDirection": "premium editorial dark interface with a clear evidence ledger band",
+  "recipes": ["copy-evidence-strip"],
+  "sections": [
+    {
+      "id": "claim-discipline",
+      "title": "Claim discipline before polish",
+      "navLabel": "Claims",
+      "body": "The site favors specific, supportable claims over broad promises or borrowed credibility."
+    },
+    {
+      "id": "artifact-ledger",
+      "title": "Artifacts make the copy maintainable",
+      "navLabel": "Artifacts",
+      "body": "Future agents can inspect contracts, runbooks, QA scripts, screenshots, and deployment receipts before strengthening copy."
+    },
+    {
+      "id": "safe-boundaries",
+      "title": "Trust boundaries remain explicit",
+      "navLabel": "Boundaries",
+      "body": "The page does not add analytics, payments, live data, fake customers, fake metrics, or unsupported guarantees."
+    }
+  ],
+  "proofArtifacts": [
+    {
+      "label": "Site contract",
+      "body": ".agent/site.contract.yaml defines allowed claims, required sections, and approval boundaries."
+    },
+    {
+      "label": "QA command",
+      "body": "npm run qa checks contracts, claims, links, SEO basics, and the Astro production build."
+    },
+    {
+      "label": "Visual QA screenshots",
+      "body": "npm run test:visual verifies desktop and mobile layouts and saves screenshots for inspection."
+    },
+    {
+      "label": "Deploy verifier",
+      "body": "npm run verify:deploy checks the live GitHub Pages URL for expected content."
+    }
+  ],
+  "allowedClaims": [
+    "Static GitHub Pages delivery",
+    "Repo-local QA scripts",
+    "Contract-backed maintenance boundaries",
+    "Deploy verification workflow"
+  ],
+  "forbiddenClaims": [
+    "fake quoted endorsements",
+    "fake metrics",
+    "unsupported guarantees",
+    "analytics or tracking",
+    "live payment links"
+  ]
+}

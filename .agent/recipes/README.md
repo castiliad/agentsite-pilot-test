@@ -17,6 +17,7 @@ Recipes do not imply live integrations, analytics, payments, customer proof, or 
 | Recipe | Use when | Static-safe notes |
 | --- | --- | --- |
 | `product-cockpit` | A site needs a high-signal hero plus compact evidence panels, workflow stages, and decision/CTA areas. | Use documented artifacts and user-provided facts only; avoid fake metrics, dashboards, customer logos, or live operational claims. |
+| `copy-evidence-strip` | A site needs stronger trust/copy grounding without a full layout overhaul. | Pair each visible claim with a configured artifact or safe repo fact; avoid endorsements, fake metrics, logos, or invented proof. |
 
 ## Agent workflow
 
@@ -33,8 +34,8 @@ Recipes do not imply live integrations, analytics, payments, customer proof, or 
    ```
 4. Select only recipes that fit the brief and contract boundaries.
 5. Record selected recipe IDs and visual preset in the project plan or generated scaffold config.
-6. For generator-created scaffolds, selecting `recipes: ["product-cockpit"]`, `visualPreset: "cockpit-dark"`, or `visualPreset: "product-cockpit"` renders the product-cockpit UI template automatically; other selections keep the default landing-page template.
-7. To let the generator infer from natural-language brief/config signals, pass `--auto-recipes` or set `"autoRecipes": true`. Auto mode is deterministic, currently only selects `product-cockpit`, and never overrides explicit `recipes` or `visualPreset` values (including an explicit empty `recipes: []`).
+6. For generator-created scaffolds, selecting `recipes: ["product-cockpit"]`, `visualPreset: "cockpit-dark"`, or `visualPreset: "product-cockpit"` renders the product-cockpit UI template automatically. Selecting `recipes: ["copy-evidence-strip"]` or `visualPreset: "evidence-strip"` adds a claim-to-artifact strip to either the default or cockpit layout.
+7. To let the generator infer from natural-language brief/config signals, pass `--auto-recipes` or set `"autoRecipes": true`. Auto mode is deterministic, can select `product-cockpit`, `copy-evidence-strip`, or both, and never overrides explicit `recipes` or `visualPreset` values (including an explicit empty `recipes: []`).
 8. Apply the pattern with static copy and verifiable artifacts only.
 9. Run QA before handoff.
 
