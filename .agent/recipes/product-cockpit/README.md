@@ -48,4 +48,4 @@ The default visual preset is `cockpit-dark`: dark premium background, high-contr
 }
 ```
 
-The generator records recipe selection in generated docs and contracts. The recipe does not yet transform the site UI automatically; agents should apply the pattern intentionally and then run QA.
+The generator now renders this UI automatically when config includes `recipes: ["product-cockpit"]`, `visualPreset: "cockpit-dark"`, or `visualPreset: "product-cockpit"`. Default generation remains unchanged when the recipe/preset is not selected.

@@ -1,0 +1,70 @@
+{
+  "name": "Harbor Notes",
+  "repo": "harbor-notes",
+  "owner": "castiliad",
+  "brief": "Create a restrained, premium static landing page for independent consultants and fractional operators who capture messy meeting notes, extract decisions, and hand off a clear next-action log.",
+  "description": "A static product-cockpit page that explains the meeting-notes-to-next-actions workflow and gives reviewers proof artifacts and safe boundaries.",
+  "heroHeadline": "Turn messy meeting notes into a clear action handoff",
+  "heroLede": "Harbor Notes helps visitors understand how a lightweight notes workflow could capture rough meeting context, clarify decisions, and prepare next actions for review without pretending to be a live product dashboard.",
+  "audience": [
+    "Independent consultants who leave meetings with scattered action items",
+    "Fractional operators maintaining client-facing decision logs",
+    "Solo founders testing whether a lightweight notes-to-next-actions workflow deserves a real product"
+  ],
+  "sections": [
+    {
+      "id": "capture",
+      "title": "Capture the rough meeting context",
+      "body": "The page starts with the user-facing workflow: collect the messy notes and preserve the context needed for a useful handoff.",
+      "navLabel": "Capture"
+    },
+    {
+      "id": "extract",
+      "title": "Extract decisions and owners",
+      "body": "It then frames how decisions, owners, and open questions could be separated from the raw notes for a cleaner review.",
+      "navLabel": "Extract"
+    },
+    {
+      "id": "handoff",
+      "title": "Hand off a next-action log",
+      "body": "The final workflow panel shows a safe next-action log that can be reviewed, corrected, and maintained through repo-local contracts and QA.",
+      "navLabel": "Handoff"
+    }
+  ],
+  "proofArtifacts": [
+    {
+      "label": "Site contract",
+      "body": ".agent/site.contract.yaml records the mission, audience, required sections, allowed claims, and approval-required boundaries."
+    },
+    {
+      "label": "QA commands",
+      "body": "npm run qa and npm run qa:full verify contracts, claims, links, build output, and visual behavior locally."
+    },
+    {
+      "label": "Recipe registry",
+      "body": ".agent/recipes/product-cockpit documents the static-safe cockpit pattern and acceptance criteria."
+    }
+  ],
+  "allowedClaims": [
+    "Static GitHub Pages delivery",
+    "Repo-local QA scripts",
+    "Contract-backed maintenance boundaries",
+    "Payment disabled / no-payment mode"
+  ],
+  "forbiddenClaims": [
+    "fake customer testimonials",
+    "fake metrics",
+    "live telemetry",
+    "analytics or tracking",
+    "live payment links"
+  ],
+  "approvalRequired": [
+    "Adding analytics, cookies, tracking pixels, or third-party forms",
+    "Adding payment links or enabling payment mode",
+    "Making customer, benchmark, revenue, conversion, or availability claims"
+  ],
+  "primaryCtaLabel": "Inspect the cockpit",
+  "primaryCtaHref": "#panels",
+  "recipes": ["product-cockpit"],
+  "visualPreset": "cockpit-dark"
+}

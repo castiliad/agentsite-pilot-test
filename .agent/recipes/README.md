@@ -32,8 +32,9 @@ Recipes do not imply live integrations, analytics, payments, customer proof, or 
    ```
 4. Select only recipes that fit the brief and contract boundaries.
 5. Record selected recipe IDs and visual preset in the project plan or generated scaffold config.
-6. Apply the pattern with static copy and verifiable artifacts only.
-7. Run QA before handoff.
+6. For generator-created scaffolds, selecting `recipes: ["product-cockpit"]`, `visualPreset: "cockpit-dark"`, or `visualPreset: "product-cockpit"` now renders the product-cockpit UI template automatically; other selections keep the default landing-page template.
+7. Apply the pattern with static copy and verifiable artifacts only.
+8. Run QA before handoff.
 
 ## Recipe authoring checklist
 
