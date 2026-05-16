@@ -83,12 +83,14 @@ npm run qa
 npm run test:visual
 ```
 
-Config JSON supports `name`, `repo`, `owner`, `description`, `brief`, optional hero copy fields (`heroHeadline`, `heroLede`), CTA fields, `audience`, `visualDirection`, `sections`, `proofArtifacts`, `allowedClaims`, `forbiddenClaims`, `approvalRequired`, explicit `recipes`, explicit `visualPreset`, and `autoRecipes`. Sections may include an optional `navLabel` for short navigation text. CLI flags override config values. The generator validates invalid JSON, missing merged `name`/`repo`/`brief`, invalid section ids, and publish attempts without an owner. Generated repos include `test:visual` and `qa:full`; install Chromium with `npx playwright install chromium` if the first browser QA run asks for it.
+Config JSON supports `name`, `repo`, `owner`, `description`, `brief`, optional hero copy fields (`heroHeadline`, `heroLede`), CTA fields, `audience`, `visualDirection`, `sections`, `proofArtifacts`, `allowedClaims`, `forbiddenClaims`, `approvalRequired`, explicit `recipes`, explicit `archetype`, explicit `visualPreset`, and `autoRecipes`. Sections may include an optional `navLabel` for short navigation text. CLI flags override config values. The generator validates invalid JSON, missing merged `name`/`repo`/`brief`, invalid section ids, and publish attempts without an owner. Generated repos include `test:visual`, `qa:full`, and `check:visual-divergence`; install Chromium with `npx playwright install chromium` if the first browser QA run asks for it.
 
-Recipe selection stays explicit by default. If `--auto-recipes` or `"autoRecipes": true` is set and no explicit `recipes` or `visualPreset` is provided, deterministic heuristics may select `product-cockpit`, `copy-evidence-strip`, or both. `product-cockpit` fits product/service/pilot/agent/workflow/AI/tool/dashboard/review/QA/deploy/operator/founder/B2B/dev/technical signals. `copy-evidence-strip` fits proof/claims/trust/artifact/docs/screenshot/contract/copy-positioning signals and proof artifacts. The generated README, AGENTS, and site contract record `auto_recipe_selection`. Preview recommendations without writing files:
+Recipe selection stays explicit by default. If `--auto-recipes` or `"autoRecipes": true` is set and no explicit `recipes`, `archetype`, or `visualPreset` is provided, deterministic heuristics may select a full-page archetype plus section recipes. `product-cockpit` fits product/service/pilot/agent/workflow/AI/tool/dashboard/review/QA/deploy/operator/founder/B2B/dev/technical signals. `editorial-ledger` fits editorial/memo/ledger/provenance/narrative/trust/copy/evidence signals. `copy-evidence-strip` fits proof/claims/trust/artifact/docs/screenshot/contract/copy-positioning signals and proof artifacts. The generated README, AGENTS, and site contract record `archetype` and `auto_recipe_selection`. Preview recommendations without writing files:
 ```bash
 npm run recommend:recipes -- --config examples/auto-recipes.config.json
 npm run recommend:recipes -- --config examples/auto-evidence-strip.config.json
+npm run recommend:recipes -- --config examples/editorial-ledger.config.json
+npm run check:visual-divergence
 ```
 
 The generator does not create a GitHub repo unless `--publish` is explicitly passed. See `.agent/runbooks/generator.md` for config usage, publish-mode requirements, and caveats.

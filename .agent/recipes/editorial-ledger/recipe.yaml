@@ -1,0 +1,78 @@
+id: editorial-ledger
+name: Editorial Ledger
+version: 0.1.0
+status: draft
+kind: archetype
+archetype: editorial-ledger
+visual_preset: editorial-light
+summary: >
+  A full-page AgentSite archetype for credibility-first narrative pages that read
+  like an editorial memo or claim ledger instead of a dark product cockpit.
+best_for:
+  - Trust-focused pages where claims need provenance and calmer editorial pacing.
+  - Documentation-heavy service or project pages that should feel like a concise operating memo.
+  - Static sites where visual divergence from cockpit/dark SaaS layouts is a primary goal.
+not_for:
+  - Live dashboards, control planes, or operational telemetry pages.
+  - Loud launch pages that need animated product surfaces or dense status panels.
+  - Customer-proof pages without real customer-provided source material.
+inputs:
+  required:
+    - project_name
+    - brief
+    - audience
+    - supported_claims
+    - proof_artifacts
+  optional:
+    - claim_ledger
+    - narrative_sections
+    - provenance_notes
+sections:
+  - id: hero
+    purpose: Present a large editorial headline and memo-style summary.
+  - id: operating-note
+    purpose: Explain what decision the page supports and what the static boundaries are.
+  - id: claim-ledger
+    purpose: Pair core claims with evidence in a calm, readable ledger.
+  - id: sections
+    purpose: Render the brief sections as numbered editorial entries.
+  - id: proof
+    purpose: Show repo-verifiable proof artifacts without fake social proof.
+  - id: boundaries
+    purpose: State what is not claimed and what requires approval.
+static_safety:
+  required:
+    - Keep the page static and GitHub Pages-compatible.
+    - Use only configured allowed claims and proof artifacts.
+    - Treat the ledger as provenance for copy, not as customer endorsement.
+    - Keep payments, analytics, live data, server runtime, and databases out unless separately approved.
+  forbidden:
+    - Fake metrics, fake customers, fake testimonials, fabricated screenshots, or unsupported guarantees.
+    - Live dashboard/status language unless connected to real live data with approval.
+    - Implying unverified customer results or case studies.
+acceptance_files:
+  readme: README.md
+  checklist: acceptance.md
+scoring:
+  pass_threshold: 80
+  criteria:
+    - id: archetype-fit
+      label: Archetype fit
+      weight: 25
+      question: Does the page benefit from editorial/provenance framing rather than cockpit framing?
+    - id: visual-divergence
+      label: Visual divergence
+      weight: 25
+      question: Does the archetype materially differ in palette, typography, spacing, and layout rhythm?
+    - id: evidence
+      label: Evidence availability
+      weight: 20
+      question: Are real proof artifacts available for the claim ledger?
+    - id: safety
+      label: Static safety
+      weight: 20
+      question: Can the archetype remain truthful without live data, analytics, payments, or fabricated proof?
+    - id: maintainability
+      label: Agent maintainability
+      weight: 10
+      question: Can future agents distinguish archetype, visual preset, and section recipes clearly?

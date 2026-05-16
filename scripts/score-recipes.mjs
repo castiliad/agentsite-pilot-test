@@ -60,8 +60,8 @@ function scoreRecipe(id) {
     {
       label: 'metadata',
       weight: 20,
-      passed: requiredScalars(yaml, ['id', 'name', 'version', 'status', 'summary', 'visual_preset']).length === 0,
-      note: missingNote('missing metadata fields', requiredScalars(yaml, ['id', 'name', 'version', 'status', 'summary', 'visual_preset']))
+      passed: requiredScalars(yaml, ['id', 'name', 'version', 'status', 'kind', 'summary', 'visual_preset']).length === 0,
+      note: missingNote('missing metadata fields', requiredScalars(yaml, ['id', 'name', 'version', 'status', 'kind', 'summary', 'visual_preset']))
     },
     {
       label: 'directory id matches recipe id',

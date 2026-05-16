@@ -2,6 +2,9 @@ id: product-cockpit
 name: Product Cockpit
 version: 0.1.0
 status: draft
+kind: archetype
+archetype: product-cockpit
+visual_preset: cockpit-dark
 summary: >
   A reusable AgentSite pattern for turning a product, service, or internal initiative
   into a high-signal static landing page with a hero, operating context, proof

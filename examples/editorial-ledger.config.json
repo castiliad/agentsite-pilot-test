@@ -1,0 +1,71 @@
+{
+  "name": "Evidence Ledger Memo",
+  "repo": "agentsite-editorial-ledger-example",
+  "owner": "castiliad",
+  "description": "A calm static memo page that shows how every claim maps to a verifiable artifact.",
+  "brief": "Create an editorial ledger style static site for a credibility-focused service memo. It should feel like a polished briefing, not a dashboard. Pair claims with evidence, artifacts, contracts, QA output, and deployment receipts. Keep it static with no analytics, no payments, no fake quoted endorsements, no fake metrics, and no live data.",
+  "archetype": "editorial-ledger",
+  "visualPreset": "editorial-light",
+  "recipes": ["editorial-ledger"],
+  "heroHeadline": "A calm memo where every claim has provenance",
+  "heroLede": "This editorial ledger turns service positioning into a readable static memo: claims, evidence, sections, and boundaries stay close enough for future agents to audit.",
+  "primaryCtaLabel": "Read the claim ledger",
+  "primaryCtaHref": "#ledger",
+  "audience": [
+    "Founders who want credible service positioning",
+    "Reviewers checking whether claims are supported",
+    "Agents maintaining static copy without inventing proof"
+  ],
+  "visualDirection": "light editorial memo with paper texture, serif headlines, numbered entries, and claim ledger rows",
+  "sections": [
+    {
+      "id": "claim-provenance",
+      "title": "Claim provenance before persuasion",
+      "navLabel": "Provenance",
+      "body": "The page treats every strong line as something that needs a source, not just a better adjective."
+    },
+    {
+      "id": "maintainer-clarity",
+      "title": "Future maintainers need a short audit trail",
+      "navLabel": "Audit trail",
+      "body": "Contracts, QA scripts, screenshots, runbooks, and deploy receipts make it easier for agents to improve copy without drifting."
+    },
+    {
+      "id": "explicit-limits",
+      "title": "The limits are part of the trust surface",
+      "navLabel": "Limits",
+      "body": "The memo says what is not included: no live data, no payment flow, no analytics, no fabricated customer proof, and no unsupported guarantees."
+    }
+  ],
+  "proofArtifacts": [
+    {
+      "label": "Site contract",
+      "body": ".agent/site.contract.yaml records allowed claims, required sections, and approval boundaries."
+    },
+    {
+      "label": "QA scripts",
+      "body": "npm run qa checks contracts, claims, links, SEO basics, and the production build."
+    },
+    {
+      "label": "Visual QA screenshots",
+      "body": "npm run test:visual verifies desktop and mobile layouts and saves inspection screenshots."
+    },
+    {
+      "label": "Deploy verification",
+      "body": "npm run verify:deploy confirms the GitHub Pages URL contains expected live copy."
+    }
+  ],
+  "allowedClaims": [
+    "Static GitHub Pages delivery",
+    "Repo-local QA scripts",
+    "Contract-backed maintenance boundaries",
+    "Deploy verification workflow"
+  ],
+  "forbiddenClaims": [
+    "fake quoted endorsements",
+    "fake metrics",
+    "unsupported guarantees",
+    "analytics or tracking",
+    "live payment links"
+  ]
+}

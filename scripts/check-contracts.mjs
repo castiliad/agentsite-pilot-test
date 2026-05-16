@@ -11,6 +11,12 @@ const required = [
   '.agent/recipes/product-cockpit/recipe.yaml',
   '.agent/recipes/product-cockpit/README.md',
   '.agent/recipes/product-cockpit/acceptance.md',
+  '.agent/recipes/copy-evidence-strip/recipe.yaml',
+  '.agent/recipes/copy-evidence-strip/README.md',
+  '.agent/recipes/copy-evidence-strip/acceptance.md',
+  '.agent/recipes/editorial-ledger/recipe.yaml',
+  '.agent/recipes/editorial-ledger/README.md',
+  '.agent/recipes/editorial-ledger/acceptance.md',
   '.hermes/plans/initial-site-build.md'
 ];
 

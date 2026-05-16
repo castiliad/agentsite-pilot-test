@@ -32,9 +32,11 @@ const audience = normalizeStringArray(args.audience, 'audience', defaultAudience
 const visualDirection = present(args.visualDirection) ? cleanText(args.visualDirection, 'visualDirection') : 'restrained premium static-site landing page with crisp editorial spacing';
 const explicitRecipeSelection = hasOwn(config, 'recipes') || hasOwn(rawArgs, 'recipes');
 const explicitVisualPreset = hasOwn(config, 'visualPreset') || hasOwn(rawArgs, 'visualPreset');
+const explicitArchetype = hasOwn(config, 'archetype') || hasOwn(rawArgs, 'archetype');
 const autoRecipesRequested = Boolean(args.autoRecipes);
 let selectedRecipes = normalizeOptionalStringArray(args.recipes, 'recipes');
 let visualPreset = present(args.visualPreset) ? cleanText(args.visualPreset, 'visualPreset') : '';
+let archetype = present(args.archetype) ? cleanText(args.archetype, 'archetype') : '';
 const primaryCtaLabel = present(args.primaryCtaLabel) ? cleanText(args.primaryCtaLabel, 'primaryCtaLabel') : 'Review next step';
 const primaryCtaHref = present(args.primaryCtaHref) ? cleanHref(args.primaryCtaHref) : '#cta';
 const sections = normalizeSections(args.sections, brief, audience);
@@ -45,6 +47,7 @@ const autoRecipeSelection = buildAutoRecipeSelection();
 if (autoRecipeSelection.applied) {
   selectedRecipes = autoRecipeSelection.selectedRecipes;
   visualPreset = autoRecipeSelection.visualPreset;
+  archetype = autoRecipeSelection.archetype;
 }
 const allowedClaims = normalizeStringArray(args.allowedClaims, 'allowedClaims', [
   'Static GitHub Pages delivery',
@@ -67,8 +70,10 @@ const approvalRequired = normalizeStringArray(args.approvalRequired, 'approvalRe
   'Changing deployment target away from GitHub Pages',
   'Introducing server-side runtime or a database'
 ]);
-const usesProductCockpit = shouldRenderProductCockpit(selectedRecipes, visualPreset);
+const usesEditorialLedger = shouldRenderEditorialLedger(selectedRecipes, visualPreset, archetype);
+const usesProductCockpit = !usesEditorialLedger && shouldRenderProductCockpit(selectedRecipes, visualPreset, archetype);
 const usesCopyEvidenceStrip = shouldRenderCopyEvidenceStrip(selectedRecipes, visualPreset);
+const activeArchetype = usesEditorialLedger ? 'editorial-ledger' : usesProductCockpit ? 'product-cockpit' : 'default-landing';
 
 if (!projectName) fail('--name cannot be empty');
 if (!brief) fail('--brief cannot be empty');
@@ -109,6 +114,8 @@ const view = {
   RECIPE_SELECTION_MD: selectedRecipes.length ? mdList(selectedRecipes) : '- None selected',
   RECIPE_SELECTION_YAML: selectedRecipes.length ? yamlList(selectedRecipes, 2) : '  []',
   RECIPE_SELECTION_INLINE: selectedRecipes.length ? selectedRecipes.join(', ') : 'none selected',
+  ARCHETYPE: activeArchetype,
+  ARCHETYPE_YAML: yamlScalar(activeArchetype),
   VISUAL_PRESET: visualPreset || 'none selected',
   VISUAL_PRESET_YAML: visualPreset ? yamlScalar(visualPreset) : 'null',
   AUTO_RECIPE_SELECTION: autoRecipeSelection.summary,
@@ -116,8 +123,8 @@ const view = {
   AUTO_RECIPE_REASON_MD: autoRecipeSelection.reasons.length ? mdList(autoRecipeSelection.reasons) : '- No auto-selection signals recorded',
   SECTIONS_SUMMARY_MD: mdList(sections.map((section) => `${section.title} (${section.id})`)),
   PROOF_SUMMARY_MD: mdList(proofArtifacts.map((item) => `${item.label}: ${item.body}`)),
-  SITE_INDEX: usesProductCockpit ? buildProductCockpitIndexAstro() : buildIndexAstro(),
-  GLOBAL_CSS: `${usesProductCockpit ? buildProductCockpitGlobalCss() : buildGlobalCss()}${usesCopyEvidenceStrip ? buildCopyEvidenceStripCss() : ''}`
+  SITE_INDEX: usesEditorialLedger ? buildEditorialLedgerIndexAstro() : usesProductCockpit ? buildProductCockpitIndexAstro() : buildIndexAstro(),
+  GLOBAL_CSS: `${usesEditorialLedger ? buildEditorialLedgerGlobalCss() : usesProductCockpit ? buildProductCockpitGlobalCss() : buildGlobalCss()}${usesCopyEvidenceStrip ? buildCopyEvidenceStripCss(usesEditorialLedger ? 'light' : 'dark') : ''}`
 };
 
 const files = new Map(Object.entries({
@@ -141,6 +148,7 @@ const files = new Map(Object.entries({
       'list:recipes': 'node scripts/list-recipes.mjs',
       'score:recipes': 'node scripts/score-recipes.mjs',
       'recommend:recipes': 'node scripts/recommend-recipes.mjs',
+      'check:visual-divergence': 'node scripts/check-visual-divergence.mjs',
       'verify:deploy': 'node scripts/verify-deploy.mjs'
     },
     dependencies: { astro: '^6.3.3', typescript: '^6.0.3' },
@@ -148,8 +156,8 @@ const files = new Map(Object.entries({
   }, null, 2) + '\n',
   'astro.config.mjs': `// @ts-check\nimport { defineConfig } from 'astro/config';\n\nexport default defineConfig({\n  site: 'https://{{OWNER}}.github.io',\n  base: '/{{REPO_NAME}}',\n  output: 'static'\n});\n`,
   'README.md': `# {{PROJECT_NAME}}\n\n{{DESCRIPTION}}\n\n## Brief\n{{BRIEF}}\n\n## Recipe registry\nSelected recipes:\n{{RECIPE_SELECTION_MD}}\n\nVisual preset: \`{{VISUAL_PRESET}}\`\n\nauto_recipe_selection: {{AUTO_RECIPE_SELECTION}}\n\nAuto-selection signals:\n{{AUTO_RECIPE_REASON_MD}}\n\nRegistry commands:\n\`\`\`bash\nnpm run list:recipes\nnpm run score:recipes\nnpm run recommend:recipes -- --brief \"{{BRIEF}}\"\n\`\`\`\n\n## Audience\n{{AUDIENCE_LIST_MD}}\n\n## Live URL\n{{LIVE_URL}}\n\n## Repository\n{{REPO_URL}}\n\n## Local development\n\`\`\`bash\nnpm install\nnpm run dev\n\`\`\`\n\n## QA\n\`npm run qa\` is the fast local gate. Browser/mobile visual QA is explicit so normal edits stay quick.\n\n## Recipe-enabled generation\nSelecting \`recipes: [\"product-cockpit\"]\`, \`visualPreset: \"cockpit-dark\"\`, or \`visualPreset: \"product-cockpit\"\` renders the cockpit UI template instead of only recording metadata. The output remains static-safe: no analytics, payments, backend, authentication, live telemetry, fake metrics, customer logos, or quoted endorsements.\n\n\`\`\`bash\nnpm run qa\nnpm run test:visual\nnpm run qa:full\nnpm audit --audit-level=moderate\n\`\`\`\n\nVisual QA builds and serves the static site, checks desktop and mobile layouts, fails on console/page errors, horizontal overflow, missing hero/nav/CTA visibility, broken hash anchors, and visible nav ellipses, then writes screenshots to \`.agent/audits/screenshots/\`. If Chromium is not installed yet, run \`npx playwright install chromium\` once.\n\n## Deploy verification\n\`\`\`bash\nLIVE_URL=\"{{LIVE_URL}}\" \\\nEXPECT_TEXT=\"{{EXPECT_TEXT}}\" \\\nREPO=\"{{OWNER_REPO}}\" \\\nnpm run verify:deploy\n\`\`\`\n\n## Agent maintenance notes\n- Read \`AGENTS.md\` before editing.\n- Keep visible copy aligned with \`.agent/site.contract.yaml\` and \`.agent/brand.contract.yaml\`.\n- Payment mode is disabled in \`.agent/payment.contract.yaml\`; do not add payment links without explicit approval.\n- Deployment is GitHub Pages via \`.github/workflows/deploy.yml\`.\n`,
-  'AGENTS.md': `# AGENTS.md\n\n## Mission\n{{PROJECT_NAME}} is a static AgentSite generated from this requester brief: {{BRIEF}}\n\n## Audience\n{{AUDIENCE_LIST_MD}}\n\n## Stack\n- Astro static site\n- Astro production build checks\n- GitHub Pages via GitHub Actions\n- Lightweight repo-local scripts in \`scripts/\`\n\n## Recipe registry\nSelected recipes: {{RECIPE_SELECTION_INLINE}}\nVisual preset: {{VISUAL_PRESET}}\nauto_recipe_selection: {{AUTO_RECIPE_SELECTION}}\n\nUse \`npm run list:recipes\`, \`npm run score:recipes\`, and \`npm run recommend:recipes\` before applying or changing registered patterns. Recipe guidance is static-safe composition guidance, not permission to add live data, analytics, payments, or unsupported claims.\n\n## Safe edit boundaries\nAgents may safely edit:\n- \`src/components/**\`, \`src/pages/**\`, \`src/styles/**\`\n- Copy that remains consistent with \`.agent/site.contract.yaml\` and \`.agent/brand.contract.yaml\`\n- Supported claims listed in \`.agent/site.contract.yaml\`\n- Documentation, runbooks, and plan files that reflect actual behavior\n\n## Approval-required changes\nGet explicit human approval before:\n{{APPROVAL_LIST_MD}}\n\n## QA commands\nRun before handoff:\n\`\`\`bash\nnpm run qa\n\`\`\`\n\nIndividual gates:\n\`\`\`bash\nnpm run check:contract\nnpm run check:claims\nnpm run check:seo\nnpm run check:links\nnpm run build\n\`\`\`\n\n## Feature-request process\n1. Capture the natural-language request as a short brief.\n2. Compare it with \`.agent/site.contract.yaml\`, \`.agent/brand.contract.yaml\`, and \`.agent/payment.contract.yaml\`.\n3. Record assumptions and acceptance criteria in an issue or plan file.\n4. Implement the smallest coherent change.\n5. Run QA and include command output summary in the handoff.\n6. Deploy only after checks pass.\n7. Verify the live URL contains expected current copy.\n`,
-  '.agent/site.contract.yaml': `name: {{PROJECT_NAME}} site contract\nversion: 0.1.0\nowner_role: AgentSite maintenance agent\nsite:\n  type: static_landing_page\n  framework: Astro\n  deploy_target: GitHub Pages\n  repository_visibility: public_allowed\nmission: >\n  {{DESCRIPTION}}\nbrief: >\n  {{BRIEF}}\naudience:\n{{AUDIENCE_YAML}}\nrequired_sections:\n{{REQUIRED_SECTIONS_YAML}}\nrecipe_registry:\n  selected_recipes:\n{{RECIPE_SELECTION_YAML}}\n  visual_preset: {{VISUAL_PRESET_YAML}}\n  auto_recipe_selection: {{AUTO_RECIPE_SELECTION_YAML}}\n  note: Recipes are static-safe composition guidance and do not approve live data, analytics, payments, or unsupported claims.\ncontent_rules:\n  must_include:\n    - static GitHub Pages delivery\n    - repo-local QA\n    - no-payment mode\n  allowed_claims:\n{{ALLOWED_CLAIMS_YAML}}\n  must_not_include:\n{{FORBIDDEN_CLAIMS_YAML}}\napproval_required:\n{{APPROVAL_REQUIRED_YAML}}\nqa:\n  commands:\n    - npm run qa\n    - npm run build\nverification:\n  live_url: {{LIVE_URL}}\n  expected_text: {{EXPECT_TEXT}}\n`,
+  'AGENTS.md': `# AGENTS.md\n\n## Mission\n{{PROJECT_NAME}} is a static AgentSite generated from this requester brief: {{BRIEF}}\n\n## Audience\n{{AUDIENCE_LIST_MD}}\n\n## Stack\n- Astro static site\n- Astro production build checks\n- GitHub Pages via GitHub Actions\n- Lightweight repo-local scripts in \`scripts/\`\n\n## Recipe registry\nSelected recipes: {{RECIPE_SELECTION_INLINE}}\nArchetype: {{ARCHETYPE}}\nVisual preset: {{VISUAL_PRESET}}\nauto_recipe_selection: {{AUTO_RECIPE_SELECTION}}\n\nUse \`npm run list:recipes\`, \`npm run score:recipes\`, and \`npm run recommend:recipes\` before applying or changing registered patterns. Recipe guidance is static-safe composition guidance, not permission to add live data, analytics, payments, or unsupported claims.\n\n## Safe edit boundaries\nAgents may safely edit:\n- \`src/components/**\`, \`src/pages/**\`, \`src/styles/**\`\n- Copy that remains consistent with \`.agent/site.contract.yaml\` and \`.agent/brand.contract.yaml\`\n- Supported claims listed in \`.agent/site.contract.yaml\`\n- Documentation, runbooks, and plan files that reflect actual behavior\n\n## Approval-required changes\nGet explicit human approval before:\n{{APPROVAL_LIST_MD}}\n\n## QA commands\nRun before handoff:\n\`\`\`bash\nnpm run qa\n\`\`\`\n\nIndividual gates:\n\`\`\`bash\nnpm run check:contract\nnpm run check:claims\nnpm run check:seo\nnpm run check:links\nnpm run build\n\`\`\`\n\n## Feature-request process\n1. Capture the natural-language request as a short brief.\n2. Compare it with \`.agent/site.contract.yaml\`, \`.agent/brand.contract.yaml\`, and \`.agent/payment.contract.yaml\`.\n3. Record assumptions and acceptance criteria in an issue or plan file.\n4. Implement the smallest coherent change.\n5. Run QA and include command output summary in the handoff.\n6. Deploy only after checks pass.\n7. Verify the live URL contains expected current copy.\n`,
+  '.agent/site.contract.yaml': `name: {{PROJECT_NAME}} site contract\nversion: 0.1.0\nowner_role: AgentSite maintenance agent\nsite:\n  type: static_landing_page\n  framework: Astro\n  deploy_target: GitHub Pages\n  repository_visibility: public_allowed\nmission: >\n  {{DESCRIPTION}}\nbrief: >\n  {{BRIEF}}\naudience:\n{{AUDIENCE_YAML}}\nrequired_sections:\n{{REQUIRED_SECTIONS_YAML}}\nrecipe_registry:\n  selected_recipes:\n{{RECIPE_SELECTION_YAML}}\n  archetype: {{ARCHETYPE_YAML}}\n  visual_preset: {{VISUAL_PRESET_YAML}}\n  auto_recipe_selection: {{AUTO_RECIPE_SELECTION_YAML}}\n  note: Recipes are static-safe composition guidance and do not approve live data, analytics, payments, or unsupported claims.\ncontent_rules:\n  must_include:\n    - static GitHub Pages delivery\n    - repo-local QA\n    - no-payment mode\n  allowed_claims:\n{{ALLOWED_CLAIMS_YAML}}\n  must_not_include:\n{{FORBIDDEN_CLAIMS_YAML}}\napproval_required:\n{{APPROVAL_REQUIRED_YAML}}\nqa:\n  commands:\n    - npm run qa\n    - npm run build\nverification:\n  live_url: {{LIVE_URL}}\n  expected_text: {{EXPECT_TEXT}}\n`,
   '.agent/brand.contract.yaml': `name: {{PROJECT_NAME}} brand contract\nversion: 0.1.0\nvoice:\n  tone:\n    - crisp\n    - trustworthy\n    - clear\n    - direct\n  avoid:\n    - generic SaaS slop\n    - exaggerated AI magic\n    - fake urgency\n    - fake social proof\nvisual_system:\n  direction: {{VISUAL_DIRECTION}}\n  colors:\n    background: '#070b16'\n    text: '#edf2ff'\n    accent: '#85f3d7'\n    accent_secondary: '#9fb7ff'\n  typography:\n    sans: Inter\n    mono: JetBrains Mono\naccessibility:\n  responsive: true\n  semantic_sections: true\n  minimum_contrast: high on dark background\n`,
   '.agent/payment.contract.yaml': `name: {{PROJECT_NAME}} payment contract\nversion: 0.1.0\nmode: disabled\nstatus: no-payment\nrules:\n  - Do not add live payment links.\n  - Do not collect card details or billing information.\n  - Do not imply paid availability.\n  - Any payment integration requires explicit human approval and a new contract review.\nallowed_copy:\n  - payment disabled\n  - no-payment mode\nblocked_domains:\n  - stripe.com\n  - paypal.com\n  - paddle.com\n  - lemonsqueezy.com\n`,
   '.agent/runbooks/deploy.md': `# Deployment runbook\n\n## Target\nGitHub Pages serves the static Astro build from the GitHub Actions artifact.\n\n## Normal deployment\n1. Confirm contracts and QA pass: \`npm run qa\`.\n2. Commit changes to \`main\`.\n3. Push to GitHub.\n4. GitHub Actions runs \`.github/workflows/deploy.yml\`.\n5. Verify the live URL contains expected text: \`{{EXPECT_TEXT}}\`.\n\n## Manual verification\n\`\`\`bash\nLIVE_URL=\"{{LIVE_URL}}\" EXPECT_TEXT=\"{{EXPECT_TEXT}}\" REPO=\"{{OWNER_REPO}}\" npm run verify:deploy\n\`\`\`\n\n## Rollback\nRevert the problematic commit, run QA, and push \`main\` again. Do not rewrite public history unless explicitly approved.\n`,
@@ -161,7 +169,7 @@ const files = new Map(Object.entries({
   'src/layouts/BaseLayout.astro': `---\nconst { title = '{{PROJECT_NAME}}', description = '{{DESCRIPTION}}' } = Astro.props;\n---\n<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"utf-8\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n    <meta name=\"generator\" content={Astro.generator} />\n    <meta name=\"description\" content={description} />\n    <meta property=\"og:title\" content={title} />\n    <meta property=\"og:description\" content={description} />\n    <meta property=\"og:type\" content=\"website\" />\n    <meta name=\"theme-color\" content=\"#0b1020\" />\n    <title>{title}</title>\n    <link rel=\"preconnect\" href=\"https://fonts.googleapis.com\" />\n    <link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin />\n    <link href=\"https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap\" rel=\"stylesheet\" />\n  </head>\n  <body>\n    <slot />\n  </body>\n</html>\n`,
   'src/pages/index.astro': '{{SITE_INDEX}}',
   'src/styles/global.css': '{{GLOBAL_CSS}}',
-  'scripts/check-contracts.mjs': `import fs from 'node:fs';\n\nconst required = [\n  'AGENTS.md',\n  '.agent/site.contract.yaml',\n  '.agent/brand.contract.yaml',\n  '.agent/payment.contract.yaml',\n  '.agent/runbooks/deploy.md',\n  '.agent/runbooks/feature-request.md',\n  '.agent/recipes/README.md',\n  '.agent/recipes/product-cockpit/recipe.yaml',\n  '.agent/recipes/product-cockpit/README.md',\n  '.agent/recipes/product-cockpit/acceptance.md',\n  '.hermes/plans/initial-site-build.md'\n];\n\nconst missing = required.filter((file) => !fs.existsSync(file));\nif (missing.length) {\n  console.error(\`Missing required contract files:\\n\${missing.join('\\n')}\`);\n  process.exit(1);\n}\n\nconst payment = fs.readFileSync('.agent/payment.contract.yaml', 'utf8');\nif (!/mode:\\s*disabled/.test(payment) || !/no-payment/.test(payment)) {\n  console.error('Payment contract must stay in disabled/no-payment mode.');\n  process.exit(1);\n}\n\nconsole.log(\`contract check passed (\${required.length} files, payment disabled)\`);\n`,
+  'scripts/check-contracts.mjs': `import fs from 'node:fs';\n\nconst required = [\n  'AGENTS.md',\n  '.agent/site.contract.yaml',\n  '.agent/brand.contract.yaml',\n  '.agent/payment.contract.yaml',\n  '.agent/runbooks/deploy.md',\n  '.agent/runbooks/feature-request.md',\n  '.agent/recipes/README.md',\n  '.agent/recipes/product-cockpit/recipe.yaml',\n  '.agent/recipes/product-cockpit/README.md',\n  '.agent/recipes/product-cockpit/acceptance.md',\n  '.agent/recipes/copy-evidence-strip/recipe.yaml',\n  '.agent/recipes/copy-evidence-strip/README.md',\n  '.agent/recipes/copy-evidence-strip/acceptance.md',\n  '.agent/recipes/editorial-ledger/recipe.yaml',\n  '.agent/recipes/editorial-ledger/README.md',\n  '.agent/recipes/editorial-ledger/acceptance.md',\n  '.hermes/plans/initial-site-build.md'\n];\n\nconst missing = required.filter((file) => !fs.existsSync(file));\nif (missing.length) {\n  console.error(\`Missing required contract files:\\n\${missing.join('\\n')}\`);\n  process.exit(1);\n}\n\nconst payment = fs.readFileSync('.agent/payment.contract.yaml', 'utf8');\nif (!/mode:\\s*disabled/.test(payment) || !/no-payment/.test(payment)) {\n  console.error('Payment contract must stay in disabled/no-payment mode.');\n  process.exit(1);\n}\n\nconsole.log(\`contract check passed (\${required.length} files, payment disabled)\`);\n`,
   'scripts/check-claims.mjs': `import fs from 'node:fs';\nimport path from 'node:path';\n\nconst roots = ['src', 'README.md'];\nconst blocked = [\n  /trusted by\\s+\\d+/i,\n  /\\d+[kmb]?\\+\\s+(customers|users|teams|developers)/i,\n  /guaranteed\\s+(results|uptime|revenue|conversion)/i,\n  /testimonial/i,\n  /case study/i,\n  /stripe\\.com|paypal\\.com|paddle\\.com|lemonsqueezy\\.com/i\n];\n\nfunction walk(target) {\n  const stat = fs.statSync(target);\n  if (stat.isFile()) return [target];\n  return fs.readdirSync(target).flatMap((entry) => walk(path.join(target, entry)));\n}\n\nconst files = roots.flatMap((root) => fs.existsSync(root) ? walk(root) : []).filter((file) => /\\.(astro|css|md|js|mjs|ts)$/.test(file));\nconst failures = [];\nfor (const file of files) {\n  const text = fs.readFileSync(file, 'utf8');\n  for (const pattern of blocked) {\n    if (pattern.test(text)) failures.push(\`\${file}: blocked claim/link matched \${pattern}\`);\n  }\n}\n\nif (failures.length) {\n  console.error(failures.join('\\n'));\n  process.exit(1);\n}\nconsole.log(\`claims check passed (\${files.length} files scanned)\`);\n`,
   'scripts/check-seo.mjs': `import fs from 'node:fs';\n\nconst index = fs.readFileSync('src/pages/index.astro', 'utf8');\nconst layout = fs.readFileSync('src/layouts/BaseLayout.astro', 'utf8');\nconst contract = fs.readFileSync('.agent/site.contract.yaml', 'utf8');\nconst requiredText = ['{{PROJECT_NAME}}', 'GitHub Pages', 'repo-local QA', 'no-payment mode'];\nconst failures = [];\n\nif (!/<title>/.test(layout)) failures.push('missing <title> in layout');\nif (!/meta name=\"description\"/.test(layout)) failures.push('missing meta description');\nif (!/<h1>/.test(index)) failures.push('missing h1');\nfor (const text of requiredText) {\n  if (!index.includes(text) && !contract.includes(text)) failures.push(\`missing required phrase: \${text}\`);\n}\n\nif (failures.length) {\n  console.error(failures.join('\\n'));\n  process.exit(1);\n}\nconsole.log('seo/content check passed');\n`,
   'scripts/check-links.mjs': `import fs from 'node:fs';\nimport path from 'node:path';\n\nfunction walk(target) {\n  const stat = fs.statSync(target);\n  if (stat.isFile()) return [target];\n  return fs.readdirSync(target).flatMap((entry) => walk(path.join(target, entry)));\n}\n\nconst files = walk('src').filter((file) => /\\.astro$/.test(file));\nconst all = files.map((file) => fs.readFileSync(file, 'utf8')).join('\\n');\nconst ids = new Set([...all.matchAll(/id=\"([^\"]+)\"/g)].map((match) => match[1]));\nconst hrefs = [...all.matchAll(/href=\"([^\"]+)\"/g)].map((match) => match[1]);\nconst failures = [];\n\nfor (const href of hrefs) {\n  if (href.startsWith('#') && !ids.has(href.slice(1))) failures.push(\`broken anchor: \${href}\`);\n  if (/stripe\\.com|paypal\\.com|paddle\\.com|lemonsqueezy\\.com/i.test(href)) failures.push(\`payment link not allowed: \${href}\`);\n  if (/google-analytics|googletagmanager|segment\\.com/i.test(href)) failures.push(\`tracking link not allowed: \${href}\`);\n}\n\nif (failures.length) {\n  console.error(failures.join('\\n'));\n  process.exit(1);\n}\nconsole.log(\`link check passed (\${hrefs.length} hrefs, \${ids.size} anchors)\`);\n`,
@@ -176,6 +184,10 @@ const files = new Map(Object.entries({
   '.agent/recipes/copy-evidence-strip/recipe.yaml': fs.readFileSync(path.join(scriptDir, '..', '.agent', 'recipes', 'copy-evidence-strip', 'recipe.yaml'), 'utf8'),
   '.agent/recipes/copy-evidence-strip/README.md': fs.readFileSync(path.join(scriptDir, '..', '.agent', 'recipes', 'copy-evidence-strip', 'README.md'), 'utf8'),
   '.agent/recipes/copy-evidence-strip/acceptance.md': fs.readFileSync(path.join(scriptDir, '..', '.agent', 'recipes', 'copy-evidence-strip', 'acceptance.md'), 'utf8'),
+  '.agent/recipes/editorial-ledger/recipe.yaml': fs.readFileSync(path.join(scriptDir, '..', '.agent', 'recipes', 'editorial-ledger', 'recipe.yaml'), 'utf8'),
+  '.agent/recipes/editorial-ledger/README.md': fs.readFileSync(path.join(scriptDir, '..', '.agent', 'recipes', 'editorial-ledger', 'README.md'), 'utf8'),
+  '.agent/recipes/editorial-ledger/acceptance.md': fs.readFileSync(path.join(scriptDir, '..', '.agent', 'recipes', 'editorial-ledger', 'acceptance.md'), 'utf8'),
+  'scripts/check-visual-divergence.mjs': fs.readFileSync(path.join(scriptDir, 'check-visual-divergence.mjs'), 'utf8'),
   'scripts/visual-qa.mjs': fs.readFileSync(path.join(scriptDir, 'visual-qa.mjs'), 'utf8'),
   'scripts/verify-deploy.mjs': `import { execFileSync } from 'node:child_process';\n\nconst liveUrl = process.env.LIVE_URL;\nconst expected = process.env.EXPECT_TEXT;\nconst repo = process.env.REPO;\n\nif (!liveUrl || !expected) {\n  console.error('Set LIVE_URL and EXPECT_TEXT before running verify:deploy. Optional: REPO=owner/name');\n  process.exit(1);\n}\n\ntry {\n  const html = execFileSync('curl', ['-LfsS', liveUrl], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });\n  if (!html.includes(expected)) {\n    console.error(\`Live URL did not contain expected text: \${expected}\`);\n    process.exit(1);\n  }\n  console.log(\`live content check passed: \${liveUrl}\`);\n} catch (error) {\n  console.error(\`live content check failed: \${error.message}\`);\n  process.exit(1);\n}\n\nif (repo) {\n  try {\n    const out = execFileSync('gh', ['run', 'list', '--repo', repo, '--workflow', 'deploy.yml', '--limit', '1'], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });\n    console.log(out.trim() || 'No deploy runs returned by gh.');\n  } catch {\n    console.log('GitHub Actions check skipped: gh unavailable, unauthenticated, or repo inaccessible.');\n  }\n}\n`
 }));
@@ -214,12 +226,13 @@ function buildGlobalCss() {
 }
 
 function buildAutoRecipeSelection() {
-  const explicitSelection = explicitRecipeSelection || explicitVisualPreset;
+  const explicitSelection = explicitRecipeSelection || explicitVisualPreset || explicitArchetype;
   if (!autoRecipesRequested) {
     return {
       applied: false,
       selectedRecipes,
       visualPreset,
+      archetype,
       reasons: [],
       summary: 'not requested; default recipe selection unchanged'
     };
@@ -229,8 +242,9 @@ function buildAutoRecipeSelection() {
       applied: false,
       selectedRecipes,
       visualPreset,
+      archetype,
       reasons: ['explicit recipes or visualPreset provided; auto selector did not override'],
-      summary: 'not applied; explicit recipes or visualPreset preserved'
+      summary: 'not applied; explicit recipes, archetype, or visualPreset preserved'
     };
   }
 
@@ -247,6 +261,7 @@ function buildAutoRecipeSelection() {
       applied: false,
       selectedRecipes,
       visualPreset,
+      archetype,
       reasons: recommendation.reasons,
       summary: recommendation.explanation
     };
@@ -256,21 +271,69 @@ function buildAutoRecipeSelection() {
     applied: true,
     selectedRecipes: recommendation.selectedRecipes,
     visualPreset: recommendation.visualPreset,
+    archetype: recommendation.archetype || '',
     reasons: recommendation.reasons,
     summary: recommendation.explanation
   };
 }
 
-function shouldRenderProductCockpit(recipeIds, preset) {
+function shouldRenderProductCockpit(recipeIds, preset, chosenArchetype = '') {
   const recipes = new Set(recipeIds.map((item) => item.toLowerCase()));
   const normalizedPreset = String(preset || '').trim().toLowerCase();
-  return recipes.has('product-cockpit') || ['cockpit-dark', 'product-cockpit'].includes(normalizedPreset);
+  const normalizedArchetype = String(chosenArchetype || '').trim().toLowerCase();
+  return normalizedArchetype === 'product-cockpit' || recipes.has('product-cockpit') || ['cockpit-dark', 'product-cockpit'].includes(normalizedPreset);
+}
+
+function shouldRenderEditorialLedger(recipeIds, preset, chosenArchetype = '') {
+  const recipes = new Set(recipeIds.map((item) => item.toLowerCase()));
+  const normalizedPreset = String(preset || '').trim().toLowerCase();
+  const normalizedArchetype = String(chosenArchetype || '').trim().toLowerCase();
+  return normalizedArchetype === 'editorial-ledger' || recipes.has('editorial-ledger') || ['editorial-ledger', 'editorial-light', 'ledger-light'].includes(normalizedPreset);
 }
 
 function shouldRenderCopyEvidenceStrip(recipeIds, preset) {
   const recipes = new Set(recipeIds.map((item) => item.toLowerCase()));
   const normalizedPreset = String(preset || '').trim().toLowerCase();
   return recipes.has('copy-evidence-strip') || ['evidence-strip', 'copy-evidence-strip'].includes(normalizedPreset);
+}
+
+
+function buildEditorialLedgerIndexAstro() {
+  const navLinks = '<a href="#ledger">Ledger</a><a href="#sections">Sections</a><a href="#proof">Proof</a><a href="#limits">Limits</a>';
+  const sectionList = sections.map((section, index) => `
+        <article class="ledger-entry" id="${attr(section.id)}">
+          <div class="entry-number">${String(index + 1).padStart(2, '0')}</div>
+          <div>
+            <p class="entry-label">${escapeHtml(section.navLabel)}</p>
+            <h3>${escapeHtml(section.title)}</h3>
+            <p>${escapeHtml(section.body)}</p>
+          </div>
+        </article>`).join('\n');
+  const proofRows = proofArtifacts.map((item, index) => `
+        <article class="proof-row">
+          <span>${String(index + 1).padStart(2, '0')}</span>
+          <h3>${escapeHtml(item.label)}</h3>
+          <p>${escapeHtml(item.body)}</p>
+        </article>`).join('\n');
+  const claimRows = allowedClaims.slice(0, 5).map((claim, index) => {
+    const artifact = proofArtifacts[index % proofArtifacts.length];
+    return `
+        <article class="claim-row">
+          <span class="claim-index">${String(index + 1).padStart(2, '0')}</span>
+          <strong>${escapeHtml(claim)}</strong>
+          <p>${escapeHtml(artifact.label)} — ${escapeHtml(artifact.body)}</p>
+        </article>`;
+  }).join('\n');
+  const boundaryItems = [
+    ...forbiddenClaims.slice(0, 3).map((claim) => `<li>Not claimed: ${escapeHtml(safeVisibleClaim(claim))}</li>`),
+    ...approvalRequired.slice(0, 3).map((item) => `<li>Approval required: ${escapeHtml(safeVisibleClaim(item))}</li>`)
+  ].join('\n');
+  const evidenceStrip = usesCopyEvidenceStrip ? buildCopyEvidenceStripMarkup('editorial') : '';
+  return `---\nimport BaseLayout from '../layouts/BaseLayout.astro';\nimport '../styles/global.css';\n---\n<BaseLayout title="${attr(projectName)}" description="${attr(description)}">\n  <main class="editorial-ledger">\n    <section class="ledger-hero" id="top">\n      <nav class="ledger-nav" aria-label="Primary navigation">\n        <a class="ledger-brand" href="#top" aria-label="${attr(projectName)} home">${escapeHtml(projectName)}</a>\n        <div>${navLinks}</div>\n      </nav>\n      <div class="ledger-hero-grid">\n        <div>\n          <p class="ledger-kicker">Static AgentSite · editorial-ledger archetype · no-payment mode</p>\n          <h1>${escapeHtml(heroHeadline.replace(/\.$/, ''))}</h1>\n        </div>\n        <aside class="ledger-summary">\n          <p>${escapeHtml(heroLede)}</p>\n          <div class="ledger-actions"><a class="button primary" href="${attr(primaryCtaHref)}">${escapeHtml(primaryCtaLabel)}</a><a class="button secondary" href="${attr(repoUrl)}">View source</a></div>\n        </aside>\n      </div>\n    </section>\n\n    <section class="ledger-section opening-note">\n      <p class="ledger-kicker">Operating note</p>\n      <p>${escapeHtml(description)}</p>\n      <p>${escapeHtml(brief)}</p>\n    </section>${evidenceStrip}\n\n    <section class="ledger-section claim-ledger" id="ledger">\n      <div class="section-heading"><p class="ledger-kicker">Claim ledger</p><h2>Every major statement stays attached to evidence.</h2></div>\n      <div class="claim-list">${claimRows}\n      </div>\n    </section>\n\n    <section class="ledger-section entry-list" id="sections">\n      <div class="section-heading"><p class="ledger-kicker">Sections</p><h2>The page reads like a concise operating memo.</h2></div>${sectionList}\n    </section>\n\n    <section class="ledger-section proof-ledger" id="proof">\n      <div class="section-heading"><p class="ledger-kicker">Proof artifacts</p><h2>Evidence future agents can inspect before strengthening copy.</h2></div>\n      <div>${proofRows}\n      </div>\n    </section>\n\n    <section class="ledger-section limits" id="limits">\n      <div><p class="ledger-kicker">Boundaries</p><h2>Trust comes from saying what is not included.</h2></div>\n      <ul>${boundaryItems}</ul>\n    </section>\n\n    <section class="ledger-section cta" id="cta">\n      <div><p class="ledger-kicker">Next step</p><h2>${escapeHtml(primaryCtaLabel)}</h2><p>Use the ledger, contracts, and QA commands before changing claims, scope, payments, analytics, or deployment settings.</p></div>\n      <a class="button primary" href="${attr(primaryCtaHref)}">${escapeHtml(primaryCtaLabel)}</a>\n    </section>\n  </main>\n</BaseLayout>\n`;
+}
+
+function buildEditorialLedgerGlobalCss() {
+  return `:root { color-scheme: light; font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #f5efe2; color: #211b16; }\n* { box-sizing: border-box; }\nhtml { scroll-behavior: smooth; overflow-x: hidden; }\nbody { margin: 0; min-height: 100vh; overflow-x: hidden; background: linear-gradient(90deg, rgba(61,43,31,.055) 1px, transparent 1px) 0 0 / 48px 48px, radial-gradient(circle at 78% 0%, rgba(154,84,49,.16), transparent 32rem), #f5efe2; }\na { color: inherit; }\n.editorial-ledger { width: min(1180px, calc(100% - 36px)); margin: 0 auto; }\n.ledger-hero { padding: 30px 0 70px; }\n.ledger-nav { display: flex; justify-content: space-between; gap: 20px; align-items: center; padding: 14px 0 86px; border-bottom: 1px solid rgba(33,27,22,.12); margin-bottom: 54px; }\n.ledger-nav div { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 16px; }\n.ledger-nav a { text-decoration: none; color: #5f5249; font-weight: 700; }\n.ledger-brand { color: #211b16 !important; font-weight: 900; letter-spacing: -.03em; }\n.ledger-hero-grid { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(300px, .75fr); gap: 46px; align-items: end; }\n.ledger-kicker, .entry-label, .claim-index, .proof-row span { color: #9a5431; font: 800 .74rem Inter, sans-serif; text-transform: uppercase; letter-spacing: .13em; }\nh1 { font-family: Georgia, "Times New Roman", serif; font-size: clamp(3.4rem, 9vw, 8.1rem); line-height: .88; letter-spacing: -.075em; margin: 0; max-width: 900px; }\nh2 { font-family: Georgia, "Times New Roman", serif; font-size: clamp(2.15rem, 4.2vw, 4.15rem); line-height: .95; letter-spacing: -.05em; margin: 8px 0 18px; }\nh3 { margin: 0 0 8px; font-size: 1.18rem; color: #211b16; }\np, li { color: #5b5048; font-size: 1.05rem; line-height: 1.72; }\n.ledger-summary { border-left: 4px solid #9a5431; padding-left: 24px; }\n.ledger-summary p { font-size: 1.18rem; color: #3b3029; }\n.ledger-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px; }\n.button { display: inline-flex; min-height: 46px; align-items: center; justify-content: center; padding: 0 18px; border-radius: 999px; text-decoration: none; font-weight: 850; white-space: nowrap; }\n.button.primary { background: #211b16; color: #fffaf0; }\n.button.secondary { border: 1px solid rgba(33,27,22,.22); background: rgba(255,255,255,.32); }\n.ledger-section { padding: 46px 0; border-top: 1px solid rgba(33,27,22,.13); }\n.opening-note { display: grid; grid-template-columns: 180px minmax(0, 1fr) minmax(0, 1fr); gap: 28px; }\n.claim-list { display: grid; gap: 0; border: 1px solid rgba(33,27,22,.14); background: rgba(255,255,255,.28); }\n.claim-row, .proof-row { display: grid; grid-template-columns: 64px minmax(180px,.4fr) minmax(0,.8fr); gap: 20px; padding: 20px; border-bottom: 1px solid rgba(33,27,22,.12); align-items: start; }\n.claim-row:last-child, .proof-row:last-child { border-bottom: 0; }\n.claim-row p, .proof-row p { margin: 0; }\n.section-heading { max-width: 780px; margin-bottom: 24px; }\n.entry-list { display: grid; gap: 18px; }\n.ledger-entry { display: grid; grid-template-columns: 86px minmax(0,1fr); gap: 22px; padding: 24px 0; border-top: 1px solid rgba(33,27,22,.1); }\n.entry-number { font-family: Georgia, serif; font-size: 3.8rem; color: rgba(154,84,49,.34); line-height: .9; }\n.proof-ledger > div:last-child { border: 1px solid rgba(33,27,22,.14); }\n.limits { display: grid; grid-template-columns: minmax(0,.8fr) minmax(0,1fr); gap: 36px; }\n.limits ul { margin: 0; padding-left: 20px; }\n.cta { display: flex; justify-content: space-between; align-items: center; gap: 24px; padding-bottom: 80px; }\n@media (max-width: 850px) { .ledger-hero-grid, .opening-note, .limits, .cta { grid-template-columns: 1fr; display: grid; } .ledger-nav { align-items: flex-start; flex-direction: column; padding-bottom: 42px; } .claim-row, .proof-row { grid-template-columns: 1fr; gap: 8px; } .ledger-entry { grid-template-columns: 1fr; } .button { width: 100%; } }\n`;
 }
 
 function buildProductCockpitIndexAstro() {
@@ -318,8 +381,13 @@ function buildCopyEvidenceStripMarkup(variant = 'default') {
     </section>`;
 }
 
-function buildCopyEvidenceStripCss() {
-  return `\n.evidence-strip { padding-top: 20px; padding-bottom: 42px; }\n.evidence-strip-heading { max-width: 820px; margin-bottom: 18px; }\n.evidence-strip-heading h2 { margin: 6px 0 0; }\n.evidence-strip-track { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }\n.evidence-strip-card { position: relative; min-height: 210px; padding: 20px; border: 1px solid rgba(237,242,255,.14); border-radius: 22px; background: linear-gradient(180deg, rgba(133,243,215,.12), rgba(255,255,255,.04)), rgba(8,14,29,.76); box-shadow: 0 18px 64px rgba(0,0,0,.22); overflow: hidden; }\n.evidence-strip-card::after { content: ""; position: absolute; inset: auto 16px 16px auto; width: 58px; height: 58px; border: 1px solid rgba(133,243,215,.18); border-radius: 18px; transform: rotate(12deg); }\n.evidence-strip-label { display: inline-flex; margin-bottom: 14px; color: #85f3d7; font: 700 .72rem "JetBrains Mono", monospace; text-transform: uppercase; letter-spacing: .09em; }\n.evidence-strip-card h3 { font-size: 1.05rem; line-height: 1.35; margin: 0 0 14px; }\n.evidence-strip-card p { margin: 0; font-size: .94rem; line-height: 1.6; color: #c1cbe5; }\n.evidence-strip-card strong { color: #f4f7ff; }\n@media (max-width: 900px) { .evidence-strip-heading { grid-template-columns: 1fr; } .evidence-strip-track { grid-template-columns: repeat(2, minmax(0, 1fr)); } }\n@media (max-width: 640px) { .evidence-strip-track { grid-template-columns: 1fr; } .evidence-strip-card { min-height: auto; } }\n`;
+function buildCopyEvidenceStripCss(tone = 'dark') {
+  const isLight = tone === 'light';
+  const cardBg = isLight ? 'rgba(255,255,255,.42)' : 'linear-gradient(180deg, rgba(133,243,215,.12), rgba(255,255,255,.04)), rgba(8,14,29,.76)';
+  const textColor = isLight ? '#5b5048' : '#c1cbe5';
+  const strongColor = isLight ? '#211b16' : '#f4f7ff';
+  const accentColor = isLight ? '#9a5431' : '#85f3d7';
+  return `\n.evidence-strip { padding-top: 20px; padding-bottom: 42px; }\n.evidence-strip-heading { max-width: 820px; margin-bottom: 18px; }\n.evidence-strip-heading h2 { margin: 6px 0 0; }\n.evidence-strip-track { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }\n.evidence-strip-card { position: relative; min-height: 210px; padding: 20px; border: 1px solid rgba(237,242,255,.14); border-radius: 22px; background: ${cardBg}; box-shadow: 0 18px 64px rgba(0,0,0,.22); overflow: hidden; }\n.evidence-strip-card::after { content: ""; position: absolute; inset: auto 16px 16px auto; width: 58px; height: 58px; border: 1px solid rgba(133,243,215,.18); border-radius: 18px; transform: rotate(12deg); }\n.evidence-strip-label { display: inline-flex; margin-bottom: 14px; color: ${accentColor}; font: 700 .72rem "JetBrains Mono", monospace; text-transform: uppercase; letter-spacing: .09em; }\n.evidence-strip-card h3 { font-size: 1.05rem; line-height: 1.35; margin: 0 0 14px; }\n.evidence-strip-card p { margin: 0; font-size: .94rem; line-height: 1.6; color: ${textColor}; }\n.evidence-strip-card strong { color: ${strongColor}; }\n@media (max-width: 900px) { .evidence-strip-heading { grid-template-columns: 1fr; } .evidence-strip-track { grid-template-columns: repeat(2, minmax(0, 1fr)); } }\n@media (max-width: 640px) { .evidence-strip-track { grid-template-columns: 1fr; } .evidence-strip-card { min-height: auto; } }\n`;
 }
 
 function publishProject() {
@@ -592,7 +660,7 @@ function output(command, commandArgs, options = {}) {
 }
 
 function usage(code) {
-  console.log(`Usage:\n  npm run create:agentsite -- --name "Site Name" --repo repo-name --brief "Natural-language brief" --owner github-owner --out /tmp/repo-name [--description "..."] [--recipes product-cockpit] [--visual-preset cockpit-dark] [--auto-recipes] [--publish] [--force]\n  npm run create:agentsite -- --config ./agentsite.config.json --out /tmp/repo-name [--name "Override"] [--auto-recipes] [--publish] [--force]\n\nConfig is JSON only. CLI flags override config values. Defaults to local scaffold only; add --publish to create/push a public GitHub repo with gh. Selecting recipes:["product-cockpit"], visualPreset:"cockpit-dark", or visualPreset:"product-cockpit" renders the static-safe cockpit UI. Selecting recipes:["copy-evidence-strip"] or visualPreset:"evidence-strip" adds a static-safe claim-to-artifact strip. If --auto-recipes or config autoRecipes:true is set and no recipes/visualPreset are explicit, deterministic heuristics may select product-cockpit from the brief, audience, sections, or proofArtifacts; otherwise the default landing-page UI is used.`);
+  console.log(`Usage:\n  npm run create:agentsite -- --name "Site Name" --repo repo-name --brief "Natural-language brief" --owner github-owner --out /tmp/repo-name [--description "..."] [--archetype editorial-ledger] [--recipes product-cockpit] [--visual-preset cockpit-dark] [--auto-recipes] [--publish] [--force]\n  npm run create:agentsite -- --config ./agentsite.config.json --out /tmp/repo-name [--name "Override"] [--auto-recipes] [--publish] [--force]\n\nConfig is JSON only. CLI flags override config values. Defaults to local scaffold only; add --publish to create/push a public GitHub repo with gh. Selecting recipes:["product-cockpit"], visualPreset:"cockpit-dark", or visualPreset:"product-cockpit" renders the static-safe cockpit UI. Selecting recipes:["editorial-ledger"], archetype:"editorial-ledger", or visualPreset:"editorial-light" renders the light editorial ledger archetype. Selecting recipes:["copy-evidence-strip"] or visualPreset:"evidence-strip" adds a static-safe claim-to-artifact strip. If --auto-recipes or config autoRecipes:true is set and no recipes/visualPreset are explicit, deterministic heuristics may select product-cockpit from the brief, audience, sections, or proofArtifacts; otherwise the default landing-page UI is used.`);
   process.exit(code);
 }
 

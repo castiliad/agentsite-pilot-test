@@ -31,6 +31,8 @@ Exit criteria: current system remains green.
 
 ### 1. True visual divergence
 
+Status: in progress / first implementation completed in `.hermes/plans/2026-05-15-layer-1-archetype-divergence.md`.
+
 Add real archetype + visual-preset separation so generated sites stop looking identical.
 
 TODO:

@@ -2,6 +2,9 @@ id: copy-evidence-strip
 name: Copy Evidence Strip
 version: 0.1.0
 status: draft
+kind: section_recipe
+section_recipe: copy-evidence-strip
+visual_preset: evidence-strip
 summary: >
   A composable AgentSite pattern that pairs the strongest visible claims with
   concrete repo-verifiable artifacts so marketing copy stays grounded, scannable,

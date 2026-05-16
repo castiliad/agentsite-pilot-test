@@ -18,7 +18,8 @@
     "verify:deploy": "node scripts/verify-deploy.mjs",
     "create:agentsite": "node scripts/create-agentsite.mjs",
     "test:visual": "node scripts/visual-qa.mjs",
-    "qa:full": "npm run qa && npm run test:visual"
+    "qa:full": "npm run qa && npm run test:visual",
+    "check:visual-divergence": "node scripts/check-visual-divergence.mjs"
   },
   "dependencies": {
     "astro": "^6.3.3",

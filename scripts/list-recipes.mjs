@@ -23,7 +23,7 @@ if (json) {
 } else {
   console.log(`Found ${recipes.length} recipe${recipes.length === 1 ? '' : 's'}:\n`);
   for (const recipe of recipes) {
-    console.log(`- ${recipe.id} (${recipe.status || 'unknown'}, ${recipe.version || 'unversioned'})`);
+    console.log(`- ${recipe.id} (${recipe.kind || 'unclassified'}, ${recipe.status || 'unknown'}, ${recipe.version || 'unversioned'})`);
     console.log(`  ${recipe.name || recipe.id}`);
     if (recipe.summary) console.log(`  ${recipe.summary}`);
     if (recipe.visualPreset) console.log(`  visualPreset: ${recipe.visualPreset}`);
@@ -44,6 +44,7 @@ function readRecipe(id) {
     version: scalar(yaml, 'version'),
     status: scalar(yaml, 'status'),
     summary: scalar(yaml, 'summary'),
+    kind: scalar(yaml, 'kind'),
     visualPreset: scalar(yaml, 'visual_preset'),
     passThreshold: numberScalar(yaml, 'pass_threshold'),
     files: fs.readdirSync(dir).sort()

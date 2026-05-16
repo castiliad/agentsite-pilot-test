@@ -57,8 +57,9 @@ Supported JSON fields:
 - `proofArtifacts`: array of `{ "label", "body" }`
 - `allowedClaims`, `forbiddenClaims`, `approvalRequired`: string arrays
 - `recipes`: explicit lowercase recipe IDs; explicit values are preserved
-- `visualPreset`: explicit visual preset; `cockpit-dark` or `product-cockpit` renders the cockpit UI; `evidence-strip` renders the copy-evidence strip
-- `autoRecipes`: boolean; when true and no `recipes`/`visualPreset` is explicit, the deterministic selector may choose `product-cockpit`, `copy-evidence-strip`, or both. `product-cockpit` is for product/service/pilot/agent/workflow/AI/tool/dashboard/review/QA/deploy/operator/founder/B2B/dev/technical signals. `copy-evidence-strip` is for proof/claims/trust/artifact/docs/screenshot/contract/copy-positioning signals and proof artifacts.
+- `archetype`: explicit full-page archetype; `editorial-ledger` renders the editorial memo/ledger layout
+- `visualPreset`: explicit visual preset; `cockpit-dark` or `product-cockpit` renders the cockpit UI; `editorial-light` renders the editorial ledger UI; `evidence-strip` renders the copy-evidence strip
+- `autoRecipes`: boolean; when true and no `recipes`/`archetype`/`visualPreset` is explicit, the deterministic selector may choose a primary archetype plus section recipes. `product-cockpit` is for product/service/pilot/agent/workflow/AI/tool/dashboard/review/QA/deploy/operator/founder/B2B/dev/technical signals. `editorial-ledger` is for editorial/memo/ledger/provenance/narrative/trust/copy/evidence signals. `copy-evidence-strip` is for proof/claims/trust/artifact/docs/screenshot/contract/copy-positioning signals and proof artifacts.
 
 Validation fails with a clear message for invalid JSON, missing merged `name`/`repo`/`brief`, invalid or duplicate section ids, and `--publish` without `--owner` after config/CLI merge.
 
@@ -68,6 +69,8 @@ npm run create:agentsite -- \
   --out /tmp/operator-proof-cockpit \
   --force
 npm run recommend:recipes -- --config examples/auto-recipes.config.json
+npm run recommend:recipes -- --config examples/editorial-ledger.config.json
+npm run check:visual-divergence
 ```
 
 The generated README, AGENTS, and `.agent/site.contract.yaml` record `auto_recipe_selection` so reviewers can see why a recipe was or was not selected.
