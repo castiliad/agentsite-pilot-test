@@ -13,10 +13,15 @@
     "check:seo": "node scripts/check-seo.mjs",
     "check:links": "node scripts/check-links.mjs",
     "verify:deploy": "node scripts/verify-deploy.mjs",
-    "create:agentsite": "node scripts/create-agentsite.mjs"
+    "create:agentsite": "node scripts/create-agentsite.mjs",
+    "test:visual": "node scripts/visual-qa.mjs",
+    "qa:full": "npm run qa && npm run test:visual"
   },
   "dependencies": {
     "astro": "^6.3.3",
     "typescript": "^6.0.3"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.60.0"
   }
 }

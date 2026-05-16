@@ -25,12 +25,25 @@ Run the full local gate:
 npm run qa
 ```
 
+Run browser/mobile visual QA explicitly when checking layout-sensitive changes:
+```bash
+npm run test:visual
+```
+
+`test:visual` builds and serves the production site locally, checks desktop and mobile viewports, fails on console/page errors, horizontal overflow, missing hero/nav/CTA visibility, broken internal hash anchors, and visible nav ellipses, then writes screenshots to `.agent/audits/screenshots/`. If Chromium is not installed on the machine yet, run `npx playwright install chromium` once.
+
+Run the static and browser gates together:
+```bash
+npm run qa:full
+```
+
 Individual checks:
 ```bash
 npm run check:contract
 npm run check:claims
 npm run check:seo
 npm run check:links
+npm run test:visual
 ```
 
 ## Reusable workflow
@@ -54,6 +67,7 @@ npm run create:agentsite -- \
 cd /tmp/example-agentsite
 npm install
 npm run qa
+npm run test:visual
 ```
 
 Or generate from a richer JSON brief/config file:
@@ -66,9 +80,10 @@ npm run create:agentsite -- \
 cd /tmp/harbor-notes-agentsite
 npm install
 npm run qa
+npm run test:visual
 ```
 
-Config JSON supports `name`, `repo`, `owner`, `description`, `brief`, optional hero copy fields (`heroHeadline`, `heroLede`), CTA fields, `audience`, `visualDirection`, `sections`, `proofArtifacts`, `allowedClaims`, `forbiddenClaims`, and `approvalRequired`. Sections may include an optional `navLabel` for short navigation text. CLI flags override config values. The generator validates invalid JSON, missing merged `name`/`repo`/`brief`, invalid section ids, and publish attempts without an owner.
+Config JSON supports `name`, `repo`, `owner`, `description`, `brief`, optional hero copy fields (`heroHeadline`, `heroLede`), CTA fields, `audience`, `visualDirection`, `sections`, `proofArtifacts`, `allowedClaims`, `forbiddenClaims`, and `approvalRequired`. Sections may include an optional `navLabel` for short navigation text. CLI flags override config values. The generator validates invalid JSON, missing merged `name`/`repo`/`brief`, invalid section ids, and publish attempts without an owner. Generated repos include `test:visual` and `qa:full`; install Chromium with `npx playwright install chromium` if the first browser QA run asks for it.
 
 The generator does not create a GitHub repo unless `--publish` is explicitly passed. See `.agent/runbooks/generator.md` for config usage, publish-mode requirements, and caveats.
 

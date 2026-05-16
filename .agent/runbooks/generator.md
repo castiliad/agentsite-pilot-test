@@ -17,6 +17,14 @@ Then validate locally:
 cd /tmp/example-agentsite
 npm install
 npm run qa
+npm run test:visual
+```
+
+`npm run qa` remains the fast static/build gate. `npm run test:visual` is the explicit browser/mobile gate; it builds and serves the production site, checks desktop and mobile viewports, fails on console/page errors, horizontal overflow, missing hero/nav/CTA visibility, broken hash anchors, and visible nav ellipses, and writes screenshots to `.agent/audits/screenshots/`. If the local machine has not installed Playwright browsers yet, run `npx playwright install chromium` once.
+
+For layout-sensitive handoffs, run both gates:
+```bash
+npm run qa:full
 ```
 
 Expected live URL printed by the generator:
@@ -36,6 +44,7 @@ npm run create:agentsite -- \
 cd /tmp/harbor-notes-agentsite
 npm install
 npm run qa
+npm run test:visual
 ```
 
 Supported JSON fields:
@@ -80,6 +89,8 @@ Publish mode requires:
 
 Publish mode initializes git, installs dependencies, runs `npm run qa`, commits, creates a public GitHub repo with `gh repo create`, pushes `main`, and makes a best-effort Pages workflow setup. Some GitHub org policies may still require manual Pages settings review.
 
+Publish mode does not run browser QA automatically. For a published generated site, run `npm run qa:full` locally before publish or in a follow-up verification pass when screenshots are desired.
+
 ## Generated project contents
 - Astro static site skeleton in `src/`
 - `AGENTS.md`
@@ -88,6 +99,7 @@ Publish mode initializes git, installs dependencies, runs `npm run qa`, commits,
 - `.hermes/plans/initial-site-build.md`
 - `.github/workflows/deploy.yml`
 - QA scripts in `scripts/`
+- Browser/mobile screenshot QA via `scripts/visual-qa.mjs`, `npm run test:visual`, and `npm run qa:full`
 - `README.md`, `package.json`, `astro.config.mjs`, `.gitignore`
 
 ## Safety notes
