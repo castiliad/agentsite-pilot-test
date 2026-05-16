@@ -1,0 +1,350 @@
+[
+  {
+    "title": "Site contract",
+    "type": "contract",
+    "href": "#proof",
+    "summary": "Public source of truth for site mission, required sections, allowed claims, and approval boundaries.",
+    "tags": [
+      "contract",
+      "claims",
+      "approval"
+    ]
+  },
+  {
+    "title": "README handoff",
+    "type": "contract",
+    "href": "#top",
+    "summary": "Repository overview, selected recipes, live URL, QA commands, and agent maintenance notes.",
+    "tags": [
+      "handoff",
+      "repo",
+      "agents"
+    ]
+  },
+  {
+    "title": "Artifact Gallery",
+    "type": "recipe",
+    "href": "#artifacts",
+    "summary": "A static, searchable, filterable gallery for repo artifacts, QA evidence,",
+    "tags": [
+      "artifact-gallery",
+      "section-recipe",
+      "recipe"
+    ]
+  },
+  {
+    "title": "Copy Evidence Strip",
+    "type": "recipe",
+    "href": "#proof",
+    "summary": "A composable AgentSite pattern that pairs the strongest visible claims with",
+    "tags": [
+      "copy-evidence-strip",
+      "section-recipe",
+      "recipe"
+    ]
+  },
+  {
+    "title": "Editorial Ledger",
+    "type": "recipe",
+    "href": "#proof",
+    "summary": "A full-page AgentSite archetype for credibility-first narrative pages that read",
+    "tags": [
+      "editorial-ledger",
+      "archetype",
+      "recipe"
+    ]
+  },
+  {
+    "title": "Product Cockpit",
+    "type": "recipe",
+    "href": "#proof",
+    "summary": "A reusable AgentSite pattern for turning a product, service, or internal initiative",
+    "tags": [
+      "product-cockpit",
+      "archetype",
+      "recipe"
+    ]
+  },
+  {
+    "title": "Roadmap Board",
+    "type": "recipe",
+    "href": "#roadmap",
+    "summary": "A static local-first improvement board for AgentSite repos. It renders a",
+    "tags": [
+      "roadmap-board",
+      "section-recipe",
+      "recipe"
+    ]
+  },
+  {
+    "title": "Search Index",
+    "type": "recipe",
+    "href": "#proof",
+    "summary": "A static intelligence pack that precomputes a public-safe JSON index over",
+    "tags": [
+      "search-index",
+      "section-recipe",
+      "recipe"
+    ]
+  },
+  {
+    "title": "AgentSite contracts",
+    "type": "artifact",
+    "href": "https://github.com/castiliad/agentsite-pilot-test/blob/main/.agent/site.contract.yaml",
+    "summary": "Repo-local contracts define the site mission, safe claims, approval boundaries, and maintenance rules.",
+    "tags": [
+      "artifact",
+      "contracts",
+      "guardrails",
+      "agents"
+    ]
+  },
+  {
+    "title": "QA command suite",
+    "type": "artifact",
+    "href": "https://github.com/castiliad/agentsite-pilot-test/blob/main/package.json",
+    "summary": "The package scripts run contract, claims, SEO, link, artifact, build, and visual checks before handoff.",
+    "tags": [
+      "artifact",
+      "qa",
+      "build",
+      "verification"
+    ]
+  },
+  {
+    "title": "Recipe registry",
+    "type": "artifact",
+    "href": "https://github.com/castiliad/agentsite-pilot-test/blob/main/.agent/recipes/README.md",
+    "summary": "Reusable archetypes and section recipes let future agents improve sites without reinventing the wheel.",
+    "tags": [
+      "artifact",
+      "recipes",
+      "patterns",
+      "agents"
+    ]
+  },
+  {
+    "title": "Deploy verifier",
+    "type": "artifact",
+    "href": "https://github.com/castiliad/agentsite-pilot-test/blob/main/scripts/verify-deploy.mjs",
+    "summary": "Live URL verification checks expected page content after GitHub Pages deployment succeeds.",
+    "tags": [
+      "artifact",
+      "deploy",
+      "github-pages",
+      "verification"
+    ]
+  },
+  {
+    "title": "Recipe selector polish",
+    "type": "roadmap",
+    "href": "#roadmap",
+    "summary": "Tighten recipe selection and composition rules as more static app recipes are added. Add a regression config whenever a selector rule changes.",
+    "tags": [
+      "roadmap",
+      "now",
+      "high",
+      "recipes",
+      "qa"
+    ]
+  },
+  {
+    "title": "Local-first board persistence",
+    "type": "roadmap",
+    "href": "#roadmap",
+    "summary": "Let users change local card status in the browser without writing to a server or repo. Store user-side board overrides in localStorage with a reset control.",
+    "tags": [
+      "roadmap",
+      "next",
+      "high",
+      "local-first",
+      "browser"
+    ]
+  },
+  {
+    "title": "Static intelligence index",
+    "type": "roadmap",
+    "href": "#roadmap",
+    "summary": "Generate precomputed indexes that make large static sites feel queryable and alive. Prototype a JSON search index from recipe and artifact metadata.",
+    "tags": [
+      "roadmap",
+      "later",
+      "medium",
+      "search",
+      "data"
+    ]
+  },
+  {
+    "title": "Agent maintenance cadence",
+    "type": "roadmap",
+    "href": "#roadmap",
+    "summary": "Define when autonomous agents may propose or apply changes without creating notification noise. Approve a quiet schedule and escalation rules before enabling recurring runs.",
+    "tags": [
+      "roadmap",
+      "blocked",
+      "medium",
+      "orchestration",
+      "approval"
+    ]
+  },
+  {
+    "title": "AgentSite generator first pass",
+    "type": "plan",
+    "href": "#proof",
+    "summary": "AgentSite generator first pass Scope Add a dependency light repo local generator command for creating a new static AgentSite project from the pilot pattern. Default behavior is local scaffold only; no GitHub/network side",
+    "tags": [
+      "plan",
+      "next-step"
+    ]
+  },
+  {
+    "title": "Plan: codify AgentSite workflow artifacts",
+    "type": "plan",
+    "href": "#proof",
+    "summary": "Plan: codify AgentSite workflow artifacts Scope Codify the successful AgentSite Pilot build and follow up change request loop into reusable, repo local workflow artifacts that future agents can copy or adapt without aski",
+    "tags": [
+      "plan",
+      "next-step"
+    ]
+  },
+  {
+    "title": "Config-driven AgentSite generator plan",
+    "type": "plan",
+    "href": "#proof",
+    "summary": "Config driven AgentSite generator plan Scope Extend scripts/create agentsite.mjs with optional config <path JSON input. Merge config and CLI flags with CLI taking precedence. Use richer brief fields to generate site spec",
+    "tags": [
+      "plan",
+      "next-step"
+    ]
+  },
+  {
+    "title": "Add executable copy-evidence-strip recipe",
+    "type": "plan",
+    "href": "#proof",
+    "summary": "Add executable copy evidence strip recipe Request Proceed with adding a second AgentSite recipe after product cockpit and deterministic recipe selection. Scope Add copy evidence strip recipe docs and acceptance criteria.",
+    "tags": [
+      "plan",
+      "next-step"
+    ]
+  },
+  {
+    "title": "Executable product-cockpit rendering plan",
+    "type": "plan",
+    "href": "#proof",
+    "summary": "Executable product cockpit rendering plan Request Make the AgentSite generator render a product cockpit UI when recipes includes product cockpit or visualPreset is cockpit dark / product cockpit . Scope Add generator sel",
+    "tags": [
+      "plan",
+      "next-step"
+    ]
+  },
+  {
+    "title": "Generator visual/content polish",
+    "type": "plan",
+    "href": "#proof",
+    "summary": "Generator visual/content polish Context Visual QA of the config driven Harbor Notes output showed the generator worked end to end but exposed content polish issues: oversized hero copy from long descriptions/briefs, inst",
+    "tags": [
+      "plan",
+      "next-step"
+    ]
+  },
+  {
+    "title": "Change plan: hero proof/control-plane clarity",
+    "type": "plan",
+    "href": "#proof",
+    "summary": "Change plan: hero proof/control plane clarity Request Make the hero clearer and add a stronger proof/control plane section. The page should quickly communicate what the system does, show the actual handoff artifacts a us",
+    "tags": [
+      "plan",
+      "next-step"
+    ]
+  },
+  {
+    "title": "Layer 1 implementation: archetypes and visual divergence",
+    "type": "plan",
+    "href": "#proof",
+    "summary": "Layer 1 implementation: archetypes and visual divergence Request Proceed from the static site boundary push TODO. Start Layer 1: true visual divergence. Scope Add recipe taxonomy: archetype , section recipe , and later v",
+    "tags": [
+      "plan",
+      "next-step"
+    ]
+  },
+  {
+    "title": "AgentSite Recipe Registry plan",
+    "type": "plan",
+    "href": "#proof",
+    "summary": "AgentSite Recipe Registry plan Date: 2026 05 15 Request Implement the AgentSite Recipe Registry milestone in the pilot generator repository without changing the Harbor Notes playground. Goals Add a static safe recipe reg",
+    "tags": [
+      "plan",
+      "next-step"
+    ]
+  },
+  {
+    "title": "Recipe selector implementation plan",
+    "type": "plan",
+    "href": "#proof",
+    "summary": "Recipe selector implementation plan Date: 2026 05 15 Objective Add deterministic, low risk auto recipe recommendation and selection to the AgentSite generator without changing the default generation path. Requirements Pr",
+    "tags": [
+      "plan",
+      "next-step"
+    ]
+  },
+  {
+    "title": "TODO: Push the bounds of static-site ambition",
+    "type": "plan",
+    "href": "#proof",
+    "summary": "TODO: Push the bounds of static site ambition Intent Explore how far a static AgentSite can be pushed, starting with low complexity upgrades and escalating until autonomous agents can no longer effectively maintain the p",
+    "tags": [
+      "plan",
+      "next-step"
+    ]
+  },
+  {
+    "title": "Visual/browser QA for AgentSite generator",
+    "type": "plan",
+    "href": "#proof",
+    "summary": "Visual/browser QA for AgentSite generator Scope Add dependency light Playwright based visual QA to the pilot repo and every newly generated AgentSite repo. Keep the default npm run qa fast and static/build focused. Add a",
+    "tags": [
+      "plan",
+      "next-step"
+    ]
+  },
+  {
+    "title": "Layer 2: artifact gallery static interaction",
+    "type": "plan",
+    "href": "#proof",
+    "summary": "Layer 2: artifact gallery static interaction Request Proceed from visual divergence into the next static site complexity layer: rich static interactions that future agents can maintain safely. Goal Add a reusable artifac",
+    "tags": [
+      "plan",
+      "next-step"
+    ]
+  },
+  {
+    "title": "Layer 3: local-first roadmap board",
+    "type": "plan",
+    "href": "#proof",
+    "summary": "Layer 3: local first roadmap board Goal Add a static local first mini app primitive: a JSON backed roadmap board with search, priority filters, status columns, and browser local status overrides. Scope Add roadmap board",
+    "tags": [
+      "plan",
+      "next-step"
+    ]
+  },
+  {
+    "title": "Layer 4: static intelligence search index",
+    "type": "plan",
+    "href": "#proof",
+    "summary": "Layer 4: static intelligence search index Goal Add a precomputed public safe search index over AgentSite repo/site intelligence so static sites feel queryable without a backend. Scope Add search index recipe. Add index b",
+    "tags": [
+      "plan",
+      "next-step"
+    ]
+  },
+  {
+    "title": "Initial site build plan",
+    "type": "plan",
+    "href": "#proof",
+    "summary": "Initial site build plan Request implemented Create a premium static landing page for AgentSite Pilot, an experimental service for turning natural language website requests into agent maintained GitHub Pages links. Steps",
+    "tags": [
+      "plan",
+      "next-step"
+    ]
+  }
+]

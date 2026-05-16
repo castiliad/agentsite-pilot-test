@@ -8,6 +8,8 @@ export const ARTIFACT_GALLERY_RECIPE = 'artifact-gallery';
 export const ARTIFACT_GALLERY_PRESET = 'artifact-gallery';
 export const ROADMAP_BOARD_RECIPE = 'roadmap-board';
 export const ROADMAP_BOARD_PRESET = 'roadmap-board';
+export const SEARCH_INDEX_RECIPE = 'search-index';
+export const SEARCH_INDEX_PRESET = 'search-index';
 
 const PRODUCT_COCKPIT_PATTERNS = [
   ['product', /\bproducts?\b/i],
@@ -58,6 +60,13 @@ const ARTIFACT_GALLERY_PATTERNS = [
 ];
 
 
+const SEARCH_INDEX_PATTERNS = [
+  ['search/index', /\bsearch\b|\bindex\b|\bcommand palette\b/i],
+  ['queryable', /\bqueryable\b|\bdiscoverable\b|\bsite brain\b/i],
+  ['static intelligence', /\bstatic intelligence\b|\bintelligence pack\b/i],
+  ['contracts/recipes/plans', /\bcontracts?\b|\brecipes?\b|\bplans?\b|\bartifacts?\b/i]
+];
+
 const ROADMAP_BOARD_PATTERNS = [
   ['roadmap board', /roadmap|board|kanban/i],
   ['next steps', /next steps?|improvement queue|backlog/i],
@@ -84,12 +93,14 @@ export function recommendRecipes(input = {}) {
   const evidenceReasons = [];
   const artifactReasons = [];
   const roadmapReasons = [];
+  const searchIndexReasons = [];
 
   collectMatches(haystack, PRODUCT_COCKPIT_PATTERNS, productReasons);
   collectMatches(haystack, EDITORIAL_LEDGER_PATTERNS, editorialReasons);
   collectMatches(haystack, COPY_EVIDENCE_PATTERNS, evidenceReasons);
   collectMatches(haystack, ARTIFACT_GALLERY_PATTERNS, artifactReasons);
   collectMatches(haystack, ROADMAP_BOARD_PATTERNS, roadmapReasons);
+  collectMatches(haystack, SEARCH_INDEX_PATTERNS, searchIndexReasons);
 
   const proofArtifacts = Array.isArray(input.proofArtifacts) ? input.proofArtifacts : [];
   if (proofArtifacts.length >= 2) {
@@ -122,6 +133,7 @@ export function recommendRecipes(input = {}) {
   const evidenceUnique = [...new Set(evidenceReasons)];
   const artifactUnique = [...new Set(artifactReasons)];
   const roadmapUnique = [...new Set(roadmapReasons)];
+  const searchIndexUnique = [...new Set(searchIndexReasons)];
 
   // Prefer one full-page archetype. Editorial-ledger wins when narrative/provenance/claim-ledger
   // signals dominate; product-cockpit wins for operational/tool/control-plane signals.
@@ -152,6 +164,11 @@ export function recommendRecipes(input = {}) {
     reasons.push(...roadmapUnique.map((reason) => `${ROADMAP_BOARD_RECIPE}: ${reason}`));
   }
 
+  if (searchIndexUnique.length > 0) {
+    selectedRecipes.push(SEARCH_INDEX_RECIPE);
+    reasons.push(...searchIndexUnique.map((reason) => `${SEARCH_INDEX_RECIPE}: ${reason}`));
+  }
+
   const uniqueReasons = [...new Set(reasons)];
   const selected = selectedRecipes.length > 0;
   const archetype = selectedRecipes.includes(EDITORIAL_LEDGER_RECIPE)
@@ -169,7 +186,9 @@ export function recommendRecipes(input = {}) {
           ? ARTIFACT_GALLERY_PRESET
           : selectedRecipes.includes(ROADMAP_BOARD_RECIPE)
             ? ROADMAP_BOARD_PRESET
-            : '';
+            : selectedRecipes.includes(SEARCH_INDEX_RECIPE)
+              ? SEARCH_INDEX_PRESET
+              : '';
   return {
     selectedRecipes,
     archetype,

@@ -1,0 +1,74 @@
+id: search-index
+name: Search Index
+version: 0.1.0
+status: draft
+kind: section_recipe
+section_recipe: search-index
+visual_preset: search-index
+summary: >
+  A static intelligence pack that precomputes a public-safe JSON index over
+  recipes, artifacts, roadmap items, plans, and contracts, then renders a
+  client-side search surface without a backend.
+best_for:
+  - Agent-maintained sites with enough repo brain to need fast discovery.
+  - Static sites that should feel queryable without server search.
+  - Public-safe handoff pages exposing recipes, evidence, plans, and next steps.
+not_for:
+  - Private content search, auth-protected docs, secrets, or internal tickets.
+  - Real-time search over changing data without a build step.
+  - Semantic/vector search that needs embeddings, API keys, or server runtime.
+composable_with:
+  - product-cockpit
+  - editorial-ledger
+  - artifact-gallery
+  - roadmap-board
+inputs:
+  required:
+    - public-safe contracts
+    - public-safe recipe metadata
+    - public-safe artifacts or roadmap items
+  optional:
+    - plans
+    - section summaries
+sections:
+  - id: search
+    purpose: Search the precomputed public index.
+  - id: proof
+    purpose: Explain the index source and static-safety boundary.
+static_safety:
+  required:
+    - Build the index from public-safe files during QA/build.
+    - Keep the index JSON in repo source so future agents can inspect diffs.
+    - Validate entry shape, allowed types, safe hrefs, tags, and blocked language.
+    - Preserve no-payment mode, no analytics, no auth, no server runtime, and no API keys.
+  forbidden:
+    - Indexing secrets, private data, credentials, unpublished user info, or internal queues.
+    - Claiming semantic AI search, live sync, or real-time crawling without implementing it.
+    - External search providers or tracking scripts without explicit approval.
+    - Fake metrics, fake customers, or unsupported guarantees in indexed entries.
+acceptance_files:
+  readme: README.md
+  checklist: acceptance.md
+scoring:
+  pass_threshold: 80
+  criteria:
+    - id: fit
+      label: Brief fit
+      weight: 20
+      question: Does the site benefit from searchable public repo/site intelligence?
+    - id: index-quality
+      label: Index quality
+      weight: 25
+      question: Does the generated index include useful public-safe entries across multiple types?
+    - id: interaction
+      label: Search interaction
+      weight: 20
+      question: Do search and type filters work clearly without backend dependencies?
+    - id: safety
+      label: Static safety
+      weight: 20
+      question: Does the index exclude secrets/private data and avoid unsupported AI/live claims?
+    - id: maintainability
+      label: Agent maintainability
+      weight: 15
+      question: Can future agents rebuild/check the index with repo-local commands?

@@ -1,0 +1,70 @@
+---
+import entries from '../data/search-index.json';
+const types = Array.from(new Set(entries.map((entry) => entry.type))).sort();
+---
+<section class="section search-index" id="search" data-search-index aria-labelledby="search-index-title">
+  <div class="search-index-heading">
+    <div>
+      <div class="section-kicker">Static intelligence pack</div>
+      <h2 id="search-index-title">Search the site brain without a backend.</h2>
+    </div>
+    <p>A precomputed JSON index spans recipes, artifacts, roadmap items, contracts, and plans. It makes the static page feel queryable while staying public-safe and GitHub Pages compatible.</p>
+  </div>
+
+  <div class="search-index-controls" role="search" aria-label="Search indexed site content">
+    <label class="search-index-label" for="site-search">Search index</label>
+    <input id="site-search" data-site-search type="search" placeholder="Search recipes, deploys, roadmap, contracts…" autocomplete="off" />
+    <div class="search-index-filters" aria-label="Index type filters">
+      <button type="button" class="active" data-search-type="all">All</button>
+      {types.map((type) => <button type="button" data-search-type={type}>{type}</button>)}
+    </div>
+  </div>
+
+  <p class="search-index-count" data-search-count aria-live="polite">Showing {entries.length} indexed entries</p>
+
+  <div class="search-index-grid" data-search-results>
+    {entries.map((entry) => (
+      <article class="search-index-card" data-search-card data-type={entry.type} data-title={`${entry.title} ${entry.summary} ${(entry.tags || []).join(' ')}`.toLowerCase()}>
+        <span>{entry.type}</span>
+        <h3>{entry.title}</h3>
+        <p>{entry.summary}</p>
+        <div class="search-index-tags">{(entry.tags || []).slice(0, 5).map((tag) => <em>{tag}</em>)}</div>
+        <a href={entry.href}>Open indexed target</a>
+      </article>
+    ))}
+  </div>
+</section>
+
+<script is:inline>
+  (() => {
+    for (const root of document.querySelectorAll('[data-search-index]')) {
+      const input = root.querySelector('[data-site-search]');
+      const cards = [...root.querySelectorAll('[data-search-card]')];
+      const buttons = [...root.querySelectorAll('[data-search-type]')];
+      const count = root.querySelector('[data-search-count]');
+      let type = 'all';
+
+      function apply() {
+        const query = String(input?.value || '').trim().toLowerCase();
+        let visible = 0;
+        for (const card of cards) {
+          const typeMatch = type === 'all' || card.dataset.type === type;
+          const textMatch = !query || String(card.dataset.title || '').includes(query);
+          const show = typeMatch && textMatch;
+          card.hidden = !show;
+          if (show) visible += 1;
+        }
+        for (const button of buttons) {
+          const active = button.dataset.searchType === type;
+          button.classList.toggle('active', active);
+          button.setAttribute('aria-pressed', String(active));
+        }
+        if (count) count.textContent = `Showing ${visible} indexed entr${visible === 1 ? 'y' : 'ies'}`;
+      }
+
+      input?.addEventListener('input', apply);
+      for (const button of buttons) button.addEventListener('click', () => { type = button.dataset.searchType || 'all'; apply(); });
+      apply();
+    }
+  })();
+</script>

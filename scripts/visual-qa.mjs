@@ -117,6 +117,9 @@ async function auditViewport(browser, viewport) {
   const roadmapFailures = await checkRoadmapBoard(page, viewport.name);
   failures.push(...roadmapFailures);
 
+  const searchIndexFailures = await checkSearchIndex(page, viewport.name);
+  failures.push(...searchIndexFailures);
+
   await page.close();
   return { failures, screenshotPath };
 }
@@ -230,6 +233,33 @@ async function checkRoadmapBoard(page, viewportName) {
     const stored = await page.evaluate(() => Object.keys(JSON.parse(localStorage.getItem('agentsite-roadmap-board:v1') || '{}')).length);
     if (laterCards < 1) failures.push(`${viewportName}: roadmap local status change did not move a card into later column`);
     if (stored < 1) failures.push(`${viewportName}: roadmap local status change did not write localStorage override`);
+  }
+  return failures;
+}
+
+async function checkSearchIndex(page, viewportName) {
+  const failures = [];
+  const indexCount = await page.locator('[data-search-index]').count();
+  if (!indexCount) return failures;
+
+  await expectVisible(page, '[data-site-search]', `${viewportName}: site search`, failures, { minWidth: 160, minHeight: 34 });
+  await expectVisible(page, '[data-search-type="all"]', `${viewportName}: search all filter`, failures, { minWidth: 44, minHeight: 34 });
+  const cardCount = await page.locator('[data-search-card]').count();
+  if (cardCount < 6) failures.push(`${viewportName}: search index should render at least 6 cards; found ${cardCount}`);
+
+  const search = page.locator('[data-site-search]').first();
+  await search.fill('roadmap');
+  await page.waitForTimeout(80);
+  const searchVisible = await page.locator('[data-search-card]:visible').count();
+  if (searchVisible < 1) failures.push(`${viewportName}: site search did not leave any roadmap-related cards visible`);
+  await search.fill('');
+
+  const recipeFilter = page.locator('[data-search-type="recipe"]').first();
+  if (await recipeFilter.count()) {
+    await recipeFilter.click();
+    await page.waitForTimeout(80);
+    const recipeVisible = await page.locator('[data-search-card]:visible').count();
+    if (recipeVisible < 1) failures.push(`${viewportName}: search recipe filter did not leave any cards visible`);
   }
   return failures;
 }

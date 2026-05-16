@@ -31,6 +31,7 @@ Recipes do not imply live integrations, analytics, payments, customer proof, or 
 | `copy-evidence-strip` | `section_recipe` | A site needs stronger trust/copy grounding without a full layout overhaul. | Pair each visible claim with a configured artifact or safe repo fact; avoid endorsements, fake metrics, logos, or invented proof. |
 | `artifact-gallery` | `section_recipe` | A site needs searchable/filterable proof, docs, screenshots, deploys, recipes, or maintenance artifacts. | Use public-safe static artifact data only; avoid private data, fake live dashboards, payment proof, analytics, or invented evidence. |
 | `roadmap-board` | `section_recipe` | A site needs a public-safe improvement queue, next-step board, or local-first static app behavior. | Local browser changes are non-authoritative; durable changes require editing JSON and rerunning QA. |
+| `search-index` | `section_recipe` | A site needs searchable public repo/site intelligence across contracts, recipes, artifacts, roadmap items, and plans. | Index only public-safe content; no secrets, private data, auth, API keys, or unsupported semantic/live search claims. |
 
 ## Agent workflow
 
@@ -54,6 +55,7 @@ Recipes do not imply live integrations, analytics, payments, customer proof, or 
    - `recipes: ["copy-evidence-strip"]` or `visualPreset: "evidence-strip"` adds a claim-to-artifact section.
    - `recipes: ["artifact-gallery"]` or `visualPreset: "artifact-gallery"` adds a searchable/filterable artifact gallery backed by `src/data/artifacts.json`.
    - `recipes: ["roadmap-board"]` or `visualPreset: "roadmap-board"` adds a local-first roadmap board backed by `src/data/roadmap.json`.
+   - `recipes: ["search-index"]` or `visualPreset: "search-index"` adds a precomputed search surface backed by `src/data/search-index.json`.
 7. To let the generator infer from natural-language brief/config signals, pass `--auto-recipes` or set `"autoRecipes": true`. Auto mode is deterministic, can select an archetype plus section recipes, and never overrides explicit `recipes`, `archetype`, or `visualPreset` values.
 8. Run `npm run check:visual-divergence` when changing archetypes or visual presets.
 9. Apply the pattern with static copy and verifiable artifacts only.

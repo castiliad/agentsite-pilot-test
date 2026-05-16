@@ -23,6 +23,9 @@ const required = [
   '.agent/recipes/roadmap-board/recipe.yaml',
   '.agent/recipes/roadmap-board/README.md',
   '.agent/recipes/roadmap-board/acceptance.md',
+  '.agent/recipes/search-index/recipe.yaml',
+  '.agent/recipes/search-index/README.md',
+  '.agent/recipes/search-index/acceptance.md',
   '.hermes/plans/initial-site-build.md'
 ];
 
