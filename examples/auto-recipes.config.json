@@ -1,0 +1,34 @@
+{
+  "name": "Operator Proof Cockpit",
+  "repo": "operator-proof-cockpit",
+  "owner": "castiliad",
+  "description": "A static review cockpit for a B2B AI workflow pilot.",
+  "brief": "Create a product/service pilot landing page for founders and technical operators reviewing an AI agent workflow dashboard with deploy evidence, QA status, and proof artifacts.",
+  "autoRecipes": true,
+  "audience": [
+    "B2B founders evaluating an AI workflow pilot",
+    "Technical operators who need QA, deploy, and proof artifacts before review"
+  ],
+  "sections": [
+    {
+      "id": "workflow-review",
+      "title": "Workflow review path",
+      "body": "Show how reviewers move from brief to QA evidence, deploy status, and next-step decision."
+    },
+    {
+      "id": "boundary-checks",
+      "title": "Boundary checks",
+      "body": "Make static-safe limits, unsupported claims, and approval requirements visible."
+    }
+  ],
+  "proofArtifacts": [
+    {
+      "label": "QA transcript",
+      "body": "Repo-local QA commands and deploy verification are recorded for reviewers."
+    },
+    {
+      "label": "Deployment artifact",
+      "body": "GitHub Pages output is linked with static contracts and no live telemetry."
+    }
+  ]
+}

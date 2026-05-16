@@ -29,12 +29,14 @@ Recipes do not imply live integrations, analytics, payments, customer proof, or 
    ```bash
    npm run score:recipes
    npm run score:recipes -- --json
+   npm run recommend:recipes -- --config examples/auto-recipes.config.json
    ```
 4. Select only recipes that fit the brief and contract boundaries.
 5. Record selected recipe IDs and visual preset in the project plan or generated scaffold config.
-6. For generator-created scaffolds, selecting `recipes: ["product-cockpit"]`, `visualPreset: "cockpit-dark"`, or `visualPreset: "product-cockpit"` now renders the product-cockpit UI template automatically; other selections keep the default landing-page template.
-7. Apply the pattern with static copy and verifiable artifacts only.
-8. Run QA before handoff.
+6. For generator-created scaffolds, selecting `recipes: ["product-cockpit"]`, `visualPreset: "cockpit-dark"`, or `visualPreset: "product-cockpit"` renders the product-cockpit UI template automatically; other selections keep the default landing-page template.
+7. To let the generator infer from natural-language brief/config signals, pass `--auto-recipes` or set `"autoRecipes": true`. Auto mode is deterministic, currently only selects `product-cockpit`, and never overrides explicit `recipes` or `visualPreset` values (including an explicit empty `recipes: []`).
+8. Apply the pattern with static copy and verifiable artifacts only.
+9. Run QA before handoff.
 
 ## Recipe authoring checklist
 

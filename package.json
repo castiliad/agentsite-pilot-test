@@ -14,6 +14,7 @@
     "check:links": "node scripts/check-links.mjs",
     "list:recipes": "node scripts/list-recipes.mjs",
     "score:recipes": "node scripts/score-recipes.mjs",
+    "recommend:recipes": "node scripts/recommend-recipes.mjs",
     "verify:deploy": "node scripts/verify-deploy.mjs",
     "create:agentsite": "node scripts/create-agentsite.mjs",
     "test:visual": "node scripts/visual-qa.mjs",

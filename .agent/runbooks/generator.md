@@ -56,8 +56,21 @@ Supported JSON fields:
 - `sections`: array of `{ "id", "title", "body", "navLabel" }`; ids must start with a lowercase letter and use lowercase letters, numbers, and dashes; `navLabel` is optional and should be short
 - `proofArtifacts`: array of `{ "label", "body" }`
 - `allowedClaims`, `forbiddenClaims`, `approvalRequired`: string arrays
+- `recipes`: explicit lowercase recipe IDs; explicit values are preserved
+- `visualPreset`: explicit visual preset; `cockpit-dark` or `product-cockpit` renders the cockpit UI
+- `autoRecipes`: boolean; when true and no `recipes`/`visualPreset` is explicit, the deterministic selector may choose `product-cockpit` from product/service/pilot/agent/workflow/AI/tool/dashboard/review/proof/artifact/QA/deploy/consultant/operator/founder/B2B/dev/technical signals, explicit proof artifacts, or proof/workflow/boundary sections
 
 Validation fails with a clear message for invalid JSON, missing merged `name`/`repo`/`brief`, invalid or duplicate section ids, and `--publish` without `--owner` after config/CLI merge.
+
+```bash
+npm run create:agentsite -- \
+  --config examples/auto-recipes.config.json \
+  --out /tmp/operator-proof-cockpit \
+  --force
+npm run recommend:recipes -- --config examples/auto-recipes.config.json
+```
+
+The generated README, AGENTS, and `.agent/site.contract.yaml` record `auto_recipe_selection` so reviewers can see why a recipe was or was not selected.
 
 ## Overwrite a disposable local directory
 ```bash

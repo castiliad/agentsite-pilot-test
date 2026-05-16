@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import { recommendRecipes } from './recipe-selector.mjs';
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url));
 const rawArgs = parseArgs(process.argv.slice(2));
@@ -29,14 +30,22 @@ const repoUrl = `https://github.com/${owner}/${repoName}`;
 const today = new Date().toISOString().slice(0, 10);
 const audience = normalizeStringArray(args.audience, 'audience', defaultAudience(projectName));
 const visualDirection = present(args.visualDirection) ? cleanText(args.visualDirection, 'visualDirection') : 'restrained premium static-site landing page with crisp editorial spacing';
-const selectedRecipes = normalizeOptionalStringArray(args.recipes, 'recipes');
-const visualPreset = present(args.visualPreset) ? cleanText(args.visualPreset, 'visualPreset') : '';
+const explicitRecipeSelection = hasOwn(config, 'recipes') || hasOwn(rawArgs, 'recipes');
+const explicitVisualPreset = hasOwn(config, 'visualPreset') || hasOwn(rawArgs, 'visualPreset');
+const autoRecipesRequested = Boolean(args.autoRecipes);
+let selectedRecipes = normalizeOptionalStringArray(args.recipes, 'recipes');
+let visualPreset = present(args.visualPreset) ? cleanText(args.visualPreset, 'visualPreset') : '';
 const primaryCtaLabel = present(args.primaryCtaLabel) ? cleanText(args.primaryCtaLabel, 'primaryCtaLabel') : 'Review next step';
 const primaryCtaHref = present(args.primaryCtaHref) ? cleanHref(args.primaryCtaHref) : '#cta';
 const sections = normalizeSections(args.sections, brief, audience);
 const heroHeadline = present(args.heroHeadline) ? cleanText(args.heroHeadline, 'heroHeadline') : defaultHeroHeadline(projectName, description, brief, sections);
 const heroLede = present(args.heroLede) ? cleanText(args.heroLede, 'heroLede') : defaultHeroLede(brief, description, projectName);
 const proofArtifacts = normalizeProofArtifacts(args.proofArtifacts);
+const autoRecipeSelection = buildAutoRecipeSelection();
+if (autoRecipeSelection.applied) {
+  selectedRecipes = autoRecipeSelection.selectedRecipes;
+  visualPreset = autoRecipeSelection.visualPreset;
+}
 const allowedClaims = normalizeStringArray(args.allowedClaims, 'allowedClaims', [
   'Static GitHub Pages delivery',
   'Repo-local QA scripts',
@@ -101,6 +110,9 @@ const view = {
   RECIPE_SELECTION_INLINE: selectedRecipes.length ? selectedRecipes.join(', ') : 'none selected',
   VISUAL_PRESET: visualPreset || 'none selected',
   VISUAL_PRESET_YAML: visualPreset ? yamlScalar(visualPreset) : 'null',
+  AUTO_RECIPE_SELECTION: autoRecipeSelection.summary,
+  AUTO_RECIPE_SELECTION_YAML: yamlScalar(autoRecipeSelection.summary),
+  AUTO_RECIPE_REASON_MD: autoRecipeSelection.reasons.length ? mdList(autoRecipeSelection.reasons) : '- No auto-selection signals recorded',
   SECTIONS_SUMMARY_MD: mdList(sections.map((section) => `${section.title} (${section.id})`)),
   PROOF_SUMMARY_MD: mdList(proofArtifacts.map((item) => `${item.label}: ${item.body}`)),
   SITE_INDEX: usesProductCockpit ? buildProductCockpitIndexAstro() : buildIndexAstro(),
@@ -127,15 +139,16 @@ const files = new Map(Object.entries({
       'check:links': 'node scripts/check-links.mjs',
       'list:recipes': 'node scripts/list-recipes.mjs',
       'score:recipes': 'node scripts/score-recipes.mjs',
+      'recommend:recipes': 'node scripts/recommend-recipes.mjs',
       'verify:deploy': 'node scripts/verify-deploy.mjs'
     },
     dependencies: { astro: '^6.3.3', typescript: '^6.0.3' },
     devDependencies: { '@playwright/test': '^1.60.0' }
   }, null, 2) + '\n',
   'astro.config.mjs': `// @ts-check\nimport { defineConfig } from 'astro/config';\n\nexport default defineConfig({\n  site: 'https://{{OWNER}}.github.io',\n  base: '/{{REPO_NAME}}',\n  output: 'static'\n});\n`,
-  'README.md': `# {{PROJECT_NAME}}\n\n{{DESCRIPTION}}\n\n## Brief\n{{BRIEF}}\n\n## Recipe registry\nSelected recipes:\n{{RECIPE_SELECTION_MD}}\n\nVisual preset: \`{{VISUAL_PRESET}}\`\n\nRegistry commands:\n\`\`\`bash\nnpm run list:recipes\nnpm run score:recipes\n\`\`\`\n\n## Audience\n{{AUDIENCE_LIST_MD}}\n\n## Live URL\n{{LIVE_URL}}\n\n## Repository\n{{REPO_URL}}\n\n## Local development\n\`\`\`bash\nnpm install\nnpm run dev\n\`\`\`\n\n## QA\n\`npm run qa\` is the fast local gate. Browser/mobile visual QA is explicit so normal edits stay quick.\n\n## Recipe-enabled generation\nSelecting \`recipes: [\"product-cockpit\"]\`, \`visualPreset: \"cockpit-dark\"\`, or \`visualPreset: \"product-cockpit\"\` renders the cockpit UI template instead of only recording metadata. The output remains static-safe: no analytics, payments, backend, authentication, live telemetry, fake metrics, customer logos, or quoted endorsements.\n\n\`\`\`bash\nnpm run qa\nnpm run test:visual\nnpm run qa:full\nnpm audit --audit-level=moderate\n\`\`\`\n\nVisual QA builds and serves the static site, checks desktop and mobile layouts, fails on console/page errors, horizontal overflow, missing hero/nav/CTA visibility, broken hash anchors, and visible nav ellipses, then writes screenshots to \`.agent/audits/screenshots/\`. If Chromium is not installed yet, run \`npx playwright install chromium\` once.\n\n## Deploy verification\n\`\`\`bash\nLIVE_URL=\"{{LIVE_URL}}\" \\\nEXPECT_TEXT=\"{{EXPECT_TEXT}}\" \\\nREPO=\"{{OWNER_REPO}}\" \\\nnpm run verify:deploy\n\`\`\`\n\n## Agent maintenance notes\n- Read \`AGENTS.md\` before editing.\n- Keep visible copy aligned with \`.agent/site.contract.yaml\` and \`.agent/brand.contract.yaml\`.\n- Payment mode is disabled in \`.agent/payment.contract.yaml\`; do not add payment links without explicit approval.\n- Deployment is GitHub Pages via \`.github/workflows/deploy.yml\`.\n`,
-  'AGENTS.md': `# AGENTS.md\n\n## Mission\n{{PROJECT_NAME}} is a static AgentSite generated from this requester brief: {{BRIEF}}\n\n## Audience\n{{AUDIENCE_LIST_MD}}\n\n## Stack\n- Astro static site\n- Astro production build checks\n- GitHub Pages via GitHub Actions\n- Lightweight repo-local scripts in \`scripts/\`\n\n## Recipe registry\nSelected recipes: {{RECIPE_SELECTION_INLINE}}\nVisual preset: {{VISUAL_PRESET}}\n\nUse \`npm run list:recipes\` and \`npm run score:recipes\` before applying or changing registered patterns. Recipe guidance is static-safe composition guidance, not permission to add live data, analytics, payments, or unsupported claims.\n\n## Safe edit boundaries\nAgents may safely edit:\n- \`src/components/**\`, \`src/pages/**\`, \`src/styles/**\`\n- Copy that remains consistent with \`.agent/site.contract.yaml\` and \`.agent/brand.contract.yaml\`\n- Supported claims listed in \`.agent/site.contract.yaml\`\n- Documentation, runbooks, and plan files that reflect actual behavior\n\n## Approval-required changes\nGet explicit human approval before:\n{{APPROVAL_LIST_MD}}\n\n## QA commands\nRun before handoff:\n\`\`\`bash\nnpm run qa\n\`\`\`\n\nIndividual gates:\n\`\`\`bash\nnpm run check:contract\nnpm run check:claims\nnpm run check:seo\nnpm run check:links\nnpm run build\n\`\`\`\n\n## Feature-request process\n1. Capture the natural-language request as a short brief.\n2. Compare it with \`.agent/site.contract.yaml\`, \`.agent/brand.contract.yaml\`, and \`.agent/payment.contract.yaml\`.\n3. Record assumptions and acceptance criteria in an issue or plan file.\n4. Implement the smallest coherent change.\n5. Run QA and include command output summary in the handoff.\n6. Deploy only after checks pass.\n7. Verify the live URL contains expected current copy.\n`,
-  '.agent/site.contract.yaml': `name: {{PROJECT_NAME}} site contract\nversion: 0.1.0\nowner_role: AgentSite maintenance agent\nsite:\n  type: static_landing_page\n  framework: Astro\n  deploy_target: GitHub Pages\n  repository_visibility: public_allowed\nmission: >\n  {{DESCRIPTION}}\nbrief: >\n  {{BRIEF}}\naudience:\n{{AUDIENCE_YAML}}\nrequired_sections:\n{{REQUIRED_SECTIONS_YAML}}\nrecipe_registry:\n  selected_recipes:\n{{RECIPE_SELECTION_YAML}}\n  visual_preset: {{VISUAL_PRESET_YAML}}\n  note: Recipes are static-safe composition guidance and do not approve live data, analytics, payments, or unsupported claims.\ncontent_rules:\n  must_include:\n    - static GitHub Pages delivery\n    - repo-local QA\n    - no-payment mode\n  allowed_claims:\n{{ALLOWED_CLAIMS_YAML}}\n  must_not_include:\n{{FORBIDDEN_CLAIMS_YAML}}\napproval_required:\n{{APPROVAL_REQUIRED_YAML}}\nqa:\n  commands:\n    - npm run qa\n    - npm run build\nverification:\n  live_url: {{LIVE_URL}}\n  expected_text: {{EXPECT_TEXT}}\n`,
+  'README.md': `# {{PROJECT_NAME}}\n\n{{DESCRIPTION}}\n\n## Brief\n{{BRIEF}}\n\n## Recipe registry\nSelected recipes:\n{{RECIPE_SELECTION_MD}}\n\nVisual preset: \`{{VISUAL_PRESET}}\`\n\nauto_recipe_selection: {{AUTO_RECIPE_SELECTION}}\n\nAuto-selection signals:\n{{AUTO_RECIPE_REASON_MD}}\n\nRegistry commands:\n\`\`\`bash\nnpm run list:recipes\nnpm run score:recipes\nnpm run recommend:recipes -- --brief \"{{BRIEF}}\"\n\`\`\`\n\n## Audience\n{{AUDIENCE_LIST_MD}}\n\n## Live URL\n{{LIVE_URL}}\n\n## Repository\n{{REPO_URL}}\n\n## Local development\n\`\`\`bash\nnpm install\nnpm run dev\n\`\`\`\n\n## QA\n\`npm run qa\` is the fast local gate. Browser/mobile visual QA is explicit so normal edits stay quick.\n\n## Recipe-enabled generation\nSelecting \`recipes: [\"product-cockpit\"]\`, \`visualPreset: \"cockpit-dark\"\`, or \`visualPreset: \"product-cockpit\"\` renders the cockpit UI template instead of only recording metadata. The output remains static-safe: no analytics, payments, backend, authentication, live telemetry, fake metrics, customer logos, or quoted endorsements.\n\n\`\`\`bash\nnpm run qa\nnpm run test:visual\nnpm run qa:full\nnpm audit --audit-level=moderate\n\`\`\`\n\nVisual QA builds and serves the static site, checks desktop and mobile layouts, fails on console/page errors, horizontal overflow, missing hero/nav/CTA visibility, broken hash anchors, and visible nav ellipses, then writes screenshots to \`.agent/audits/screenshots/\`. If Chromium is not installed yet, run \`npx playwright install chromium\` once.\n\n## Deploy verification\n\`\`\`bash\nLIVE_URL=\"{{LIVE_URL}}\" \\\nEXPECT_TEXT=\"{{EXPECT_TEXT}}\" \\\nREPO=\"{{OWNER_REPO}}\" \\\nnpm run verify:deploy\n\`\`\`\n\n## Agent maintenance notes\n- Read \`AGENTS.md\` before editing.\n- Keep visible copy aligned with \`.agent/site.contract.yaml\` and \`.agent/brand.contract.yaml\`.\n- Payment mode is disabled in \`.agent/payment.contract.yaml\`; do not add payment links without explicit approval.\n- Deployment is GitHub Pages via \`.github/workflows/deploy.yml\`.\n`,
+  'AGENTS.md': `# AGENTS.md\n\n## Mission\n{{PROJECT_NAME}} is a static AgentSite generated from this requester brief: {{BRIEF}}\n\n## Audience\n{{AUDIENCE_LIST_MD}}\n\n## Stack\n- Astro static site\n- Astro production build checks\n- GitHub Pages via GitHub Actions\n- Lightweight repo-local scripts in \`scripts/\`\n\n## Recipe registry\nSelected recipes: {{RECIPE_SELECTION_INLINE}}\nVisual preset: {{VISUAL_PRESET}}\nauto_recipe_selection: {{AUTO_RECIPE_SELECTION}}\n\nUse \`npm run list:recipes\`, \`npm run score:recipes\`, and \`npm run recommend:recipes\` before applying or changing registered patterns. Recipe guidance is static-safe composition guidance, not permission to add live data, analytics, payments, or unsupported claims.\n\n## Safe edit boundaries\nAgents may safely edit:\n- \`src/components/**\`, \`src/pages/**\`, \`src/styles/**\`\n- Copy that remains consistent with \`.agent/site.contract.yaml\` and \`.agent/brand.contract.yaml\`\n- Supported claims listed in \`.agent/site.contract.yaml\`\n- Documentation, runbooks, and plan files that reflect actual behavior\n\n## Approval-required changes\nGet explicit human approval before:\n{{APPROVAL_LIST_MD}}\n\n## QA commands\nRun before handoff:\n\`\`\`bash\nnpm run qa\n\`\`\`\n\nIndividual gates:\n\`\`\`bash\nnpm run check:contract\nnpm run check:claims\nnpm run check:seo\nnpm run check:links\nnpm run build\n\`\`\`\n\n## Feature-request process\n1. Capture the natural-language request as a short brief.\n2. Compare it with \`.agent/site.contract.yaml\`, \`.agent/brand.contract.yaml\`, and \`.agent/payment.contract.yaml\`.\n3. Record assumptions and acceptance criteria in an issue or plan file.\n4. Implement the smallest coherent change.\n5. Run QA and include command output summary in the handoff.\n6. Deploy only after checks pass.\n7. Verify the live URL contains expected current copy.\n`,
+  '.agent/site.contract.yaml': `name: {{PROJECT_NAME}} site contract\nversion: 0.1.0\nowner_role: AgentSite maintenance agent\nsite:\n  type: static_landing_page\n  framework: Astro\n  deploy_target: GitHub Pages\n  repository_visibility: public_allowed\nmission: >\n  {{DESCRIPTION}}\nbrief: >\n  {{BRIEF}}\naudience:\n{{AUDIENCE_YAML}}\nrequired_sections:\n{{REQUIRED_SECTIONS_YAML}}\nrecipe_registry:\n  selected_recipes:\n{{RECIPE_SELECTION_YAML}}\n  visual_preset: {{VISUAL_PRESET_YAML}}\n  auto_recipe_selection: {{AUTO_RECIPE_SELECTION_YAML}}\n  note: Recipes are static-safe composition guidance and do not approve live data, analytics, payments, or unsupported claims.\ncontent_rules:\n  must_include:\n    - static GitHub Pages delivery\n    - repo-local QA\n    - no-payment mode\n  allowed_claims:\n{{ALLOWED_CLAIMS_YAML}}\n  must_not_include:\n{{FORBIDDEN_CLAIMS_YAML}}\napproval_required:\n{{APPROVAL_REQUIRED_YAML}}\nqa:\n  commands:\n    - npm run qa\n    - npm run build\nverification:\n  live_url: {{LIVE_URL}}\n  expected_text: {{EXPECT_TEXT}}\n`,
   '.agent/brand.contract.yaml': `name: {{PROJECT_NAME}} brand contract\nversion: 0.1.0\nvoice:\n  tone:\n    - crisp\n    - trustworthy\n    - clear\n    - direct\n  avoid:\n    - generic SaaS slop\n    - exaggerated AI magic\n    - fake urgency\n    - fake social proof\nvisual_system:\n  direction: {{VISUAL_DIRECTION}}\n  colors:\n    background: '#070b16'\n    text: '#edf2ff'\n    accent: '#85f3d7'\n    accent_secondary: '#9fb7ff'\n  typography:\n    sans: Inter\n    mono: JetBrains Mono\naccessibility:\n  responsive: true\n  semantic_sections: true\n  minimum_contrast: high on dark background\n`,
   '.agent/payment.contract.yaml': `name: {{PROJECT_NAME}} payment contract\nversion: 0.1.0\nmode: disabled\nstatus: no-payment\nrules:\n  - Do not add live payment links.\n  - Do not collect card details or billing information.\n  - Do not imply paid availability.\n  - Any payment integration requires explicit human approval and a new contract review.\nallowed_copy:\n  - payment disabled\n  - no-payment mode\nblocked_domains:\n  - stripe.com\n  - paypal.com\n  - paddle.com\n  - lemonsqueezy.com\n`,
   '.agent/runbooks/deploy.md': `# Deployment runbook\n\n## Target\nGitHub Pages serves the static Astro build from the GitHub Actions artifact.\n\n## Normal deployment\n1. Confirm contracts and QA pass: \`npm run qa\`.\n2. Commit changes to \`main\`.\n3. Push to GitHub.\n4. GitHub Actions runs \`.github/workflows/deploy.yml\`.\n5. Verify the live URL contains expected text: \`{{EXPECT_TEXT}}\`.\n\n## Manual verification\n\`\`\`bash\nLIVE_URL=\"{{LIVE_URL}}\" EXPECT_TEXT=\"{{EXPECT_TEXT}}\" REPO=\"{{OWNER_REPO}}\" npm run verify:deploy\n\`\`\`\n\n## Rollback\nRevert the problematic commit, run QA, and push \`main\` again. Do not rewrite public history unless explicitly approved.\n`,
@@ -153,6 +166,8 @@ const files = new Map(Object.entries({
   'scripts/check-links.mjs': `import fs from 'node:fs';\nimport path from 'node:path';\n\nfunction walk(target) {\n  const stat = fs.statSync(target);\n  if (stat.isFile()) return [target];\n  return fs.readdirSync(target).flatMap((entry) => walk(path.join(target, entry)));\n}\n\nconst files = walk('src').filter((file) => /\\.astro$/.test(file));\nconst all = files.map((file) => fs.readFileSync(file, 'utf8')).join('\\n');\nconst ids = new Set([...all.matchAll(/id=\"([^\"]+)\"/g)].map((match) => match[1]));\nconst hrefs = [...all.matchAll(/href=\"([^\"]+)\"/g)].map((match) => match[1]);\nconst failures = [];\n\nfor (const href of hrefs) {\n  if (href.startsWith('#') && !ids.has(href.slice(1))) failures.push(\`broken anchor: \${href}\`);\n  if (/stripe\\.com|paypal\\.com|paddle\\.com|lemonsqueezy\\.com/i.test(href)) failures.push(\`payment link not allowed: \${href}\`);\n  if (/google-analytics|googletagmanager|segment\\.com/i.test(href)) failures.push(\`tracking link not allowed: \${href}\`);\n}\n\nif (failures.length) {\n  console.error(failures.join('\\n'));\n  process.exit(1);\n}\nconsole.log(\`link check passed (\${hrefs.length} hrefs, \${ids.size} anchors)\`);\n`,
   'scripts/list-recipes.mjs': fs.readFileSync(path.join(scriptDir, 'list-recipes.mjs'), 'utf8'),
   'scripts/score-recipes.mjs': fs.readFileSync(path.join(scriptDir, 'score-recipes.mjs'), 'utf8'),
+  'scripts/recipe-selector.mjs': fs.readFileSync(path.join(scriptDir, 'recipe-selector.mjs'), 'utf8'),
+  'scripts/recommend-recipes.mjs': fs.readFileSync(path.join(scriptDir, 'recommend-recipes.mjs'), 'utf8'),
   '.agent/recipes/README.md': fs.readFileSync(path.join(scriptDir, '..', '.agent', 'recipes', 'README.md'), 'utf8'),
   '.agent/recipes/product-cockpit/recipe.yaml': fs.readFileSync(path.join(scriptDir, '..', '.agent', 'recipes', 'product-cockpit', 'recipe.yaml'), 'utf8'),
   '.agent/recipes/product-cockpit/README.md': fs.readFileSync(path.join(scriptDir, '..', '.agent', 'recipes', 'product-cockpit', 'README.md'), 'utf8'),
@@ -191,6 +206,54 @@ function buildIndexAstro() {
 
 function buildGlobalCss() {
   return `:root { color-scheme: dark; font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #070b16; color: #edf2ff; }\n* { box-sizing: border-box; }\nbody { margin: 0; min-height: 100vh; background: radial-gradient(circle at 12% 4%, rgba(133, 243, 215, .18), transparent 28rem), radial-gradient(circle at 85% 12%, rgba(159, 183, 255, .14), transparent 30rem), #070b16; }\na { color: inherit; }\n.hero, .section { width: min(1120px, calc(100% - 32px)); margin: 0 auto; }\n.hero { padding: 28px 0 80px; }\n.nav { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 72px; }\n.brand, .nav-links { display: flex; align-items: center; gap: 12px; text-decoration: none; }\n.brand-mark { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: #85f3d7; color: #071016; font-weight: 800; }\n.nav-links { flex-wrap: wrap; justify-content: flex-end; }\n.nav-links a { opacity: .76; text-decoration: none; font-size: .94rem; }\n.hero-grid { display: grid; grid-template-columns: minmax(0, 1.14fr) minmax(280px, .86fr); gap: 32px; align-items: center; }\n.eyebrow, .section-kicker, .terminal-body span { color: #85f3d7; font-family: "JetBrains Mono", monospace; text-transform: uppercase; letter-spacing: .08em; font-size: .78rem; }\nh1 { font-size: clamp(2.45rem, 7vw, 5.4rem); line-height: .96; margin: 0 0 24px; letter-spacing: -.06em; }\nh2 { font-size: clamp(2rem, 4vw, 3.25rem); line-height: 1; margin: 10px 0 18px; letter-spacing: -.04em; }\nh3 { margin: 0 0 10px; color: #f7f9ff; }\np, li { color: #b8c3de; line-height: 1.7; font-size: 1.05rem; }\n.hero-lede { max-width: 720px; font-size: 1.18rem; }\n.hero-actions { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 30px; }\n.button { display: inline-flex; align-items: center; justify-content: center; min-height: 46px; padding: 0 18px; border-radius: 999px; text-decoration: none; font-weight: 700; }\n.button.primary { background: #85f3d7; color: #071016; }\n.button.secondary { border: 1px solid rgba(237,242,255,.18); background: rgba(255,255,255,.05); }\n.terminal-card, article, .audience, .cta, .content-section { border: 1px solid rgba(237,242,255,.12); background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.035)); box-shadow: 0 24px 80px rgba(0,0,0,.26); }\n.terminal-card { border-radius: 22px; overflow: hidden; }\n.terminal-top { display: flex; align-items: center; gap: 8px; padding: 14px 16px; border-bottom: 1px solid rgba(237,242,255,.1); }\n.terminal-top span { width: 10px; height: 10px; border-radius: 50%; background: #85f3d7; opacity: .7; }\n.terminal-top strong { margin-left: auto; color: #b8c3de; font: 600 .78rem "JetBrains Mono", monospace; }\n.terminal-body { padding: 18px; }\n.terminal-body p { margin: 0 0 12px; }\n.section { padding: 58px 0; }\n.content-section, .audience, .cta { border-radius: 28px; padding: clamp(24px, 5vw, 46px); margin-bottom: 24px; }\n.audience ul { display: grid; gap: 10px; padding-left: 22px; }\n.card-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }\narticle { border-radius: 22px; padding: 22px; }\n.cta { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 80px; }\n.cta p { max-width: 680px; }\n@media (max-width: 820px) { .nav, .cta { align-items: flex-start; flex-direction: column; } .hero-grid, .card-grid { grid-template-columns: 1fr; } .hero { padding-bottom: 42px; } }\n`;
+}
+
+function buildAutoRecipeSelection() {
+  const explicitSelection = explicitRecipeSelection || explicitVisualPreset;
+  if (!autoRecipesRequested) {
+    return {
+      applied: false,
+      selectedRecipes,
+      visualPreset,
+      reasons: [],
+      summary: 'not requested; default recipe selection unchanged'
+    };
+  }
+  if (explicitSelection) {
+    return {
+      applied: false,
+      selectedRecipes,
+      visualPreset,
+      reasons: ['explicit recipes or visualPreset provided; auto selector did not override'],
+      summary: 'not applied; explicit recipes or visualPreset preserved'
+    };
+  }
+
+  const recommendation = recommendRecipes({
+    brief,
+    description,
+    audience,
+    sections: args.sections === undefined ? [] : sections,
+    proofArtifacts: args.proofArtifacts === undefined ? [] : proofArtifacts
+  });
+
+  if (!recommendation.selectedRecipes.length) {
+    return {
+      applied: false,
+      selectedRecipes,
+      visualPreset,
+      reasons: recommendation.reasons,
+      summary: recommendation.explanation
+    };
+  }
+
+  return {
+    applied: true,
+    selectedRecipes: recommendation.selectedRecipes,
+    visualPreset: recommendation.visualPreset,
+    reasons: recommendation.reasons,
+    summary: recommendation.explanation
+  };
 }
 
 function shouldRenderProductCockpit(recipeIds, preset) {
@@ -247,7 +310,7 @@ function parseArgs(argv) {
     if (!token.startsWith('--')) fail(`Unexpected positional argument: ${token}`);
     const [rawKey, inline] = token.slice(2).split('=');
     const key = rawKey.replace(/-([a-z])/g, (_, char) => char.toUpperCase());
-    if (['publish', 'force', 'help', 'h'].includes(rawKey)) {
+    if (['publish', 'force', 'auto-recipes', 'help', 'h'].includes(rawKey)) {
       parsed[key] = inline === undefined ? true : inline !== 'false';
       continue;
     }
@@ -318,7 +381,10 @@ function normalizeProofArtifacts(value) {
 function normalizeOptionalStringArray(value, name) {
   if (value === undefined) return [];
   const source = Array.isArray(value) ? value : String(value).split(',');
-  const cleaned = source.map((item, index) => cleanText(String(item), `${name}[${index}]`)).filter(Boolean);
+  const cleaned = source.map((item, index) => {
+    const raw = String(item).replace(/\s+/g, ' ').trim();
+    return raw ? cleanText(raw, `${name}[${index}]`) : '';
+  }).filter(Boolean);
   for (const item of cleaned) {
     if (!/^[a-z0-9][a-z0-9._-]*$/.test(item)) fail(`config.${name} entries must be lowercase recipe IDs; received "${item}"`);
   }
@@ -453,6 +519,10 @@ function present(value) {
   return value !== undefined && value !== null && String(value).trim() !== '';
 }
 
+function hasOwn(object, key) {
+  return Object.prototype.hasOwnProperty.call(object, key);
+}
+
 function kebab(value) {
   return value.replace(/[A-Z]/g, (char) => `-${char.toLowerCase()}`);
 }
@@ -473,7 +543,7 @@ function output(command, commandArgs, options = {}) {
 }
 
 function usage(code) {
-  console.log(`Usage:\n  npm run create:agentsite -- --name "Site Name" --repo repo-name --brief "Natural-language brief" --owner github-owner --out /tmp/repo-name [--description "..."] [--recipes product-cockpit] [--visual-preset cockpit-dark] [--publish] [--force]\n  npm run create:agentsite -- --config ./agentsite.config.json --out /tmp/repo-name [--name "Override"] [--publish] [--force]\n\nConfig is JSON only. CLI flags override config values. Defaults to local scaffold only; add --publish to create/push a public GitHub repo with gh. Selecting recipes:["product-cockpit"], visualPreset:"cockpit-dark", or visualPreset:"product-cockpit" renders the static-safe cockpit UI; otherwise the default landing-page UI is used.`);
+  console.log(`Usage:\n  npm run create:agentsite -- --name "Site Name" --repo repo-name --brief "Natural-language brief" --owner github-owner --out /tmp/repo-name [--description "..."] [--recipes product-cockpit] [--visual-preset cockpit-dark] [--auto-recipes] [--publish] [--force]\n  npm run create:agentsite -- --config ./agentsite.config.json --out /tmp/repo-name [--name "Override"] [--auto-recipes] [--publish] [--force]\n\nConfig is JSON only. CLI flags override config values. Defaults to local scaffold only; add --publish to create/push a public GitHub repo with gh. Selecting recipes:["product-cockpit"], visualPreset:"cockpit-dark", or visualPreset:"product-cockpit" renders the static-safe cockpit UI. If --auto-recipes or config autoRecipes:true is set and no recipes/visualPreset are explicit, deterministic heuristics may select product-cockpit from the brief, audience, sections, or proofArtifacts; otherwise the default landing-page UI is used.`);
   process.exit(code);
 }
 
