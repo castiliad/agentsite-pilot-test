@@ -1,0 +1,114 @@
+[
+  {
+    "id": "req-001",
+    "title": "Move primary run ledger closer to top",
+    "status": "ready",
+    "priority": "high",
+    "source": "visual review",
+    "summary": "Run-ledger proof is useful but buried below composed modules.",
+    "acceptance": [
+      "#runs appears before secondary proof modules",
+      "top CTA jumps to runs",
+      "visual QA passes"
+    ],
+    "recipeCandidates": [
+      "agent-run-ledger",
+      "product-cockpit"
+    ],
+    "verification": [
+      "npm run qa:full",
+      "browser visual review"
+    ],
+    "nextAction": "Prototype a run-ledger-first layout in a disposable generated repo."
+  },
+  {
+    "id": "req-002",
+    "title": "Add collapsible module sections",
+    "status": "triage",
+    "priority": "medium",
+    "source": "atlas/run-ledger visual review",
+    "summary": "Composed demo pages become too long when multiple section recipes are enabled.",
+    "acceptance": [
+      "secondary modules can collapse without hiding core content",
+      "keyboard behavior works",
+      "mobile remains readable"
+    ],
+    "recipeCandidates": [
+      "agentsite-atlas",
+      "search-index",
+      "artifact-gallery"
+    ],
+    "verification": [
+      "npm run qa:full",
+      "manual keyboard check"
+    ],
+    "nextAction": "Design a static details/summary pattern with visual QA coverage."
+  },
+  {
+    "id": "req-003",
+    "title": "Create request intake queue",
+    "status": "in_progress",
+    "priority": "high",
+    "source": "Layer 7",
+    "summary": "Add a public-safe feature-request inbox to complete the static loop from request to verification.",
+    "acceptance": [
+      "requests JSON validates",
+      "request cards filter by status and priority",
+      "QA exercises request search/filter"
+    ],
+    "recipeCandidates": [
+      "feature-request-inbox",
+      "agent-run-ledger"
+    ],
+    "verification": [
+      "npm run check:requests",
+      "npm run qa:full",
+      "npm run verify:deploy"
+    ],
+    "nextAction": "Publish proof and back-port generator support."
+  },
+  {
+    "id": "req-004",
+    "title": "Track failed experiments explicitly",
+    "status": "backlog",
+    "priority": "medium",
+    "source": "orchestration model",
+    "summary": "Future agents need a clean place to record dead ends and why they were rejected.",
+    "acceptance": [
+      "failure states are visible",
+      "reason and rollback note are required",
+      "blocked language checks pass"
+    ],
+    "recipeCandidates": [
+      "agent-run-ledger",
+      "feature-request-inbox"
+    ],
+    "verification": [
+      "npm run check:runs",
+      "npm run check:requests"
+    ],
+    "nextAction": "Extend schemas after inbox proof is stable."
+  },
+  {
+    "id": "req-005",
+    "title": "Generate a site-specific chief-of-staff briefing",
+    "status": "backlog",
+    "priority": "low",
+    "source": "future layer",
+    "summary": "Produce a compact weekly static briefing from atlas, runs, requests, roadmap, and search index data.",
+    "acceptance": [
+      "briefing is generated from public data",
+      "top three actions are explicit",
+      "no live monitoring claims"
+    ],
+    "recipeCandidates": [
+      "search-index",
+      "agent-run-ledger",
+      "feature-request-inbox"
+    ],
+    "verification": [
+      "npm run qa:full"
+    ],
+    "nextAction": "Wait until request inbox proves stable."
+  }
+]

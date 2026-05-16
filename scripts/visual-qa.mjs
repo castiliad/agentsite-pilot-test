@@ -126,6 +126,9 @@ async function auditViewport(browser, viewport) {
   const runLedgerFailures = await checkAgentRunLedger(page, viewport.name);
   failures.push(...runLedgerFailures);
 
+  const requestInboxFailures = await checkFeatureRequestInbox(page, viewport.name);
+  failures.push(...requestInboxFailures);
+
   await page.close();
   return { failures, screenshotPath };
 }
@@ -266,6 +269,38 @@ async function checkSearchIndex(page, viewportName) {
     await page.waitForTimeout(80);
     const recipeVisible = await page.locator('[data-search-card]:visible').count();
     if (recipeVisible < 1) failures.push(`${viewportName}: search recipe filter did not leave any cards visible`);
+  }
+  return failures;
+}
+
+async function checkFeatureRequestInbox(page, viewportName) {
+  const failures = [];
+  const inboxCount = await page.locator('[data-feature-request-inbox]').count();
+  if (!inboxCount) return failures;
+  await expectVisible(page, '[data-request-search]', `${viewportName}: request inbox search`, failures, { minWidth: 160, minHeight: 34 });
+  await expectVisible(page, '[data-request-status="all"]', `${viewportName}: request all-status filter`, failures, { minWidth: 60, minHeight: 34 });
+  await expectVisible(page, '[data-request-priority="all"]', `${viewportName}: request all-priority filter`, failures, { minWidth: 60, minHeight: 34 });
+  const cardCount = await page.locator('[data-request-card]').count();
+  if (cardCount < 3) failures.push(`${viewportName}: request inbox should render at least 3 cards; found ${cardCount}`);
+  const search = page.locator('[data-request-search]').first();
+  await search.fill('qa');
+  await page.waitForTimeout(80);
+  const searchVisible = await page.locator('[data-request-card]:visible').count();
+  if (searchVisible < 1) failures.push(`${viewportName}: request inbox search did not leave QA-related cards visible`);
+  await search.fill('');
+  const high = page.locator('[data-request-priority="high"]').first();
+  if (await high.count()) {
+    await high.click();
+    await page.waitForTimeout(80);
+    const highVisible = await page.locator('[data-request-card]:visible').count();
+    if (highVisible < 1) failures.push(`${viewportName}: request inbox high-priority filter did not leave any cards visible`);
+  }
+  const ready = page.locator('[data-request-status="ready"]').first();
+  if (await ready.count()) {
+    await ready.click();
+    await page.waitForTimeout(80);
+    const readyVisible = await page.locator('[data-request-card]:visible').count();
+    if (readyVisible < 0) failures.push(`${viewportName}: request inbox ready filter produced invalid state`);
   }
   return failures;
 }

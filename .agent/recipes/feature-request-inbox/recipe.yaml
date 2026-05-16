@@ -1,0 +1,73 @@
+id: feature-request-inbox
+name: Feature Request Inbox
+version: 0.1.0
+status: draft
+kind: section_recipe
+section_recipe: feature-request-inbox
+visual_preset: feature-request-inbox
+summary: >
+  A static intake queue for future AgentSite improvements with status, priority,
+  acceptance criteria, recipe candidates, verification plans, and next actions.
+best_for:
+  - Completing the request to plan to implementation loop on static AgentSites.
+  - Giving future agents a curated backlog without private trackers or backend auth.
+  - Turning vague improvement ideas into QA-ready request cards.
+not_for:
+  - Private tickets, customer support inboxes, authenticated workflows, or live task sync.
+composable_with:
+  - agent-run-ledger
+  - roadmap-board
+  - search-index
+  - agentsite-atlas
+inputs:
+  required:
+    - request id
+    - title
+    - status
+    - priority
+    - source
+    - summary
+    - acceptance criteria
+    - recipe candidates
+    - verification plan
+    - next action
+sections:
+  - id: requests
+    purpose: Browse and filter public-safe improvement requests.
+static_safety:
+  required:
+    - Request data must be public-safe curated summaries, not private tickets or raw chats.
+    - Each request must include acceptance criteria and verification steps.
+    - Durable changes happen by editing JSON and rerunning QA.
+  forbidden:
+    - Credentials, private user data, internal tickets, raw support conversations, or live inbox claims.
+    - Unsupported guarantees, fake demand signals, analytics, auth, payment, or database requirements without explicit approval.
+approval_required:
+  - Ingesting private task systems, customer data, raw chats, credentials, or unpublished user data.
+  - Adding live sync, authentication, database storage, server runtime, analytics, or payments.
+acceptance_files:
+  readme: README.md
+  checklist: acceptance.md
+scoring:
+  pass_threshold: 80
+  criteria:
+    - id: fit
+      label: Brief fit
+      weight: 20
+      question: Does the site need a public-safe request/backlog intake surface?
+    - id: data-quality
+      label: Request data quality
+      weight: 25
+      question: Are requests specific, prioritized, acceptance-tested, and verifiable?
+    - id: interaction
+      label: Inbox interaction
+      weight: 20
+      question: Do search, status filters, and priority filters work clearly?
+    - id: safety
+      label: Static safety
+      weight: 20
+      question: Does the inbox avoid private tickets, raw chats, secrets, auth, analytics, and live sync claims?
+    - id: maintainability
+      label: Agent maintainability
+      weight: 15
+      question: Can future agents append/refine requests by editing JSON and rerunning QA?

@@ -32,6 +32,9 @@ const required = [
   '.agent/recipes/agent-run-ledger/recipe.yaml',
   '.agent/recipes/agent-run-ledger/README.md',
   '.agent/recipes/agent-run-ledger/acceptance.md',
+  '.agent/recipes/feature-request-inbox/recipe.yaml',
+  '.agent/recipes/feature-request-inbox/README.md',
+  '.agent/recipes/feature-request-inbox/acceptance.md',
   '.hermes/plans/initial-site-build.md'
 ];
 

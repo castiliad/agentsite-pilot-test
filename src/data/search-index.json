@@ -77,6 +77,17 @@
     ]
   },
   {
+    "title": "Feature Request Inbox",
+    "type": "recipe",
+    "href": "#proof",
+    "summary": "A static intake queue for future AgentSite improvements with status, priority,",
+    "tags": [
+      "feature-request-inbox",
+      "section-recipe",
+      "recipe"
+    ]
+  },
+  {
     "title": "Product Cockpit",
     "type": "recipe",
     "href": "#proof",
@@ -374,6 +385,16 @@
     "type": "plan",
     "href": "#proof",
     "summary": "Layer 6: Agent Run Ledger Add a public safe static orchestration ledger showing agent runs, delegated tasks, checks, deploy evidence, outcomes, failures, and next actions.",
+    "tags": [
+      "plan",
+      "next-step"
+    ]
+  },
+  {
+    "title": "Layer 7: Feature Request Inbox",
+    "type": "plan",
+    "href": "#proof",
+    "summary": "Layer 7: Feature Request Inbox Add a public safe static request queue with status, priority, acceptance criteria, recipe candidates, verification plan, and next actions.",
     "tags": [
       "plan",
       "next-step"

@@ -1,0 +1,85 @@
+---
+import requests from '../data/requests.json';
+const statuses = Array.from(new Set(requests.map((request) => request.status))).sort();
+const priorities = Array.from(new Set(requests.map((request) => request.priority))).sort();
+---
+<section class="section feature-request-inbox" id="requests" data-feature-request-inbox aria-labelledby="requests-title">
+  <div class="request-inbox-heading">
+    <div>
+      <div class="section-kicker">Feature request inbox</div>
+      <h2 id="requests-title">A static intake queue for the next agent run.</h2>
+    </div>
+    <p>Requests are public-safe JSON records with status, priority, acceptance criteria, recipe candidates, verification plan, and next action.</p>
+  </div>
+  <div class="request-inbox-controls" aria-label="Feature request filters">
+    <label class="request-search-label" for="request-search">Search requests</label>
+    <input id="request-search" data-request-search type="search" placeholder="Search requests, recipes, checks…" autocomplete="off" />
+    <div class="request-filter-row" aria-label="Status filters">
+      <button type="button" class="active" data-request-status="all">All status</button>
+      {statuses.map((status) => <button type="button" data-request-status={status}>{status}</button>)}
+    </div>
+    <div class="request-filter-row" aria-label="Priority filters">
+      <button type="button" class="active" data-request-priority="all">All priority</button>
+      {priorities.map((priority) => <button type="button" data-request-priority={priority}>{priority}</button>)}
+    </div>
+  </div>
+  <p class="request-count" data-request-count aria-live="polite">Showing {requests.length} requests</p>
+  <div class="request-grid">
+    {requests.map((request) => (
+      <article class="request-card" data-request-card data-status={request.status} data-priority={request.priority} data-title={`${request.title} ${request.status} ${request.priority} ${request.summary} ${request.source} ${request.recipeCandidates.join(' ')} ${request.acceptance.join(' ')} ${request.verification.join(' ')}`.toLowerCase()}>
+        <div class="request-card-top"><span>{request.priority}</span><strong>{request.status}</strong></div>
+        <h3>{request.title}</h3>
+        <p>{request.summary}</p>
+        <dl>
+          <div><dt>Source</dt><dd>{request.source}</dd></div>
+          <div><dt>Next</dt><dd>{request.nextAction}</dd></div>
+        </dl>
+        <div class="request-columns">
+          <div><h4>Acceptance</h4><ul>{request.acceptance.map((item) => <li>{item}</li>)}</ul></div>
+          <div><h4>Verification</h4><ul>{request.verification.map((item) => <li>{item}</li>)}</ul></div>
+        </div>
+        <div class="request-tags">{request.recipeCandidates.map((recipe) => <span>{recipe}</span>)}</div>
+      </article>
+    ))}
+  </div>
+</section>
+
+<script is:inline>
+  (() => {
+    for (const root of document.querySelectorAll('[data-feature-request-inbox]')) {
+      const input = root.querySelector('[data-request-search]');
+      const statusButtons = [...root.querySelectorAll('[data-request-status]')];
+      const priorityButtons = [...root.querySelectorAll('[data-request-priority]')];
+      const cards = [...root.querySelectorAll('[data-request-card]')];
+      const count = root.querySelector('[data-request-count]');
+      let activeStatus = 'all';
+      let activePriority = 'all';
+      function setActive(buttons, attr, value) {
+        for (const button of buttons) {
+          const active = button.dataset[attr] === value;
+          button.classList.toggle('active', active);
+          button.setAttribute('aria-pressed', String(active));
+        }
+      }
+      function apply() {
+        const query = String(input?.value || '').trim().toLowerCase();
+        let visible = 0;
+        for (const card of cards) {
+          const statusMatch = activeStatus === 'all' || card.dataset.status === activeStatus;
+          const priorityMatch = activePriority === 'all' || card.dataset.priority === activePriority;
+          const textMatch = !query || String(card.dataset.title || '').includes(query);
+          const show = statusMatch && priorityMatch && textMatch;
+          card.hidden = !show;
+          if (show) visible += 1;
+        }
+        setActive(statusButtons, 'requestStatus', activeStatus);
+        setActive(priorityButtons, 'requestPriority', activePriority);
+        if (count) count.textContent = `Showing ${visible} request${visible === 1 ? '' : 's'}`;
+      }
+      input?.addEventListener('input', apply);
+      for (const button of statusButtons) button.addEventListener('click', () => { activeStatus = button.dataset.requestStatus || 'all'; apply(); });
+      for (const button of priorityButtons) button.addEventListener('click', () => { activePriority = button.dataset.requestPriority || 'all'; apply(); });
+      apply();
+    }
+  })();
+</script>

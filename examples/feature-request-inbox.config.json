@@ -1,0 +1,82 @@
+{
+  "name": "Feature Request Inbox",
+  "repo": "agentsite-request-inbox-example",
+  "owner": "castiliad",
+  "description": "A static AgentSite feature-request inbox for autonomous improvement loops.",
+  "brief": "Create a static GitHub Pages site that demonstrates a feature-request inbox: a public-safe queue of requested improvements with status, priority, acceptance criteria, recipe candidates, verification plans, and next actions. It must not include private tickets, raw chats, auth, analytics, or live sync.",
+  "heroHeadline": "A static inbox for the next AgentSite improvement",
+  "heroLede": "The page turns requested improvements into curated, QA-ready records with priority, acceptance criteria, recipe candidates, verification plans, and next actions.",
+  "primaryCtaLabel": "Review requests",
+  "primaryCtaHref": "#requests",
+  "audience": [
+    "AgentSite maintainers",
+    "Autonomous orchestrators",
+    "Technical reviewers evaluating request-to-deploy loops"
+  ],
+  "visualDirection": "dark cockpit request queue with status and priority filters",
+  "recipes": [
+    "product-cockpit",
+    "feature-request-inbox",
+    "agent-run-ledger",
+    "artifact-gallery",
+    "roadmap-board",
+    "copy-evidence-strip"
+  ],
+  "visualPreset": "cockpit-dark",
+  "sections": [
+    {
+      "id": "intake-loop",
+      "navLabel": "Intake",
+      "title": "Requests become verifiable work items",
+      "body": "Each request carries enough context for an agent to plan, implement, check, deploy, and record the run."
+    },
+    {
+      "id": "request-quality",
+      "navLabel": "Quality",
+      "title": "Acceptance criteria come first",
+      "body": "The inbox requires clear acceptance criteria and verification steps before work is considered ready."
+    },
+    {
+      "id": "inbox-boundaries",
+      "navLabel": "Boundaries",
+      "title": "No private inbox or live sync",
+      "body": "The queue is public static JSON, not an authenticated ticketing system, private support inbox, or live task sync."
+    }
+  ],
+  "proofArtifacts": [
+    {
+      "label": "Request data",
+      "body": "src/data/requests.json contains public-safe request records validated by npm run check:requests."
+    },
+    {
+      "label": "Request UI",
+      "body": "src/components/FeatureRequestInbox.astro filters requests by text, status, and priority."
+    },
+    {
+      "label": "Request QA",
+      "body": "Visual QA exercises request inbox search and filters when the inbox is present."
+    }
+  ],
+  "allowedClaims": [
+    "Static GitHub Pages delivery",
+    "Public-safe AgentSite request inbox",
+    "Repo-local QA scripts validate request records",
+    "Payment disabled / no-payment mode"
+  ],
+  "forbiddenClaims": [
+    "fake customer endorsements",
+    "fake metrics",
+    "unsupported guarantees",
+    "analytics or tracking",
+    "live payment links",
+    "private tickets",
+    "raw chats",
+    "live sync"
+  ],
+  "approvalRequired": [
+    "Adding analytics, cookies, tracking pixels, or third-party forms",
+    "Adding payment links or enabling payment mode",
+    "Indexing private tickets, raw chats, credentials, secrets, or unpublished user data",
+    "Adding live task sync, server runtime, authentication, or a database"
+  ]
+}
