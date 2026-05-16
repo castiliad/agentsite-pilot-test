@@ -476,7 +476,7 @@ function defaultHeroHeadline(name, desc, sourceBrief, siteSections) {
 }
 
 function defaultHeroLede(sourceBrief, desc, name) {
-  return userFacingSummary(sourceBrief, name, 150) || userFacingSummary(desc, name, 150) || `${name} is a static AgentSite with contracts, QA, and GitHub Pages deployment evidence.`;
+  return userFacingSummary(sourceBrief, name, 220) || userFacingSummary(desc, name, 180) || `${name} is a static AgentSite with contracts, QA, and GitHub Pages deployment evidence.`;
 }
 
 function userFacingSummary(value, name, limit) {
@@ -500,10 +500,19 @@ function cleanInstructionCopy(value) {
 
 function conciseText(value, limit) {
   const text = String(value).replace(/[.…]+/g, '').trim();
-  if (text.length <= limit) return text;
+  if (text.length <= limit) return stripDanglingEnding(text);
   const cut = text.slice(0, limit + 1);
   const boundary = Math.max(cut.lastIndexOf(' '), cut.lastIndexOf(','), cut.lastIndexOf(';'));
-  return text.slice(0, boundary > 42 ? boundary : limit).trim();
+  return stripDanglingEnding(text.slice(0, boundary > 42 ? boundary : limit));
+}
+
+function stripDanglingEnding(value) {
+  return String(value)
+    .trim()
+    .replace(/[,:;\s]+$/g, '')
+    .replace(/\b(and|or|with|for|to|of|in|into|from|that|while|where|before|after)$/i, '')
+    .trim()
+    .replace(/[,:;\s]+$/g, '');
 }
 
 function slug(value) {
